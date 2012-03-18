@@ -3,6 +3,15 @@ namespace YouTrack;
 /**
  * A class for connecting to a youtrack instance.
  *
+ * @internal revision
+ * 20120318 - francisco.mancardi@gmail.com
+ * new method get_project_issue_states()
+ * Important Notice
+ * REST API documentation for version 3.x this method is not documented.
+ * REST API documentation for version 2.x this method is DOCUMENTED.
+ * (http://confluence.jetbrains.net/display/YTD2/Get+Issue+States)
+ *
+ *
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 29.03.11 16:13
  */
@@ -577,6 +586,24 @@ class Connection {
    */
   public function set_verify_ssl($verify_ssl) {
     $this->verify_ssl = $verify_ssl;
+  }
+
+  /**
+   * get pairs (state,revolved attribute) in hash.
+   * same info is get online on: 
+   * Project Fields › States (Click to change bundle name) 
+   * 
+   * @param string $project_id
+   * @return hash key: state string (as you can get online usinf
+   *              value: true is resolved attribute set to true	
+   */
+  public function get_project_issue_states($project_id) {
+    $xml = $this->_get('/project/states');
+	$states = null;
+    foreach($xml->children() as $node) {
+      $states[(string)$node['name']] = ((string)$node['resolved'] == 'true');
+    }
+    return $states;
   }
 
 }
