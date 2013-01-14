@@ -3,6 +3,16 @@ namespace YouTrack;
 /**
  * A class for connecting to a youtrack instance.
  *
+ * @internal revision
+ * 20120318 - francisco.mancardi@gmail.com
+ * new method get_global_issue_states()
+ * Important Notice
+ * REST API documentation for version 3.x this method is not documented.
+ * REST API documentation for version 2.x this method is DOCUMENTED.
+ * (http://confluence.jetbrains.net/display/YTD2/Get+Issue+States)
+ *
+ * new method get_state_bundle()
+ *
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 29.03.11 16:13
  */
@@ -609,6 +619,44 @@ class Connection {
    */
   public function set_verify_ssl($verify_ssl) {
     $this->verify_ssl = $verify_ssl;
+  }
+
+  /**
+   * get pairs (state,revolved attribute) in hash.
+   * same info is get online on: 
+   * Project Fields › States (Click to change bundle name) 
+   * 
+   * @return hash key: state string 
+   *              value: true is resolved attribute set to true	
+   */
+  public function get_global_issue_states() {
+    $xml = $this->_get('/project/states');
+	$states = null;
+    foreach($xml->children() as $node) {
+      $states[(string)$node['name']] = ((string)$node['resolved'] == 'true');
+    }
+    return $states;
+  }
+
+  /**
+   * useful when you have configured different states for different projects
+   * in this cases you will create bundles with name with global scope,
+   * i.e. name can not be repeated on youtrack installation.
+   *
+   * @param string $name
+   * @return hash key: state string
+   *			  value: hash('description' => string, 'isResolved' => boolean) 
+   */
+  public function get_state_bundle($name) {
+
+	$cmd = '/admin/customfield/stateBundle/' . urlencode($name);
+    $xml = $this->_get($cmd);
+	$bundle = null;
+    foreach($xml->children() as $node) {
+       $bundle[(string)$node] = array('description' => (isset($node['description']) ? (string)$node['description'] : ''),
+      								 'isResolved' => ((string)$node['isResolved']=='true'));
+    }
+    return $bundle;
   }
 
 }
