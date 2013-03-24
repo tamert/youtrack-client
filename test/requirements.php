@@ -2,4 +2,5 @@
 /**
  * Include the requirements for testing.
  */
-require_once("src/youtrackclient.php");
+
+require_once("./YouTrack/Connection.php");

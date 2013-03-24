@@ -14,7 +14,7 @@ class YouTrackExceptionTest extends \PHPUnit_Framework_TestCase {
       'http_code' => 200,
     );
     $content = "";
-    $e = new \YouTrack\YouTrackException($url, $response, $content);
+    $e = new Exception($url, $response, $content);
     $this->assertEquals("Error for 'http://example.com': 200", $e->getMessage());
   }
 
@@ -24,7 +24,7 @@ class YouTrackExceptionTest extends \PHPUnit_Framework_TestCase {
       'http_code' => 404,
     );
     $content = "";
-    $e = new \YouTrack\YouTrackException($url, $response, $content);
+    $e = new Exception($url, $response, $content);
     $this->assertEquals("Error for 'http://example.com': 404", $e->getMessage());
   }
 
@@ -35,7 +35,7 @@ class YouTrackExceptionTest extends \PHPUnit_Framework_TestCase {
       'content_type' => 'text/html; charset=utf8',
     );
     $content = "";
-    $e = new \YouTrack\YouTrackException($url, $response, $content);
+    $e = new Exception($url, $response, $content);
     $this->assertEquals("Error for 'http://example.com': 500", $e->getMessage());
   }
 
@@ -46,7 +46,7 @@ class YouTrackExceptionTest extends \PHPUnit_Framework_TestCase {
       'content_type' => 'text/plain',
     );
     $content = "<error>You have no rights to read user.</error>";
-    $e = new \YouTrack\YouTrackException($url, $response, $content);
+    $e = new \YouTrack\Exception($url, $response, $content);
     $this->assertEquals("Error for 'http://example.com': 403: You have no rights to read user.", $e->getMessage());
   }
 }

@@ -10,7 +10,8 @@ require_once("requirements.php");
 class YouTrackIssueTest extends \PHPUnit_Framework_TestCase {
   private $filename = "test/issue.xml";
 
-  public function test___construct01() {
+  public function test___construct01()
+  {
     $xml = simplexml_load_file($this->filename);
     $issue = new Issue($xml);
     $this->assertEquals(3, count($issue->__get('links')));
