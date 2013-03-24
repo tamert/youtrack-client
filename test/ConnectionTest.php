@@ -1,13 +1,16 @@
 <?php
 namespace YouTrack;
 require_once("requirements.php");
+
 /**
  * A helper class for connection testing.
  */
-class TestConnection extends Connection {
-  protected function login($login, $password) {
-    //Do nothing here.
-  }
+class TestConnection extends Connection
+{
+    protected function login($username, $password)
+    {
+        //Do nothing here.
+    }
 }
 /**
  * Unit test for the connection class.
@@ -15,12 +18,13 @@ class TestConnection extends Connection {
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 31.03.11 12:35
  */
-class ConnectionTest extends \PHPUnit_Framework_TestCase {
-  private $url = "http://example.com";
-  private $login = "guest";
-  private $password = "guest";
+class ConnectionTest extends \PHPUnit_Framework_TestCase
+{
+    private $url = "http://example.com";
+    private $login = "guest";
+    private $password = "guest";
 
-  public function test_get_issue() {
-    $con = new TestConnection($this->url, $this->login, $this->password);
-  }
+    public function test_get_issue() {
+        $con = new TestConnection($this->url, $this->login, $this->password);
+    }
 }

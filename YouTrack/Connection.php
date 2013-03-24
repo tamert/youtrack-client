@@ -1,6 +1,8 @@
 <?php
 namespace YouTrack;
 
+// We need autoloading for this library. If you have already PSR-0 autoloading in you project
+// please remove the following lines
 spl_autoload_register(function ($className)
 {
     if (class_exists($className)) {
@@ -18,9 +20,11 @@ spl_autoload_register(function ($className)
 
     require $fileName;
 });
+// autloading finished
+
 
 /**
- * A class for connecting to a youtrack instance.
+ * A class for connecting to a YouTrack instance.
  *
  * @internal revision
  * 20120318 - francisco.mancardi@gmail.com
@@ -54,28 +58,33 @@ class Connection
         $this->login($login, $password);
     }
 
-  /**
-   * Loop through the given array and remove all entries
-   * that have no value assigned.
-   *
-   * @param array &$params The array to inspect and clean up.
-   */
-  private function cleanUrlParameters(&$params)
-  {
-    if (!empty($params) && is_array($params)) {
-      foreach ($params as $key => $value) {
-        if (empty($value)) {
-          unset($params["$key"]);
+    /**
+    * Loop through the given array and remove all entries
+    * that have no value assigned.
+    *
+    * @param array &$params The array to inspect and clean up.
+    */
+    private function cleanUrlParameters(&$params)
+    {
+        if (!empty($params) && is_array($params)) {
+            foreach ($params as $key => $value) {
+                if (empty($value)) {
+                    unset($params["$key"]);
+                }
+            }
         }
-      } // foreach
     }
-  }
 
-    protected function login($login, $password)
+    /**
+     * @param string $username
+     * @param string $password
+     * @throws Exception
+     */
+    protected function login($username, $password)
     {
         curl_setopt($this->http, CURLOPT_POST, true);
         curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1')); //Workaround for problems when after lighthttp proxy
-        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login='. urlencode($login) .'&password='. urlencode($password));
+        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login='. urlencode($username) .'&password='. urlencode($password));
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_HEADER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
@@ -97,73 +106,76 @@ class Connection
         curl_close($this->http);
     }
 
-  /**
-   * Execute a request with the given parameters and return the response.
-   *
-   * @throws \Exception|Exception An exception is thrown if an error occurs.
-   * @param string $method The http method (GET, PUT, POST).
-   * @param string $url The request url.
-   * @param string $body Data that should be send or the filename of the file if PUT is used.
-   * @param int $ignore_status Ignore the given http status code.
-   * @return array An array holding the response content in 'content' and the response status
-   * in 'response'.
-   */
-  protected function request($method, $url, $body = null, $ignore_status = 0) {
-    $this->http = curl_init($this->base_url . $url);
-    $headers = $this->headers;
-    if ($method == 'PUT' || $method == 'POST') {
-      $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-      $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
-    }
-    switch ($method) {
-      case 'GET':
-        curl_setopt($this->http, CURLOPT_HTTPGET, true);
-        break;
-      case 'PUT':
-        $handle = null;
-        $size = 0;
-        // Check if we got a file or just a string of data.
-        if (file_exists($body)) {
-          $size = filesize($body);
-          if (!$size) {
-            throw new \Exception("Can't open file $body!");
-          }
-          $handle = fopen($body, 'r');
+    /**
+    * Execute a request with the given parameters and return the response.
+    *
+    * @throws \Exception|Exception An exception is thrown if an error occurs.
+    * @param string $method The http method (GET, PUT, POST).
+    * @param string $url The request url.
+    * @param string $body Data that should be send or the filename of the file if PUT is used.
+    * @param int $ignore_status Ignore the given http status code.
+    * @return array An array holding the response content in 'content' and the response status
+    * in 'response'.
+    */
+    protected function request($method, $url, $body = null, $ignore_status = 0)
+    {
+        $this->http = curl_init($this->base_url . $url);
+        $headers = $this->headers;
+        if ($method == 'PUT' || $method == 'POST') {
+            $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
+            $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
         }
-        else {
-          $size = mb_strlen($body);
-          $handle = fopen('data://text/plain,' . $body,'r');
+        switch ($method) {
+            case 'GET':
+                curl_setopt($this->http, CURLOPT_HTTPGET, true);
+                break;
+            case 'PUT':
+                $handle = null;
+                $size = 0;
+                // Check if we got a file or just a string of data.
+                if (file_exists($body)) {
+                    $size = filesize($body);
+                    if (!$size) {
+                        throw new \Exception("Can't open file $body!");
+                    }
+                    $handle = fopen($body, 'r');
+                } else {
+                    $size = mb_strlen($body);
+                    $handle = fopen('data://text/plain,' . $body,'r');
+                }
+                curl_setopt($this->http, CURLOPT_PUT, true);
+                curl_setopt($this->http, CURLOPT_INFILE, $handle);
+                curl_setopt($this->http, CURLOPT_INFILESIZE, $size);
+                break;
+            case 'POST':
+                curl_setopt($this->http, CURLOPT_POST, true);
+                if (!empty($body)) {
+                    curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+                }
+            break;
+            default:
+                throw new \Exception("Unknown method $method!");
         }
-        curl_setopt($this->http, CURLOPT_PUT, true);
-        curl_setopt($this->http, CURLOPT_INFILE, $handle);
-        curl_setopt($this->http, CURLOPT_INFILESIZE, $size);
-        break;
-      case 'POST':
-        curl_setopt($this->http, CURLOPT_POST, true);
-        if (!empty($body)) {
-          curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
-        }
-        break;
-      default:
-        throw new \Exception("Unknown method $method!");
-    }
-    curl_setopt($this->http, CURLOPT_HTTPHEADER, $headers[CURLOPT_HTTPHEADER]);
-    curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
-    curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
-    curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
-    curl_setopt($this->http, CURLOPT_COOKIE, implode(';', $this->cookies));
-    $content = curl_exec($this->http);
-    $response = curl_getinfo($this->http);
-    curl_close($this->http);
-    if ((int) $response['http_code'] != 200 && (int) $response['http_code'] != 201 && (int) $response['http_code'] != $ignore_status) {
-      throw new Exception($url, $response, $content);
-    }
+        curl_setopt($this->http, CURLOPT_HTTPHEADER, $headers[CURLOPT_HTTPHEADER]);
+        curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
+        curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
+        curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
+        curl_setopt($this->http, CURLOPT_COOKIE, implode(';', $this->cookies));
+        $content = curl_exec($this->http);
+        $response = curl_getinfo($this->http);
+        curl_close($this->http);
 
-    return array(
-      'content' => $content,
-      'response' => $response,
-    );
+        if ((int) $response['http_code'] != 200 &&
+            (int) $response['http_code'] != 201 &&
+            (int) $response['http_code'] != $ignore_status) {
+            throw new Exception($url, $response, $content);
+        }
+
+        return array(
+            'content' => $content,
+            'response' => $response,
+        );
   }
 
   protected function requestXml($method, $url, $body = null, $ignore_status = 0) {
