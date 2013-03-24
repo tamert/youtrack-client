@@ -25,3 +25,44 @@ Usage
     $issue = $youtrack->getIssue("TEST-1");
     ...
 
+Usage with ZF2 ZendSkeletonApplication
+--------------
+
+In your /init_autoloader.php
+
+    <?php
+    // ... snip
+    if ($zf2Path) {
+        if (isset($loader)) {
+            $loader->add('Zend', $zf2Path);
+        } else {
+            include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
+            Zend\Loader\AutoloaderFactory::factory(array(
+                'Zend\Loader\StandardAutoloader' => array(
+                    'autoregister_zf' => true,
+                    'namespaces' => [                            // add this
+                        'YouTrack' => 'vendor/YouTrack/src'      // ...
+                    ],                                           // ...
+                )
+            ));
+        }
+    }
+    // ... snip
+
+From now on you can use YouTrack-Client-PHP-Library from any file in you ZF2-App.
+
+    <?php
+    // ...
+    // example
+    use YouTrack\Connection as YouTrackConnection;
+
+    class ExampleController extends AbstractActionController
+    {
+
+        public function anyAction()
+        {
+            $youtrack = new YouTrackConnection("http://example.com", "login", "password");
+            $issue = $youtrack->getIssue("TEST-1");
+            // ...
+        }
+    }
