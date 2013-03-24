@@ -38,6 +38,15 @@ class Issue extends YouTrackObject {
         }
     }
 
+    /**
+     * Returns the Issue Id (if it is already created or fetched)
+     *
+     */
+    public function getId()
+    {
+        return $this->__get('id');
+    }
+
     public function getReporter() {
         return $this->youtrack->getUser($this->__get('reporterName'));
     }
