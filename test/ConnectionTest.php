@@ -5,7 +5,7 @@ require_once("requirements.php");
  * A helper class for connection testing.
  */
 class TestConnection extends Connection {
-  protected function _login($login, $password) {
+  protected function login($login, $password) {
     //Do nothing here.
   }
 }

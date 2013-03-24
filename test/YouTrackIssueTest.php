@@ -25,6 +25,6 @@ class YouTrackIssueTest extends \PHPUnit_Framework_TestCase {
   public function test_has_assignee() {
     $xml = simplexml_load_file($this->filename);
     $issue = new Issue($xml);
-    $this->assertTrue($issue->has_assignee());
+    $this->assertTrue($issue->hasAssignee());
   }
 }

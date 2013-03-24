@@ -20,8 +20,8 @@ Usage
 -----
 
     <?php
-    require_once("youtrackclient.php");
+    require_once("YouTrack/src/Connection.php");
     $youtrack = new \YouTrack\Connection("http://example.com", "login", "password");
-    $issue = $youtrack->get_issue("TEST-1");
+    $issue = $youtrack->getIssue("TEST-1");
     ...
 
