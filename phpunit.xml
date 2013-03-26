@@ -6,4 +6,9 @@
     <php>
         <includePath>../src</includePath>
     </php>
+    <testsuites>
+        <testsuite name="YouTrack">
+            <directory>test</directory>
+        </testsuite>
+    </testsuites>
 </phpunit>
