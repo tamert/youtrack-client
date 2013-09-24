@@ -68,3 +68,16 @@ From now on you can use YouTrack-Client-PHP-Library from any file in you ZF2-App
             // ...
         }
     }
+
+## Tests
+
+The testsuite depends on PHPUnit. You can install it with `composer.phar`:
+
+    curl -sS https://getcomposer.org/installer | php --
+    php composer.phar install
+
+
+The unit tests are incomplete but you can run them using `phpunit` like this:
+
+
+    ./vendor/bin/phpunit ./test

@@ -11,10 +11,7 @@ class Object {
 
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null) {
         $this->youtrack = $youtrack;
-        if (!empty($xml)) {
-            if (!($xml instanceof \SimpleXMLElement)) {
-                throw new \Exception("An instance of SimpleXMLElement expected!");
-            }
+        if ($xml) {
             $this->updateAttributes($xml);
             $this->updateChildrenAttributes($xml);
         }
