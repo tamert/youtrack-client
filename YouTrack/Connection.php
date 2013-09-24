@@ -228,7 +228,7 @@ class Connection
      * @param array $params optional additional parameters for the new issue (look into your personal youtrack instance!)
      * @return Issue
      */
-    public function createIssue($project, $summary, $params = []) {
+    public function createIssue($project, $summary, $params = array()) {
 
     $params['project'] = (string)$project;
     $params['summary'] = (string)$summary;
