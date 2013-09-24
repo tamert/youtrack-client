@@ -11,16 +11,15 @@ The initial development was sponsored by [Telematika GmbH](http://www.telematika
 
 The source of this library is released under the BSD license (see LICENSE for details).
 
-Requirements
-------------
+## Requirements
 
 * PHP 5.3.x (Any version above 5 might work but I can't guarantee that.)
 * curl
 * simplexml
 * YouTrack 3.0 with REST-API enabled
 
-Usage
------
+
+## Usage
 
     <?php
     require_once("YouTrack/src/Connection.php");
@@ -28,8 +27,8 @@ Usage
     $issue = $youtrack->getIssue("TEST-1");
     ...
 
-Usage with ZF2 ZendSkeletonApplication
---------------
+
+## Usage with ZF2 ZendSkeletonApplication
 
 In your /init_autoloader.php
 
