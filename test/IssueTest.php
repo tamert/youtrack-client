@@ -37,6 +37,6 @@ class IssueTest extends \PHPUnit_Framework_TestCase
         $testIssueId = 'T-2';
         $xml = simplexml_load_file($this->filename);
         $issue = new Issue($xml);
-        $this->assertEquals($testIssueId, $issue->hasAssignee());
+        $this->assertEquals($testIssueId, $issue->getId());
     }
 }

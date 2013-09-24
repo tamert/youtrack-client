@@ -48,3 +48,5 @@ Session.vim
 Thumbs.db
 Desktop.ini
 build
+vendor
+composer.phar
