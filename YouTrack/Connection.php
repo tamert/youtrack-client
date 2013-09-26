@@ -1,28 +1,6 @@
 <?php
 namespace YouTrack;
 
-// We need autoloading for this library. If you have already PSR-0 autoloading in you project
-// please remove the following lines
-spl_autoload_register(function ($className)
-{
-    if (class_exists($className)) {
-        return true;
-    }
-    $className = ltrim($className, '\\');
-    $fileName  = '';
-    $namespace = '';
-    if ($lastNsPos = strrpos($className, '\\')) {
-        $namespace = substr($className, 0, $lastNsPos);
-        $className = substr($className, $lastNsPos + 1);
-        $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-    }
-    $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-
-    require $fileName;
-});
-// autloading finished
-
-
 /**
  * A class for connecting to a YouTrack instance.
  *
@@ -56,6 +34,24 @@ class Connection
         $this->url = $url;
         $this->base_url = $url . '/rest';
         $this->login($login, $password);
+    }
+
+
+    /**
+     * Checks if the connection is via HTTPS
+     *
+     * @return bool
+     */
+    public function isHttps()
+    {
+        if (!empty($this->url)) {
+
+            $url = strtolower($this->url);
+            if (substr($url, 0, strlen('https')) == 'https') {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -119,7 +115,13 @@ class Connection
     */
     protected function request($method, $url, $body = null, $ignore_status = 0)
     {
-        $this->http = curl_init($this->base_url . $url);
+        if (substr($url, 0, strlen('http://')) != 'http://'
+            && substr($url, 0, strlen('https://')) != 'https://'
+        ) {
+
+            $url = $this->base_url . $url;
+        }
+        $this->http = curl_init($url);
         $headers = $this->headers;
         if ($method == 'PUT' || $method == 'POST') {
             $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
@@ -190,9 +192,10 @@ class Connection
     return $content;
   }
 
-  protected function get($url) {
-    return $this->requestXml('GET', $url);
-  }
+    protected function get($url)
+    {
+        return $this->requestXml('GET', $url);
+    }
 
   protected function put($url) {
     return $this->requestXml('PUT', $url, '<empty/>\n\n');
@@ -200,7 +203,7 @@ class Connection
 
   public function getIssue($id) {
     $issue = $this->get('/issue/' . $id);
-    return new Issue($issue);
+    return new Issue($issue, $this);
   }
 
     /**
@@ -239,10 +242,11 @@ class Connection
       $value = (string)$value;
     });
     $issue = $this->requestXml('POST', '/issue?'. http_build_query($params));
-    return new Issue($issue);
+    return new Issue($issue, $this);
   }
 
-  public function getAccessibleProjects() {
+  public function getAccessibleProjects()
+  {
     $xml = $this->get('/project/all');
     $projects = array();
 
@@ -253,34 +257,52 @@ class Connection
     return $projects;
   }
 
-  public function getComments($id) {
+  public function getComments($id)
+  {
     $comments = array();
     $req = $this->request('GET', '/issue/'. urlencode($id) .'/comment');
     $xml = simplexml_load_string($req['content']);
     foreach($xml->children() as $node) {
-      $comments[] = new Comment($node);
+      $comments[] = new Comment($node, $this);
     }
     return $comments;
   }
 
-  public function getAttachments($id) {
-    $attachments = array();
-    $req = $this->request('GET', '/issue/'. urlencode($id) .'/attachment');
-    $xml = simplexml_load_string($req['content']);
-    foreach($xml->children() as $node) {
-      $attachments[] = new Comment($node);
-    }
-    return $attachments;
-  }
 
-  public function getAttachmentContent($url) {
-    //TODO Switch to curl for better error handling.
-    $file = file_get_contents($url);
-    if ($file === false) {
-      throw new \Exception("An error occured while trying to retrieve the following file: $url");
+    /**
+     * @param $id
+     * @return Attachment[]
+     */
+    public function getAttachments($id)
+    {
+        $attachments = array();
+        $req = $this->request('GET', '/issue/'. urlencode($id) .'/attachment');
+        $xml = simplexml_load_string($req['content']);
+        foreach($xml->children() as $node) {
+            $attachments[] = new Attachment($node, $this);
+        }
+        return $attachments;
     }
-    return $file;
-  }
+
+
+    /**
+     * Returns the file content from the given attachment url
+     *
+     * @param string $url The attachment url
+     *
+     * @return bool
+     */
+    public function getAttachmentContent($url)
+    {
+        $result = $this->request('GET', $url);
+
+        if ($result['response']['http_code'] == 200) {
+
+            return $result['content'];
+        }
+        return false;
+    }
+
 
     /**
      * @param $issue_id
@@ -518,7 +540,7 @@ class Connection
     $xml = $this->get('/project/issues/'. urldecode($project_id) .'?'. http_build_query($params));
     $issues = array();
     foreach ($xml->children() as $issue) {
-      $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()));
+      $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
     }
     return $issues;
   }

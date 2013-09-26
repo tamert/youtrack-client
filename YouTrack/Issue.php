@@ -49,7 +49,8 @@ class Issue extends Object
         return $this->__get('id');
     }
 
-    public function getReporter() {
+    public function getReporter()
+    {
         return $this->youtrack->getUser($this->__get('reporterName'));
     }
 
@@ -73,7 +74,12 @@ class Issue extends Object
         return $this->comments;
     }
 
-    public function getAttachments() {
+
+    /**
+     * @return array|Attachment[]
+     */
+    public function getAttachments()
+    {
         if (empty($this->attachments)) {
             $this->attachments = $this->youtrack->getAttachments($this->__get('id'));
         }
