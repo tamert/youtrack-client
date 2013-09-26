@@ -61,24 +61,15 @@ class Attachment extends Object
 
         $methods = get_class_methods($this);
 
-        foreach ($xml->xpath('/*') as $node) {
-            $children = $node->children();
-            if ($children->count()) {
+        if ($xml) {
+            foreach ($xml->attributes() as $key => $value) {
+                $method = 'set' . ucfirst($key);
 
-                $file = $node->children();
-                $file = $file[0]; /** @var \SimpleXMLElement $file */
-
-                foreach ($file->attributes() as $key => $value) {
-
-                    $method = 'set' . ucfirst($key);
-
-                    if (in_array($method, $methods)) {
-                        $this->$method((string)$value);
-                    }
+                if (in_array($method, $methods)) {
+                    $this->$method((string)$value);
                 }
             }
         }
-
     }
 
 

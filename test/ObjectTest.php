@@ -7,8 +7,10 @@ require_once("requirements.php");
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 08.04.11 13:55
  */
-class ObjectTest extends \PHPUnit_Framework_TestCase {
-  private $filename = "test/issue.xml";
+class ObjectTest extends \PHPUnit_Framework_TestCase
+{
+
+    private $filename = "test/testdata/issue.xml";
 
   public function test___construct01() {
     $xml = simplexml_load_file($this->filename);

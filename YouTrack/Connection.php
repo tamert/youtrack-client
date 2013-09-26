@@ -16,11 +16,14 @@ namespace YouTrack;
  *
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 29.03.11 16:13
+ *
+ * @see http://confluence.jetbrains.com/display/YTD5/YouTrack+REST+API+Reference
  */
 class Connection
 {
     private $http = null;
     private $url = '';
+    private $loginName;
     private $base_url = '';
     private $headers = array();
     private $cookies = array();
@@ -33,6 +36,7 @@ class Connection
         $this->http = curl_init();
         $this->url = $url;
         $this->base_url = $url . '/rest';
+        $this->loginName = $login;
         $this->login($login, $password);
     }
 
@@ -124,8 +128,11 @@ class Connection
         $this->http = curl_init($url);
         $headers = $this->headers;
         if ($method == 'PUT' || $method == 'POST') {
-            $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-            $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
+
+            if (!file_exists($body)) {
+                $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
+                $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
+            }
         }
         switch ($method) {
             case 'GET':
@@ -152,6 +159,14 @@ class Connection
             case 'POST':
                 curl_setopt($this->http, CURLOPT_POST, true);
                 if (!empty($body)) {
+
+                    if (file_exists($body)) {
+
+                        $file = new \CURLFile($body);
+                        $body = array(
+                            'file' => $file
+                        );
+                    }
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 }
             break;
@@ -174,37 +189,45 @@ class Connection
             throw new Exception($url, $response, $content);
         }
 
+        // for fetching results for test data
+        /*if (!empty($content)) {
+            file_put_contents(md5($content).'.xml', $content);
+        }*/
+
         return array(
             'content' => $content,
             'response' => $response,
         );
-  }
-
-  protected function requestXml($method, $url, $body = null, $ignore_status = 0) {
-    $r = $this->request($method, $url, $body, $ignore_status);
-    $response = $r['response'];
-    $content = $r['content'];
-    if (!empty($response['content_type'])) {
-      if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
-        return simplexml_load_string($content);
-      }
     }
-    return $content;
-  }
+
+    protected function requestXml($method, $url, $body = null, $ignore_status = 0)
+    {
+        $r = $this->request($method, $url, $body, $ignore_status);
+        $response = $r['response'];
+        $content = $r['content'];
+        if (!empty($response['content_type'])) {
+            if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
+                return simplexml_load_string($content);
+            }
+        }
+        return $content;
+    }
 
     protected function get($url)
     {
         return $this->requestXml('GET', $url);
     }
 
-  protected function put($url) {
-    return $this->requestXml('PUT', $url, '<empty/>\n\n');
-  }
+    protected function put($url)
+    {
+        return $this->requestXml('PUT', $url, '<empty/>\n\n');
+    }
 
-  public function getIssue($id) {
-    $issue = $this->get('/issue/' . $id);
-    return new Issue($issue, $this);
-  }
+    public function getIssue($id)
+    {
+        $issue = $this->get('/issue/' . $id);
+        return new Issue($issue, $this);
+    }
 
     /**
      * creates an issue with properties from $params
@@ -231,31 +254,32 @@ class Connection
      * @param array $params optional additional parameters for the new issue (look into your personal youtrack instance!)
      * @return Issue
      */
-    public function createIssue($project, $summary, $params = array()) {
+    public function createIssue($project, $summary, $params = array())
+    {
 
-    $params['project'] = (string)$project;
-    $params['summary'] = (string)$summary;
-    array_walk($params, function (&$value) {
-      // php manual: If funcname needs to be working with the actual values of the array,
-      //  specify the first parameter of funcname as a reference. Then, any changes made to
-      //  those elements will be made in the original array itself.
-      $value = (string)$value;
-    });
-    $issue = $this->requestXml('POST', '/issue?'. http_build_query($params));
-    return new Issue($issue, $this);
-  }
-
-  public function getAccessibleProjects()
-  {
-    $xml = $this->get('/project/all');
-    $projects = array();
-
-    foreach ($xml->children() as $node) {
-      $node = new Project(new \SimpleXMLElement($node->asXML()));
-      $projects[] = $node;
+        $params['project'] = (string)$project;
+        $params['summary'] = (string)$summary;
+        array_walk($params, function (&$value) {
+            // php manual: If funcname needs to be working with the actual values of the array,
+            //  specify the first parameter of funcname as a reference. Then, any changes made to
+            //  those elements will be made in the original array itself.
+            $value = (string)$value;
+        });
+        $issue = $this->requestXml('POST', '/issue?'. http_build_query($params));
+        return new Issue($issue, $this);
     }
-    return $projects;
-  }
+
+    public function getAccessibleProjects()
+    {
+        $xml = $this->get('/project/all');
+        $projects = array();
+
+        foreach ($xml->children() as $node) {
+            $node = new Project(new \SimpleXMLElement($node->asXML()));
+            $projects[] = $node;
+        }
+        return $projects;
+    }
 
   public function getComments($id)
   {
@@ -305,20 +329,46 @@ class Connection
 
 
     /**
-     * @param $issue_id
-     * @param Attachment $attachment
-     * @throws NotImplementedException
+     * @param string $issueId The issue id
+     * @param Attachment $attachment The attachment
+     * @return array
      */
-    public function createAttachmentFromAttachment($issue_id, Attachment $attachment)
+    public function createAttachmentFromAttachment($issueId, Attachment $attachment)
     {
-        throw new NotImplementedException("create_attachment_from_attachment(issue_id, attachment)");
+        $params = array(
+            // 'group' => '',
+            // 'name' => '',
+            // 'authorLogin' => '',
+            // 'created' => time()*1000
+        );
+
+
+        if ($attachment->getGroup()) {
+            $params['group'] = $attachment->getGroup();
+        }
+        if ($attachment->getName()) {
+            $params['name'] = $attachment->getName();
+        }
+        if ($attachment->getAuthorLogin()) {
+            $params['authorLogin'] = $attachment->getAuthorLogin();
+        }
+        if ($attachment->getCreated()) {
+            $created = $attachment->getCreated();
+            if ($created instanceof \DateTime) {
+                $created = $created->getTimestamp()*1000;
+            }
+            $params['created'] = $created;
+        }
+
+        return $this->request(
+            'POST',
+            '/issue/'. urlencode($issueId) .'/attachment?' . http_build_query($params),
+            $attachment->getUrl()
+        );
     }
 
-  public function createAttachment($issue_id, $name, $content, $author_login = '', $content_type = null, $content_length = null, $created = null, $group = '') {
-    throw new NotImplementedException("create_attachment(issue_id, name, content, ...)");
-  }
-
-  public function getLinks($id , $outward_only = false) {
+  public function getLinks($id , $outward_only = false)
+  {
     $links = array();
     $req = $this->request('GET', '/issue/'. urlencode($id) .'/link');
     $xml = simplexml_load_string($req['content']);
@@ -712,14 +762,17 @@ class Connection
    * @return hash key: state string
    *			  value: hash('description' => string, 'isResolved' => boolean) 
    */
-  public function getStateBundle($name) {
+  public function getStateBundle($name)
+  {
 
 	$cmd = '/admin/customfield/stateBundle/' . urlencode($name);
     $xml = $this->get($cmd);
 	$bundle = null;
     foreach($xml->children() as $node) {
-       $bundle[(string)$node] = array('description' => (isset($node['description']) ? (string)$node['description'] : ''),
-      								 'isResolved' => ((string)$node['isResolved']=='true'));
+       $bundle[(string)$node] = array(
+           'description' => (isset($node['description']) ? (string)$node['description'] : ''),
+           'isResolved' => ((string)$node['isResolved']=='true')
+       );
     }
     return $bundle;
   }

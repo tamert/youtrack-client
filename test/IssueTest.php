@@ -10,7 +10,7 @@ require_once("requirements.php");
 class IssueTest extends \PHPUnit_Framework_TestCase
 {
 
-    private $filename = "test/issue.xml";
+    private $filename = "test/testdata/issue.xml";
 
     public function test___construct01()
     {

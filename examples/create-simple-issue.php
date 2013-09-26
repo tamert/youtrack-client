@@ -11,14 +11,9 @@ $youtrack = new YouTrack\Connection(
 
 $params = array(
     'priority' => 'Higher',
-    'type' => 'Auto-reported CLI exception',
-    'affectedVersions' => 'production'
+    'type' => 'Auto-reported CLI exception'
 );
 
 $issue = $youtrack->createIssue('Sandbox', 'Create a basic issue for example', $params);
 
 var_dump($issue);
-
-$issue->getId();
-
-$attachment = new YouTrack\Attachment();

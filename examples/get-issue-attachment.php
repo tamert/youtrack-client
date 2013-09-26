@@ -10,7 +10,7 @@ $youtrack = new YouTrack\Connection(
 
 
 // make sure, this exists!
-$issueId = 'Sandbox-5';
+$issueId = 'Sandbox-6';
 
 
 $issue = $youtrack->getIssue($issueId);
@@ -18,6 +18,7 @@ $issue = $youtrack->getIssue($issueId);
 $attachments = $issue->getAttachments();
 foreach ($attachments as $attachment) {
 
+    echo $attachment->getName() . '<br>';
     // here you can play with your file
     // $content = $attachment->fetchContent();
     // file_put_contents('./files/' . $attachment->getName(), $content);

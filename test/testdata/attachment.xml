@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<fileUrls>
+    <fileUrl id="62-180"
+             url="http://example.com/file.abc"
+             name="attachment.txt"
+             authorLogin="root"
+             group="All Users"
+             created="1380204332676"/>
+</fileUrls>
