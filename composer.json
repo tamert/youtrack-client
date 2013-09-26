@@ -13,7 +13,7 @@
             "YouTrack\\": "./"
         }
     },
-    "require": {
+    "require-dev": {
         "phpunit/phpunit": "3.7.*",
         "phpunit/php-invoker": "*",
         "phpunit/dbunit": ">=1.2",
