@@ -1,6 +1,6 @@
 {
     "name": "nepda/youtrack-client",
-    "description": "A PHP YouTrack Client library",
+    "description": "A PHP YouTrack client library",
     "minimum-stability": "dev",
     "authors": [
         {
