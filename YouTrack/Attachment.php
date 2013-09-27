@@ -134,8 +134,9 @@ class Attachment extends Object
                 // The API returns the timestamp in milliseconds
                 // @see http://confluence.jetbrains.com/display/YTD4/Timestamps+in+REST+API
                 $ts = (int)(((int)$created) / 1000);
-                $tmp = new \DateTime();
-                $tmp->setTimestamp($ts);
+                $tmp = new \DateTime('@' . $ts);
+                #$tmp = new \DateTime();
+                #$tmp->setTimestamp($ts);
             } catch (\Exception $e) {
 
                 // we could throw it... but.

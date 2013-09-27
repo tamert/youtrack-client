@@ -25,7 +25,8 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
     public function testCanCreateAttachmentFromResponse()
     {
         $xml = simplexml_load_file($this->singleAttachmentFile);
-        $xml = $xml->children()[0];
+        $xml = $xml->children();
+        $xml = $xml[0];
         try {
             $attachment = new Attachment($xml);
         } catch (\Exception $e) {
@@ -37,7 +38,8 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
     private function createAttachment()
     {
         $xml = simplexml_load_file($this->singleAttachmentFile);
-        $xml = $xml->children()[0];
+        $xml = $xml->children();
+        $xml = $xml[0];
         return $attachment = new Attachment($xml);
     }
 
@@ -71,11 +73,21 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('All Users', $attachment->getGroup());
     }
 
-    public function testCreatedIsSetAfterXmlLoad()
+    public function testCreatedIsSetAfterXmlLoadWithTimezoneAmerica()
     {
+        date_default_timezone_set('America/New_York');
         $attachment = $this->createAttachment();
         //26.09.13 16:05:32
         $this->assertInstanceOf('\\DateTime', $attachment->getCreated());
-        $this->assertEquals('2013-09-26 16:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2013-09-26 14:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
+    }
+
+    public function testCreatedIsSetAfterXmlLoadWithTimezoneGermany()
+    {
+        date_default_timezone_set('Europe/Berlin');
+        $attachment = $this->createAttachment();
+        //26.09.13 16:05:32
+        $this->assertInstanceOf('\\DateTime', $attachment->getCreated());
+        $this->assertEquals('2013-09-26 14:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
     }
 }
