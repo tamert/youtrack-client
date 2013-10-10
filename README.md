@@ -27,6 +27,7 @@ The source of this library is released under the BSD license (see LICENSE for de
     $issue = $youtrack->getIssue("TEST-1");
     ...
 
+See `./examples` folder for more usage examples.
 
 ## Usage with ZF2 ZendSkeletonApplication
 

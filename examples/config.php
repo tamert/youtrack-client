@@ -14,6 +14,14 @@ if (file_exists('.auth.php')) {
 }
 
 
+if (!defined('YOUTRACK_URL')
+    || !defined('YOUTRACK_USERNAME')
+    || !defined('YOUTRACK_PASSWORD')
+) {
+    throw new \Exception('Please define your credential constants in config.php to run these examples.');
+}
+
+
 define('YOUTRACK_AUTOLOADING', false);
 
 include_once './../vendor/autoload.php';
