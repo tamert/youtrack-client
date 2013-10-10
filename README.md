@@ -6,23 +6,23 @@ YouTrack Client PHP Library
 
 The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a [REST-API](http://confluence.jetbrains.net/display/YTD3/YouTrack+REST+API+Reference). Because a lot of web applications are written in [PHP](http://php.net) I decided to write a client library for it. To make it easier for developers to write connectors to YouTrack.
 
-Basically this is a port of the offical python api from Jetbrains.
 The initial development was sponsored by [Telematika GmbH](http://www.telematika.de).
+The current development is made by nepda.
 
 The source of this library is released under the BSD license (see LICENSE for details).
 
 ## Requirements
 
-* PHP 5.3.x (Any version above 5 might work but I can't guarantee that.)
+* PHP 5.3.x (Tested with >= 5.5, Travis runs tests with 5.3, 5.4 and 5.5)
 * curl
 * simplexml
-* YouTrack 3.0 with REST-API enabled
+* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 5.0.3)
 
 
 ## Usage
 
     <?php
-    require_once("YouTrack/src/Connection.php");
+    require_once("YouTrack/Connection.php");
     $youtrack = new \YouTrack\Connection("http://example.com", "login", "password");
     $issue = $youtrack->getIssue("TEST-1");
     ...
@@ -43,7 +43,7 @@ In your /init_autoloader.php
                 'Zend\Loader\StandardAutoloader' => array(
                     'autoregister_zf' => true,
                     'namespaces' => [                            // add this
-                        'YouTrack' => 'vendor/YouTrack/src'      // ...
+                        'YouTrack' => 'vendor/YouTrack'          // ...
                     ],                                           // ...
                 )
             ));
@@ -78,6 +78,5 @@ The testsuite depends on PHPUnit. You can install it with `composer.phar`:
 
 
 The unit tests are incomplete but you can run them using `phpunit` like this:
-
 
     ./vendor/bin/phpunit ./test

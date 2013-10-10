@@ -1,6 +1,8 @@
 <?php
 namespace YouTrack;
 require_once("requirements.php");
+require_once("testconnection.php");
+
 
 /**
  * Unit test for the youtrack attachment class.
@@ -89,5 +91,25 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         //26.09.13 16:05:32
         $this->assertInstanceOf('\\DateTime', $attachment->getCreated());
         $this->assertEquals('2013-09-26 14:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
+    }
+
+    public function testCreateAttachmentFromAttachment()
+    {
+        $attachment = $this->createAttachment();
+
+        $expectedResult = unserialize(file_get_contents('test/testdata/request-response-create-attachment-serialized.txt'));
+
+        /**
+         * @var \YouTrack\Connection $youtrack
+         */
+        $youtrack = $this->getMock('\\YouTrack\\TestConnection', array('request'));
+
+        $youtrack->expects($this->once())
+            ->method('request')
+            ->will($this->returnValue($expectedResult));
+
+        $result = $youtrack->createAttachmentFromAttachment('TEST-2', $attachment);
+
+        $this->assertEquals($expectedResult, $result);
     }
 }
