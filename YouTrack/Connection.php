@@ -162,7 +162,7 @@ class Connection
 
                     if (file_exists($body)) {
 
-                        if (version_compare(PHP_VERSION, '5.5', '>')
+                        if (version_compare(PHP_VERSION, '5.5', '>=')
                             && class_exists('\\CURLFile')
                         ) {
                             $file = new \CURLFile($body);
