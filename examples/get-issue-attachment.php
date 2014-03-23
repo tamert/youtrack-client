@@ -10,16 +10,24 @@ $youtrack = new YouTrack\Connection(
 
 
 // make sure, this exists!
-$issueId = 'Sandbox-6';
+#$issueId = 'Sandbox-6';
+
+$issues = [
+    'Sandbox-24',
+    'Sandbox-25'
+];
 
 
-$issue = $youtrack->getIssue($issueId);
+foreach ($issues as $issueId) {
 
-$attachments = $issue->getAttachments();
-foreach ($attachments as $attachment) {
+    $issue = $youtrack->getIssue($issueId);
 
-    echo $attachment->getName() . '<br>';
-    // here you can play with your file
-    // $content = $attachment->fetchContent();
-    // file_put_contents('./files/' . $attachment->getName(), $content);
+    $attachments = $issue->getAttachments();
+    foreach ($attachments as $attachment) {
+
+        echo $attachment->getName() . PHP_EOL;
+        // here you can play with your file
+        $content = $attachment->fetchContent();
+        file_put_contents('./files/' . $attachment->getName(), $content);
+    }
 }
