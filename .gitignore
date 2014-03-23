@@ -53,3 +53,4 @@ composer.phar
 report
 examples/.auth.php
 composer.lock
+examples/files
