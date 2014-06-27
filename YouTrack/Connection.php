@@ -287,16 +287,16 @@ class Connection
         return $projects;
     }
 
-  public function getComments($id)
-  {
-    $comments = array();
-    $req = $this->request('GET', '/issue/'. urlencode($id) .'/comment');
-    $xml = simplexml_load_string($req['content']);
-    foreach($xml->children() as $node) {
-      $comments[] = new Comment($node, $this);
+    public function getComments($id)
+    {
+        $comments = array();
+        $req = $this->request('GET', '/issue/'. urlencode($id) .'/comment');
+        $xml = simplexml_load_string($req['content']);
+        foreach($xml->children() as $node) {
+            $comments[] = new Comment($node, $this);
+        }
+        return $comments;
     }
-    return $comments;
-  }
 
 
     /**
@@ -373,413 +373,498 @@ class Connection
         );
     }
 
-  public function getLinks($id , $outward_only = false)
-  {
-    $links = array();
-    $req = $this->request('GET', '/issue/'. urlencode($id) .'/link');
-    $xml = simplexml_load_string($req['content']);
-    foreach($xml->children() as $node) {
-      if (($node->attributes()->source != $id) || !$outward_only) {
-        $links[] = new Link($node);
-      }
+
+    public function getLinks($id , $outward_only = false)
+    {
+        $links = array();
+        $req = $this->request('GET', '/issue/'. urlencode($id) .'/link');
+        $xml = simplexml_load_string($req['content']);
+        foreach($xml->children() as $node) {
+            if (($node->attributes()->source != $id) || !$outward_only) {
+                $links[] = new Link($node);
+            }
+        }
+        return $links;
     }
-    return $links;
-  }
 
-  public function getUser($login) {
-    return new User($this->get('/admin/user/'. urlencode($login)));
-  }
-
-  public function createUser($user) {
-    $this->importUsers(array($user));
-  }
-
-  public function createUserDetailed($login, $full_name, $email, $jabber) {
-    $this->importUsers(array(array('login' => $login, 'fullName' => $full_name, 'email' => $email, 'jabber' => $jabber)));
-  }
-
-  public function importUsers($users) {
-    if (count($users) <= 0) {
-      return;
+    public function getUser($login) {
+        return new User($this->get('/admin/user/'. urlencode($login)));
     }
-    $xml = "<list>\n";
-    foreach ($users as $user) {
-      $xml .= "  <user";
-      foreach ($user as $key => $value) {
-        $xml .= " $key=". urlencode($value);
-      }
-      $xml .= " />\n";
+
+    public function createUser($user) {
+        $this->importUsers(array($user));
     }
-    $xml .= "</list>";
-    return $this->requestXml('PUT', '/import/users', $xml, 400);
-  }
 
-  public function importIssuesXml($project_id, $assignee_group, $xml) {
-    throw new NotImplementedException("import_issues_xml(project_id, assignee_group, xml)");
-  }
-
-  public function importLinks($links) {
-    throw new NotImplementedException("import_links(links)");
-  }
-
-  public function importIssues($project_id, $assignee_group, $issues) {
-    throw new NotImplementedException("import_issues(project_id, assignee_group, issues)");
-  }
-
-  public function getProject($project_id) {
-    return new Project($this->get('/admin/project/'. urlencode($project_id)));
-  }
-
-  public function getProjectAssigneeGroups($project_id) {
-    $xml = $this->get('/admin/project/'. urlencode($project_id) .'/assignee/group');
-    $groups = array();
-    foreach ($xml->children() as $group) {
-      $groups[] = new Group(new \SimpleXMLElement($group->asXML()));
+    public function createUserDetailed($login, $full_name, $email, $jabber) {
+        $this->importUsers(array(array('login' => $login, 'fullName' => $full_name, 'email' => $email, 'jabber' => $jabber)));
     }
-    return $groups;
-  }
 
-  public function getGroup($name) {
-    return new Group($this->get('/admin/group/'. urlencode($name)));
-  }
-
-  public function getUserGroups($login) {
-    $xml = $this->get('/admin/user/'. urlencode($login) .'/group');
-    $groups = array();
-    foreach ($xml->children() as $group) {
-      $groups[] = new Group(new \SimpleXMLElement($group->asXML()));
+    public function importUsers($users) {
+        if (count($users) <= 0) {
+            return;
+        }
+        $xml = "<list>\n";
+        foreach ($users as $user) {
+            $xml .= "  <user";
+            foreach ($user as $key => $value) {
+                $xml .= " $key=". urlencode($value);
+            }
+            $xml .= " />\n";
+        }
+        $xml .= "</list>";
+        return $this->requestXml('PUT', '/import/users', $xml, 400);
     }
-    return $groups;
-  }
 
-  public function setUserGroup($login, $group_name) {
-    $r = $this->request('POST', '/admin/user/'. urlencode($login) .'/group/'. urlencode($group_name));
-    return $r['response'];
-  }
-
-  public function createGroup(Group $group) {
-    $r = $this->put('/admin/group/'. urlencode($group->name) .'?description=noDescription&autoJoin=false');
-    return $r['response'];
-  }
-
-  public function getRole($name) {
-    return new Role($this->get('/admin/role/'. urlencode($name)));
-  }
-
-  public function getSubsystem($project_id, $name) {
-    return new Subsystem($this->get('/admin/project/'. urlencode($project_id) .'/subsystem/'. urlencode($name)));
-  }
-
-  public function getSubsystems($project_id) {
-    $xml = $this->get('/admin/project/'. urlencode($project_id) .'/subsystem');
-    $subsystems = array();
-    foreach ($xml->children() as $subsystem) {
-      $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()));
+    public function importIssuesXml($project_id, $assignee_group, $xml) {
+        throw new NotImplementedException("import_issues_xml(project_id, assignee_group, xml)");
     }
-    return $subsystems;
-  }
 
-  public function getVersions($project_id) {
-    $xml = $this->get('/admin/project/'. urlencode($project_id) .'/version?showReleased=true');
-    $versions = array();
-    foreach ($xml->children() as $version) {
-      $versions[] = new Version(new \SimpleXMLElement($version->asXML()));
+    public function importLinks($links) {
+        throw new NotImplementedException("import_links(links)");
     }
-    return $versions;
-  }
 
-  public function getVersion($project_id, $name) {
-    return new Version($this->get('/admin/project/'. urlencode($project_id) .'/version/'. urlencode($name)));
-  }
-
-  public function getBuilds($project_id) {
-    $xml = $this->get('/admin/project/'. urlencode($project_id) .'/build');
-    $builds = array();
-    foreach ($xml->children() as $build) {
-      $builds[] = new Build(new \SimpleXMLElement($build->asXML()));
+    public function importIssues($project_id, $assignee_group, $issues) {
+        throw new NotImplementedException("import_issues(project_id, assignee_group, issues)");
     }
-    return $builds;
-  }
 
-  public function getUsers($q = '') {
-    $users = array();
-    $q = trim((string)$q);
-    $params = array(
-      'q' => $q,
-    );
-    $this->cleanUrlParameters($params);
-    $xml = $this->get('/admin/user/?'. http_build_query($params));
-    if (!empty($xml) && is_object($xml)) {
-      foreach ($xml->children() as $user) {
-        $users[] = new User(new \SimpleXMLElement($user->asXML()));
-      }
+    public function getProject($project_id) {
+        return new Project($this->get('/admin/project/'. urlencode($project_id)));
     }
-    return $users;
-  }
 
-  public function createBuild() {
-    throw new NotImplementedException("create_build()");
-  }
-
-  public function createBuilds() {
-    throw new NotImplementedException("create_builds()");
-  }
-
-  public function createProject($project)
-  {
-    return $this->createProjectDetailed($project->id, $project->name, $project->description, $project->leader);
-  }
-
-  public function createProjectDetailed($project_id, $project_name, $project_description, $project_lead_login, $starting_number = 1) {
-    $params = array(
-      'projectName' => (string)$project_name,
-      'description' => (string)$project_description,
-      'projectLeadLogin' => (string)$project_lead_login,
-      'lead' => (string)$project_lead_login,
-      'startingNumber' => (string)$starting_number,
-    );
-    return $this->put('/admin/project/'. urlencode($project_id) .'?'. http_build_query($params));
-  }
-
-  public function createSubsystems($project_id, $subsystems) {
-    foreach ($subsystems as $subsystem) {
-      $this->createSubsystem($project_id, $subsystem);
+    public function getProjectAssigneeGroups($project_id) {
+        $xml = $this->get('/admin/project/'. urlencode($project_id) .'/assignee/group');
+        $groups = array();
+        foreach ($xml->children() as $group) {
+            $groups[] = new Group(new \SimpleXMLElement($group->asXML()));
+        }
+        return $groups;
     }
-  }
 
-  public function createSubsystem($project_id, $subsystem) {
-    return $this->createSubsystemDetailed($project_id, $subsystem->name, $subsystem->isDefault, $subsystem->defaultAssignee);
-  }
-
-  public function createSubsystemDetailed($project_id, $name, $is_default, $default_assignee_login) {
-    $params = array(
-      'isDefault' => (string)$is_default,
-      'defaultAssignee' => (string)$default_assignee_login,
-    );
-    $this->put('/admin/project/'. urlencode($project_id). '/subsystem/'. urlencode($name) .'?'. http_build_query($params));
-    return 'Created';
-  }
-
-  public function deleteSubsystem($project_id, $name) {
-    return $this->requestXml('DELETE', '/admin/project/'. urlencode($project_id) .'/subsystem/'. urlencode($name));
-  }
-
-  public function createVersions($project_id, $versions) {
-    foreach ($versions as $version) {
-      $this->createVersion($project_id, $version);
+    public function getGroup($name) {
+        return new Group($this->get('/admin/group/'. urlencode($name)));
     }
-  }
 
-  public function createVersion($project_id, $version) {
-    return $this->createVersionDetailed($project_id, $version->name, $version->isReleased, $version->isArchived, $version->releaseDate, $version->description);
-  }
-
-  public function createVersionDetailed($project_id, $name, $is_released, $is_archived, $release_date = null, $description = '') {
-    $params = array(
-      'description' => (string)$description,
-      'isReleased' => (string)$is_released,
-      'isArchived' => (string)$is_archived,
-    );
-    if (!empty($release_date)) {
-      $params['releaseDate'] = $release_date;
+    public function getUserGroups($login) {
+        $xml = $this->get('/admin/user/'. urlencode($login) .'/group');
+        $groups = array();
+        foreach ($xml->children() as $group) {
+            $groups[] = new Group(new \SimpleXMLElement($group->asXML()));
+        }
+        return $groups;
     }
-    return $this->put('/admin/project/'. urldecode($project_id) .'/version/'. urlencode($name) .'?'. http_build_query($params));
-  }
 
-  public function getIssues($project_id, $filter, $after, $max) {
-    $params = array(
-      'after' => (string)$after,
-      'max' => (string)$max,
-      'filter' => (string)$filter,
-    );
-    $this->cleanUrlParameters($params);
-    $xml = $this->get('/project/issues/'. urldecode($project_id) .'?'. http_build_query($params));
-    $issues = array();
-    foreach ($xml->children() as $issue) {
-      $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+    public function setUserGroup($login, $group_name) {
+        $r = $this->request('POST', '/admin/user/'. urlencode($login) .'/group/'. urlencode($group_name));
+        return $r['response'];
     }
-    return $issues;
-  }
 
-  public function executeCommand($issue_id, $command, $comment = null, $group = null) {
-    $params = array(
-      'command' => (string)$command,
-    );
-    if (!empty($comment)) {
-      $params['comment'] = (string)$comment;
+    public function createGroup(Group $group)
+    {
+        $r = $this->put('/admin/group/' . urlencode($group->name) . '?description=noDescription&autoJoin=false');
+        return $r['response'];
     }
-    if (!empty($group)) {
-      $params['group'] = (string)$group;
+
+    public function getRole($name)
+    {
+        return new Role($this->get('/admin/role/' . urlencode($name)));
     }
-    $r = $this->request('POST', '/issue/'. urlencode($issue_id) .'/execute?'. http_build_query($params));
-    return 'Command executed';
-  }
 
-  public function getCustomField($name) {
-    return new CustomField($this->get('/admin/customfield/field/'. urlencode($name)));
-  }
-
-  public function getCustomFields() {
-    $xml = $this->get('/admin/customfield/field');
-    $fields = array();
-    foreach ($xml->children() as $field) {
-      $fields[] = new CustomField(new \SimpleXMLElement($field->asXML()));
+    public function getSubsystem($project_id, $name)
+    {
+        return new Subsystem($this->get('/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)));
     }
-    return $fields;
-  }
 
-  public function createCustomFields($fields) {
-    foreach ($fields as $field) {
-      $this->createCustomField($field);
+    public function getSubsystems($project_id)
+    {
+        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/subsystem');
+        $subsystems = array();
+        foreach ($xml->children() as $subsystem) {
+            $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()));
+        }
+        return $subsystems;
     }
-  }
 
-  public function createCustomField($field) {
-    return $this->createCustomFieldDetailed($field->name, $field->type, $field->isPrivate, $field->visibleByDefault);
-  }
-
-  public function createCustomFieldDetailed($name, $type_name, $is_private, $default_visibility) {
-    $params = array(
-      'typeName' => (string)$type_name,
-      'isPrivate' => (string)$is_private,
-      'defaultVisibility' => (string)$default_visibility,
-    );
-    $this->put('/admin/customfield/field/'. urlencode($name) .'?'. http_build_query($params));
-    return 'Created';
-  }
-
-  public function getEnumBundle($name) {
-    return new EnumBundle($this->get('/admin/customfield/bundle/'. urlencode($name)));
-  }
-
-  public function createEnumBundle(EnumBundle $bundle) {
-    return $this->requestXml('PUT', '/admin/customfield/bundle', $bundle->toXML(), 400);
-  }
-
-  public function deleteEnumBundle($name) {
-    $r = $this->request('DELETE', '/admin/customfield/bundle/'. urlencode($name), '');
-    return $r['content'];
-  }
-
-  public function addValueToEnumBundle($name, $value) {
-    return $this->put('/admin/customfield/bundle/'. urlencode($name) .'/'. urlencode($value));
-  }
-
-  public function addValuesToEnumBundle($name, $values) {
-    foreach ($values as $value) {
-      $this->addValueToEnumBundle($name, $value);
+    public function getVersions($project_id)
+    {
+        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/version?showReleased=true');
+        $versions = array();
+        foreach ($xml->children() as $version) {
+            $versions[] = new Version(new \SimpleXMLElement($version->asXML()));
+        }
+        return $versions;
     }
-    return implode(', ', $values);
-  }
 
-  public function getProjectCustomField($project_id, $name) {
-    return new CustomField($this->get('/admin/project/'. urlencode($project_id) .'/customfield/'. urlencode($name)));
-  }
-
-  public function getProjectCustomFields($project_id) {
-    $xml = $this->get('/admin/project/'. urlencode($project_id) .'/customfield');
-    $fields = array();
-    foreach ($xml->children() as $cfield) {
-      $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()));
+    public function getVersion($project_id, $name)
+    {
+        return new Version($this->get('/admin/project/' . urlencode($project_id) . '/version/' . urlencode($name)));
     }
-    return $fields;
-  }
 
-  public function createProjectCustomField($project_id, CustomField $pcf) {
-    return $this->createProjectCustomFieldDetailed($project_id, $pcf->name, $pcf->emptyText, $pcf->params);
-  }
-
-  private function createProjectCustomFieldDetailed($project_id, $name, $empty_field_text, $params = array()) {
-    $_params = array(
-      'emptyFieldText' => (string)$empty_field_text,
-    );
-    if (!empty($params)) {
-      $_params = array_merge($_params, $params);
+    public function getBuilds($project_id)
+    {
+        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/build');
+        $builds = array();
+        foreach ($xml->children() as $build) {
+            $builds[] = new Build(new \SimpleXMLElement($build->asXML()));
+        }
+        return $builds;
     }
-    return $this->put('/admin/project/'. urlencode($project_id) .'/customfield/'. urlencode($name) .'?'. http_build_query($_params));
-  }
 
-  public function getIssueLinkTypes() {
-    $xml = $this->get('/admin/issueLinkType');
-    $lts = array();
-    foreach ($xml->children() as $node) {
-      $lts[] = new IssueLinkType(new \SimpleXMLElement($node->asXML()));
+    public function getUsers($q = '')
+    {
+        $users = array();
+        $q = trim((string)$q);
+        $params = array(
+            'q' => $q,
+        );
+        $this->cleanUrlParameters($params);
+        $xml = $this->get('/admin/user/?' . http_build_query($params));
+        if (!empty($xml) && is_object($xml)) {
+            foreach ($xml->children() as $user) {
+                $users[] = new User(new \SimpleXMLElement($user->asXML()));
+            }
+        }
+        return $users;
     }
-    return $lts;
-  }
 
-  public function createIssueLinkTypes($lts) {
-    foreach ($lts as $lt) {
-      $this->createIssueLinkType($lt);
+    public function createBuild()
+    {
+        throw new NotImplementedException("create_build()");
     }
-  }
 
-  public function createIssueLinkType($ilt) {
-    return $this->createIssueLinkTypeDetailed($ilt->name, $ilt->outwardName, $ilt->inwardName, $ilt->directed);
-  }
-
-  public function createIssueLinkTypeDetailed($name, $outward_name, $inward_name, $directed) {
-    $params = array(
-      'outwardName' => (string)$outward_name,
-      'inwardName' => (string)$inward_name,
-      'directed' => (string)$directed,
-    );
-    return $this->put('/admin/issueLinkType/'. urlencode($name) .'?'. http_build_query($params));
-  }
-
-  public function getVerifySsl() {
-    return $this->verify_ssl;
-  }
-
-  /**
-   * Use this method to enable or disable the ssl_verifypeer option of curl.
-   * This is usefull if you use self-signed ssl certificates.
-   *
-   * @param bool $verify_ssl
-   * @return void
-   */
-  public function setVerifySsl($verify_ssl) {
-    $this->verify_ssl = $verify_ssl;
-  }
-
-  /**
-   * get pairs (state,revolved attribute) in hash.
-   * same info is get online on: 
-   * Project Fields › States (Click to change bundle name) 
-   * 
-   * @return hash key: state string 
-   *              value: true is resolved attribute set to true	
-   */
-  public function getGlobalIssueStates() {
-    $xml = $this->get('/project/states');
-	$states = null;
-    foreach($xml->children() as $node) {
-      $states[(string)$node['name']] = ((string)$node['resolved'] == 'true');
+    public function createBuilds()
+    {
+        throw new NotImplementedException("create_builds()");
     }
-    return $states;
-  }
 
-  /**
-   * useful when you have configured different states for different projects
-   * in this cases you will create bundles with name with global scope,
-   * i.e. name can not be repeated on youtrack installation.
-   *
-   * @param string $name
-   * @return hash key: state string
-   *			  value: hash('description' => string, 'isResolved' => boolean) 
-   */
-  public function getStateBundle($name)
-  {
-
-	$cmd = '/admin/customfield/stateBundle/' . urlencode($name);
-    $xml = $this->get($cmd);
-	$bundle = null;
-    foreach($xml->children() as $node) {
-       $bundle[(string)$node] = array(
-           'description' => (isset($node['description']) ? (string)$node['description'] : ''),
-           'isResolved' => ((string)$node['isResolved']=='true')
-       );
+    public function createProject($project)
+    {
+        return $this->createProjectDetailed($project->id, $project->name, $project->description, $project->leader);
     }
-    return $bundle;
-  }
+
+    public function createProjectDetailed(
+        $project_id,
+        $project_name,
+        $project_description,
+        $project_lead_login,
+        $starting_number = 1
+    ) {
+        $params = array(
+            'projectName' => (string)$project_name,
+            'description' => (string)$project_description,
+            'projectLeadLogin' => (string)$project_lead_login,
+            'lead' => (string)$project_lead_login,
+            'startingNumber' => (string)$starting_number,
+        );
+        return $this->put('/admin/project/' . urlencode($project_id) . '?' . http_build_query($params));
+    }
+
+    public function createSubsystems($project_id, $subsystems)
+    {
+        foreach ($subsystems as $subsystem) {
+            $this->createSubsystem($project_id, $subsystem);
+        }
+    }
+
+    public function createSubsystem($project_id, $subsystem)
+    {
+        return $this->createSubsystemDetailed(
+            $project_id,
+            $subsystem->name,
+            $subsystem->isDefault,
+            $subsystem->defaultAssignee
+        );
+    }
+
+    public function createSubsystemDetailed($project_id, $name, $is_default, $default_assignee_login)
+    {
+        $params = array(
+            'isDefault' => (string)$is_default,
+            'defaultAssignee' => (string)$default_assignee_login,
+        );
+        $this->put(
+            '/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name) . '?' . http_build_query(
+                $params
+            )
+        );
+        return 'Created';
+    }
+
+    public function deleteSubsystem($project_id, $name)
+    {
+        return $this->requestXml(
+            'DELETE',
+            '/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)
+        );
+    }
+
+    public function createVersions($project_id, $versions)
+    {
+        foreach ($versions as $version) {
+            $this->createVersion($project_id, $version);
+        }
+    }
+
+    public function createVersion($project_id, $version)
+    {
+        return $this->createVersionDetailed(
+            $project_id,
+            $version->name,
+            $version->isReleased,
+            $version->isArchived,
+            $version->releaseDate,
+            $version->description
+        );
+    }
+
+    public function createVersionDetailed(
+        $project_id,
+        $name,
+        $is_released,
+        $is_archived,
+        $release_date = null,
+        $description = ''
+    ) {
+        $params = array(
+            'description' => (string)$description,
+            'isReleased' => (string)$is_released,
+            'isArchived' => (string)$is_archived,
+        );
+        if (!empty($release_date)) {
+            $params['releaseDate'] = $release_date;
+        }
+        return $this->put(
+            '/admin/project/' . urldecode($project_id) . '/version/' . urlencode($name) . '?' . http_build_query(
+                $params
+            )
+        );
+    }
+
+    public function getIssues($project_id, $filter, $after, $max)
+    {
+        $params = array(
+            'after' => (string)$after,
+            'max' => (string)$max,
+            'filter' => (string)$filter,
+        );
+        $this->cleanUrlParameters($params);
+        $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
+        $issues = array();
+        foreach ($xml->children() as $issue) {
+            $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+        }
+        return $issues;
+    }
+
+    public function executeCommand($issue_id, $command, $comment = null, $group = null)
+    {
+        $params = array(
+            'command' => (string)$command,
+        );
+        if (!empty($comment)) {
+            $params['comment'] = (string)$comment;
+        }
+        if (!empty($group)) {
+            $params['group'] = (string)$group;
+        }
+        $r = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
+        return 'Command executed';
+    }
+
+    public function getCustomField($name)
+    {
+        return new CustomField($this->get('/admin/customfield/field/' . urlencode($name)));
+    }
+
+    public function getCustomFields()
+    {
+        $xml = $this->get('/admin/customfield/field');
+        $fields = array();
+        foreach ($xml->children() as $field) {
+            $fields[] = new CustomField(new \SimpleXMLElement($field->asXML()));
+        }
+        return $fields;
+    }
+
+    public function createCustomFields($fields)
+    {
+        foreach ($fields as $field) {
+            $this->createCustomField($field);
+        }
+    }
+
+    public function createCustomField($field)
+    {
+        return $this->createCustomFieldDetailed(
+            $field->name,
+            $field->type,
+            $field->isPrivate,
+            $field->visibleByDefault
+        );
+    }
+
+    public function createCustomFieldDetailed($name, $type_name, $is_private, $default_visibility)
+    {
+        $params = array(
+            'typeName' => (string)$type_name,
+            'isPrivate' => (string)$is_private,
+            'defaultVisibility' => (string)$default_visibility,
+        );
+        $this->put('/admin/customfield/field/' . urlencode($name) . '?' . http_build_query($params));
+        return 'Created';
+    }
+
+    public function getEnumBundle($name)
+    {
+        return new EnumBundle($this->get('/admin/customfield/bundle/' . urlencode($name)));
+    }
+
+    public function createEnumBundle(EnumBundle $bundle)
+    {
+        return $this->requestXml('PUT', '/admin/customfield/bundle', $bundle->toXML(), 400);
+    }
+
+    public function deleteEnumBundle($name)
+    {
+        $r = $this->request('DELETE', '/admin/customfield/bundle/' . urlencode($name), '');
+        return $r['content'];
+    }
+
+    public function addValueToEnumBundle($name, $value)
+    {
+        return $this->put('/admin/customfield/bundle/' . urlencode($name) . '/' . urlencode($value));
+    }
+
+    public function addValuesToEnumBundle($name, $values)
+    {
+        foreach ($values as $value) {
+            $this->addValueToEnumBundle($name, $value);
+        }
+        return implode(', ', $values);
+    }
+
+    public function getProjectCustomField($project_id, $name)
+    {
+        return new CustomField(
+            $this->get('/admin/project/' . urlencode($project_id) . '/customfield/' . urlencode($name))
+        );
+    }
+
+    public function getProjectCustomFields($project_id)
+    {
+        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/customfield');
+        $fields = array();
+        foreach ($xml->children() as $cfield) {
+            $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()));
+        }
+        return $fields;
+    }
+
+    public function createProjectCustomField($project_id, CustomField $pcf)
+    {
+        return $this->createProjectCustomFieldDetailed($project_id, $pcf->name, $pcf->emptyText, $pcf->params);
+    }
+
+    private function createProjectCustomFieldDetailed($project_id, $name, $empty_field_text, $params = array())
+    {
+        $_params = array(
+            'emptyFieldText' => (string)$empty_field_text,
+        );
+        if (!empty($params)) {
+            $_params = array_merge($_params, $params);
+        }
+        return $this->put(
+            '/admin/project/' . urlencode($project_id) . '/customfield/' . urlencode($name) . '?' . http_build_query(
+                $_params
+            )
+        );
+    }
+
+    public function getIssueLinkTypes()
+    {
+        $xml = $this->get('/admin/issueLinkType');
+        $lts = array();
+        foreach ($xml->children() as $node) {
+            $lts[] = new IssueLinkType(new \SimpleXMLElement($node->asXML()));
+        }
+        return $lts;
+    }
+
+    public function createIssueLinkTypes($lts)
+    {
+        foreach ($lts as $lt) {
+            $this->createIssueLinkType($lt);
+        }
+    }
+
+    public function createIssueLinkType($ilt)
+    {
+        return $this->createIssueLinkTypeDetailed($ilt->name, $ilt->outwardName, $ilt->inwardName, $ilt->directed);
+    }
+
+    public function createIssueLinkTypeDetailed($name, $outward_name, $inward_name, $directed)
+    {
+        $params = array(
+            'outwardName' => (string)$outward_name,
+            'inwardName' => (string)$inward_name,
+            'directed' => (string)$directed,
+        );
+        return $this->put('/admin/issueLinkType/' . urlencode($name) . '?' . http_build_query($params));
+    }
+
+    public function getVerifySsl()
+    {
+        return $this->verify_ssl;
+    }
+
+    /**
+    * Use this method to enable or disable the ssl_verifypeer option of curl.
+    * This is usefull if you use self-signed ssl certificates.
+    *
+    * @param bool $verify_ssl
+    * @return void
+    */
+    public function setVerifySsl($verify_ssl) {
+        $this->verify_ssl = $verify_ssl;
+    }
+
+    /**
+    * get pairs (state,revolved attribute) in hash.
+    * same info is get online on:
+    * Project Fields › States (Click to change bundle name)
+    *
+    * @return null|array hash key: state string
+    *              value: true is resolved attribute set to true
+    */
+    public function getGlobalIssueStates()
+    {
+        $xml = $this->get('/project/states');
+        $states = null;
+        foreach($xml->children() as $node) {
+            $states[(string)$node['name']] = ((string)$node['resolved'] == 'true');
+        }
+        return $states;
+    }
+
+    /**
+    * useful when you have configured different states for different projects
+    * in this cases you will create bundles with name with global scope,
+    * i.e. name can not be repeated on youtrack installation.
+    *
+    * @param string $name
+    * @return hash key: state string
+    *			  value: hash('description' => string, 'isResolved' => boolean)
+    */
+    public function getStateBundle($name)
+    {
+        $cmd = '/admin/customfield/stateBundle/' . urlencode($name);
+        $xml = $this->get($cmd);
+        $bundle = null;
+        foreach($xml->children() as $node) {
+            $bundle[(string)$node] = array(
+                'description' => (isset($node['description']) ? (string)$node['description'] : ''),
+                'isResolved' => ((string)$node['isResolved']=='true')
+            );
+        }
+        return $bundle;
+    }
 }
