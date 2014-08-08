@@ -5,11 +5,19 @@ namespace YouTrack;
  * A class describing a youtrack object.
  */
 class Object {
-    
+
+    /**
+     * @var null|Connection
+     */
     protected $youtrack = null;
+
+    /**
+     * @var array
+     */
     protected $attributes = array();
 
-    public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null) {
+    public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
+    {
         $this->youtrack = $youtrack;
         if ($xml) {
             $this->updateAttributes($xml);
@@ -17,18 +25,24 @@ class Object {
         }
     }
 
-    public function __get($name) {
+    public function __get($name)
+    {
         if (!empty($this->attributes["$name"])) {
             return $this->attributes["$name"];
         }
         return null;
     }
 
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $this->attributes["$name"] = $value;
     }
 
-    protected function updateAttributes(\SimpleXMLElement $xml) {
+    protected function updateAttributes(\SimpleXMLElement $xml)
+    {
+        foreach ($xml->attributes() as $k => $v) {
+            $this->attributes[$k] = (string)$v;
+        }
         foreach ($xml->xpath('/*') as $node) {
             foreach ($node->attributes() as $key => $value) {
                 $this->attributes["$key"] = (string)$value;
@@ -36,7 +50,8 @@ class Object {
         }
     }
 
-    protected function updateChildrenAttributes(\SimpleXMLElement $xml) {
+    protected function updateChildrenAttributes(\SimpleXMLElement $xml)
+    {
         foreach ($xml->children() as $node) {
             foreach ($node->attributes() as $key => $value) {
                 if ($key == 'name') {

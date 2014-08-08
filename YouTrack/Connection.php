@@ -373,15 +373,20 @@ class Connection
         );
     }
 
-
-    public function getLinks($id , $outward_only = false)
+    /**
+     * @param string $issueId
+     * @param bool $outward_only
+     * @return Link[]
+     * @throws \Exception
+     */
+    public function getLinks($issueId , $outward_only = false)
     {
         $links = array();
-        $req = $this->request('GET', '/issue/'. urlencode($id) .'/link');
+        $req = $this->request('GET', '/issue/'. urlencode($issueId) .'/link');
         $xml = simplexml_load_string($req['content']);
         foreach($xml->children() as $node) {
-            if (($node->attributes()->source != $id) || !$outward_only) {
-                $links[] = new Link($node);
+            if (($node->attributes()->source != $issueId) || !$outward_only) {
+                $links[] = new Link($node, $this);
             }
         }
         return $links;

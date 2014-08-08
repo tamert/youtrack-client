@@ -86,7 +86,11 @@ class Issue extends Object
         return $this->attachments;
     }
 
-    public function getLinks() {
+    /**
+     * @return Link[]
+     */
+    public function getLinks()
+    {
         if (empty($this->links)) {
             $this->links = $this->youtrack->getLinks($this->__get('id'));
         }
