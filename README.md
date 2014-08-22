@@ -4,7 +4,10 @@ YouTrack Client PHP Library
 [![Build Status](https://travis-ci.org/nepda/youtrack.png?branch=master)](https://travis-ci.org/nepda/youtrack)
 
 
-The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a [REST-API](http://confluence.jetbrains.net/display/YTD3/YouTrack+REST+API+Reference). Because a lot of web applications are written in [PHP](http://php.net) I decided to write a client library for it. To make it easier for developers to write connectors to YouTrack.
+The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a
+[REST-API](http://confluence.jetbrains.com/display/YTD5/YouTrack+REST+API+Reference).
+Because a lot of web applications are written in [PHP](http://php.net) I decided to write a client library for it.
+To make it easier for developers to write connectors to YouTrack.
 
 The initial development was sponsored by [Telematika GmbH](http://www.telematika.de).
 The current development is made by nepda.
@@ -13,7 +16,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Requirements
 
-* PHP 5.3.x (Tested with >= 5.5, Travis runs tests with 5.3, 5.4 and 5.5)
+* PHP >= 5.4 (Tested with >= 5.5, Travis runs tests with 5.4 and 5.5)
 * curl
 * simplexml
 * YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 5.0.3)
