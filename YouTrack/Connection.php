@@ -643,6 +643,23 @@ class Connection
             )
         );
     }
+    
+    /**
+     * http://confluence.jetbrains.com/display/YTD5/Get+Number+of+Issues+for+Several+Queries
+     */
+    public function executeCountQueries(array $queries)
+    {
+        $body = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><queries>';
+        foreach ($queries as $query) {
+            $body .= '<query>'.$query.'</query>';
+        }
+        $body .= '</queries>';
+
+        $r = $this->request('POST', '/issue/counts?rough=false&sync=true', $body);
+        $content = simplexml_load_string($r['content']);
+
+        return $content;
+    }
 
     public function getIssues($project_id, $filter, $after, $max)
     {
