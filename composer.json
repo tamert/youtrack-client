@@ -2,7 +2,7 @@
     "name": "nepda/youtrack-client",
     "description": "A PHP YouTrack client library",
     "minimum-stability": "dev",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "BSD-4-Clause",
     "authors": [
         {

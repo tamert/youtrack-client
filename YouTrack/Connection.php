@@ -113,11 +113,11 @@ class Connection
     * @param string $method The http method (GET, PUT, POST).
     * @param string $url The request url.
     * @param string $body Data that should be send or the filename of the file if PUT is used.
-    * @param int $ignore_status Ignore the given http status code.
+    * @param int $ignore_http_return_status Ignore the given http status code.
     * @return array An array holding the response content in 'content' and the response status
     * in 'response'.
     */
-    protected function request($method, $url, $body = null, $ignore_status = 0)
+    protected function request($method, $url, $body = null, $ignore_http_return_status = 0)
     {
         if (substr($url, 0, strlen('http://')) != 'http://'
             && substr($url, 0, strlen('https://')) != 'https://'
@@ -191,7 +191,7 @@ class Connection
 
         if ((int) $response['http_code'] != 200 &&
             (int) $response['http_code'] != 201 &&
-            (int) $response['http_code'] != $ignore_status) {
+            (int) $response['http_code'] != $ignore_http_return_status) {
             throw new Exception($url, $response, $content);
         }
 
@@ -206,6 +206,15 @@ class Connection
         );
     }
 
+    /**
+     * @param string $method
+     * @param string $url
+     * @param string $body
+     * @param int $ignore_status
+     * @return \SimpleXMLElement
+     * @throws Exception
+     * @throws \Exception
+     */
     protected function requestXml($method, $url, $body = null, $ignore_status = 0)
     {
         $r = $this->request($method, $url, $body, $ignore_status);
@@ -643,22 +652,64 @@ class Connection
             )
         );
     }
-    
+
     /**
-     * http://confluence.jetbrains.com/display/YTD5/Get+Number+of+Issues+for+Several+Queries
+     * Get Number of Issues for Several Queries
+     *
+     * For input like this
+     * <code>
+     * $queries = [
+     *   '#Resolved',
+     *   '#Fixed'
+     * ];
+     * </code>
+     *
+     * Returns something like
+     * <code>
+     * array (
+     *   0 => 7286,
+     *   '#Resolved' => 7286,
+     *   1 => 5625,
+     *   '#Fixed' => 5625,
+     *   )
+     * </code>
+     *
+     * @link http://confluence.jetbrains.com/display/YTD5/Get+Number+of+Issues+for+Several+Queries
+     * @param array $queries List with queries as string
+     * @param bool $rough Calculate approximate counts.
+     * @param bool $sync Calculate counts synchronously. Setting this parameter true may influence YouTrack performance.
+     * @return array Integer array of counts for each query
      */
-    public function executeCountQueries(array $queries)
+    public function executeCountQueries(array $queries, $rough = false, $sync = true)
     {
         $body = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><queries>';
         foreach ($queries as $query) {
-            $body .= '<query>'.$query.'</query>';
+            $body .= '<query><![CDATA[' . $query . ']]></query>';
         }
         $body .= '</queries>';
 
-        $r = $this->request('POST', '/issue/counts?rough=false&sync=true', $body);
-        $content = simplexml_load_string($r['content']);
+        $rough = $rough ? 'true' : 'false';
+        $sync  = $sync  ? 'true' : 'false';
 
-        return $content;
+        $xml = $this->requestXml(
+            'POST',
+            '/issue/counts?rough=' . $rough . '&sync=' . $sync,
+            $body
+        );
+        if (isset($xml->count)) {
+            $counts = (array)$xml->count;
+            $result = [];
+            array_walk(
+                $counts,
+                function (&$v, $k) use (&$result, &$queries) {
+                    $v = (int)$v;
+                    $result[$k] = $v;
+                    $result[$queries[$k]] = $v;
+                }
+            );
+            return $result;
+        }
+        return [];
     }
 
     public function getIssues($project_id, $filter, $after, $max)
