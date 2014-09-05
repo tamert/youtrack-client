@@ -728,6 +728,20 @@ class Connection
         return $issues;
     }
 
+    /**
+     *  Apply Command to an Issue
+     *
+     * @link http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue
+     * @param string $issue_id A command will be applied to an issue with this issueID.
+     * @param string $command A command to apply
+     * @param string|null $comment A comment to add to an issue.
+     * @param string|null $group User group name. Use to specify visibility settings of a comment to be post.
+     * @param bool $disableNotifications  If set 'true' then no notifications about changes made with the specified command will be send. By default, is 'false'.
+     * @param string|null $runAs Login for a user on whose behalf the command should be executed.
+     * @return string
+     * @throws Exception
+     * @throws \Exception
+     */
     public function executeCommand($issue_id, $command, $comment = null, $group = null, $disableNotifications = false, $runAs = null)
     {
         $params = array(
@@ -744,9 +758,10 @@ class Connection
             $params['runAs'] = (string)$runAs;
         }
 
-        $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
-
-        return 'Command executed';
+        $result = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
+        $response = $result['response'];
+        // TODO Read the response (if any) and return the messages
+        return sprintf('Command executed, return code %s', $response['http_code']);
     }
 
     public function getCustomField($name)
