@@ -23,6 +23,10 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
+### 2014-09-01 - v1.0.2
+
+* Added more parameters (full support now) for ´executeCommand´. Thanks [@1ed](https://github.com/1ed). See [Apply Command to an Issue](http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue)
+
 ### 2014-09-01 - v1.0.1
 
 * Added executeCountQueries ([Get Number of Issues for Several Queries](http://confluence.jetbrains.com/display/YTD5/Get+Number+of+Issues+for+Several+Queries)). See `./examples/query-count.php`. (Thanks [Limelyte](https://github.com/Limelyte/youtrack/commit/4e4f30e2a118e20f8f364119c37f3e17f38addfa)).
@@ -99,3 +103,4 @@ The unit tests are incomplete but you can run them using `phpunit` like this:
 * [@nepda](https://github.com/nepda)
 * [@richardhinkamp](https://github.com/richardhinkamp)
 * [@Limelyte](https://github.com/Limelyte)
+* [@1ed](https://github.com/1ed)
