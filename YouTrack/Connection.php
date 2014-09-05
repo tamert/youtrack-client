@@ -728,10 +728,11 @@ class Connection
         return $issues;
     }
 
-    public function executeCommand($issue_id, $command, $comment = null, $group = null)
+    public function executeCommand($issue_id, $command, $comment = null, $group = null, $disableNotifications = false, $runAs = null)
     {
         $params = array(
             'command' => (string)$command,
+            'disableNotifications' => (boolean)$disableNotifications,
         );
         if (!empty($comment)) {
             $params['comment'] = (string)$comment;
@@ -739,7 +740,12 @@ class Connection
         if (!empty($group)) {
             $params['group'] = (string)$group;
         }
-        $r = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
+        if (!empty($runAs)) {
+            $params['runAs'] = (string)$runAs;
+        }
+
+        $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
+
         return 'Command executed';
     }
 
