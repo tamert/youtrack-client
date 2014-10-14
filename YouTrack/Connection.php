@@ -40,7 +40,6 @@ class Connection
         $this->login($login, $password);
     }
 
-
     /**
      * Checks if the connection is via HTTPS
      *
@@ -112,17 +111,15 @@ class Connection
     * @throws \Exception|Exception An exception is thrown if an error occurs.
     * @param string $method The http method (GET, PUT, POST).
     * @param string $url The request url.
-    * @param string $body Data that should be send or the filename of the file if PUT is used.
+    * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an array, it will be used as CURLOPT_POSTFIELDS
     * @param int $ignore_http_return_status Ignore the given http status code.
-    * @return array An array holding the response content in 'content' and the response status
-    * in 'response'.
+    * @return array An array holding the response content in 'content' and the response status in 'response'.
     */
     protected function request($method, $url, $body = null, $ignore_http_return_status = 0)
     {
         if (substr($url, 0, strlen('http://')) != 'http://'
             && substr($url, 0, strlen('https://')) != 'https://'
         ) {
-
             $url = $this->base_url . $url;
         }
         $this->http = curl_init($url);
@@ -130,8 +127,13 @@ class Connection
         if ($method == 'PUT' || $method == 'POST') {
 
             if (!file_exists($body)) {
-                $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-                $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
+                if (is_array($body)) {
+
+                    curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+                } else {
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
+                }
             }
         }
         switch ($method) {
@@ -207,9 +209,11 @@ class Connection
     }
 
     /**
+     * Makes a request and parses the response as XML
+     *
      * @param string $method
      * @param string $url
-     * @param string $body
+     * @param string|array $body If this is an array, it will be used as CURLOPT_POSTFIELDS
      * @param int $ignore_status
      * @return \SimpleXMLElement
      * @throws Exception
@@ -228,16 +232,28 @@ class Connection
         return $content;
     }
 
+    /**
+     * @param string $url
+     * @return \SimpleXMLElement
+     */
     protected function get($url)
     {
         return $this->requestXml('GET', $url);
     }
 
+    /**
+     * @param string $url
+     * @return \SimpleXMLElement
+     */
     protected function put($url)
     {
         return $this->requestXml('PUT', $url, '<empty/>\n\n');
     }
 
+    /**
+     * @param string $id
+     * @return Issue
+     */
     public function getIssue($id)
     {
         $issue = $this->get('/issue/' . $id);
@@ -245,22 +261,26 @@ class Connection
     }
 
     /**
-     * creates an issue with properties from $params
+     * Creates an issue with properties from $params
+     *
+     * All $param values will be casted to string!
+     *
+     * If a $param value is longer than 100 chars it will be transferred via POSTFIELDS (not query string)
      *
      * may be this is an general $params value:
      * <code>
      *  $params = array(
-        'project' => (string)$project,
-        'assignee' => (string)$assignee,
-        'summary' => (string)$summary,
-        'description' => (string)$description,
-        'priority' => (string)$priority,
-        'type' => (string)$type,
-        'subsystem' => (string)$subsystem,
-        'state' => (string)$state,
-        'affectsVersion' => (string)$affectsVersion,
-        'fixedVersion' => (string)$fixedVersion,
-        'fixedInBuild' => (string)$fixedInBuild,
+        'project' => $project,
+        'assignee' => $assignee,
+        'summary' => $summary,
+        'description' => $description,
+        'priority' => $priority,
+        'type' => $type,
+        'subsystem' => $subsystem,
+        'state' => $state,
+        'affectsVersion' => $affectsVersion,
+        'fixedVersion' => $fixedVersion,
+        'fixedInBuild' => $fixedInBuild,
         );
      * </code>
      *
@@ -271,7 +291,6 @@ class Connection
      */
     public function createIssue($project, $summary, $params = array())
     {
-
         $params['project'] = (string)$project;
         $params['summary'] = (string)$summary;
         array_walk($params, function (&$value) {
@@ -280,10 +299,24 @@ class Connection
             //  those elements will be made in the original array itself.
             $value = (string)$value;
         });
-        $issue = $this->requestXml('POST', '/issue?'. http_build_query($params));
+        $body = [];
+        foreach ($params as $k => $v) {
+            if (strlen($v) > 100) {
+                $body[$k] = $v;
+                unset($params[$k]);
+            }
+        }
+        if (empty($body)) {
+            $body = null;
+        }
+        $issue = $this->requestXml('POST', '/issue?'. http_build_query($params), $body);
+        var_dump($issue);
         return new Issue($issue, $this);
     }
 
+    /**
+     * @return Project[]
+     */
     public function getAccessibleProjects()
     {
         $xml = $this->get('/project/all');
@@ -296,6 +329,12 @@ class Connection
         return $projects;
     }
 
+    /**
+     * @param string $id
+     * @return Comment[]
+     * @throws Exception
+     * @throws \Exception
+     */
     public function getComments($id)
     {
         $comments = array();
@@ -306,7 +345,6 @@ class Connection
         }
         return $comments;
     }
-
 
     /**
      * @param $id
@@ -322,7 +360,6 @@ class Connection
         }
         return $attachments;
     }
-
 
     /**
      * Returns the file content from the given attachment url
@@ -342,7 +379,6 @@ class Connection
         return false;
     }
 
-
     /**
      * @param string $issueId The issue id
      * @param Attachment $attachment The attachment
@@ -356,7 +392,6 @@ class Connection
             // 'authorLogin' => '',
             // 'created' => time()*1000
         );
-
 
         if ($attachment->getGroup()) {
             $params['group'] = $attachment->getGroup();
@@ -401,19 +436,40 @@ class Connection
         return $links;
     }
 
-    public function getUser($login) {
+    /**
+     * @param string $login
+     * @return User
+     */
+    public function getUser($login)
+    {
         return new User($this->get('/admin/user/'. urlencode($login)));
     }
 
-    public function createUser($user) {
+    /**
+     * @param string $user
+     */
+    public function createUser($user)
+    {
         $this->importUsers(array($user));
     }
 
-    public function createUserDetailed($login, $full_name, $email, $jabber) {
+    /**
+     * @param string $login
+     * @param string $full_name
+     * @param string $email
+     * @param string $jabber
+     */
+    public function createUserDetailed($login, $full_name, $email, $jabber)
+    {
         $this->importUsers(array(array('login' => $login, 'fullName' => $full_name, 'email' => $email, 'jabber' => $jabber)));
     }
 
-    public function importUsers($users) {
+    /**
+     * @param array $users
+     * @return \SimpleXMLElement|void
+     */
+    public function importUsers($users)
+    {
         if (count($users) <= 0) {
             return;
         }
@@ -429,23 +485,36 @@ class Connection
         return $this->requestXml('PUT', '/import/users', $xml, 400);
     }
 
-    public function importIssuesXml($project_id, $assignee_group, $xml) {
+    public function importIssuesXml($project_id, $assignee_group, $xml)
+    {
         throw new NotImplementedException("import_issues_xml(project_id, assignee_group, xml)");
     }
 
-    public function importLinks($links) {
+    public function importLinks($links)
+    {
         throw new NotImplementedException("import_links(links)");
     }
 
-    public function importIssues($project_id, $assignee_group, $issues) {
+    public function importIssues($project_id, $assignee_group, $issues)
+    {
         throw new NotImplementedException("import_issues(project_id, assignee_group, issues)");
     }
 
-    public function getProject($project_id) {
+    /**
+     * @param string $project_id
+     * @return Project
+     */
+    public function getProject($project_id)
+    {
         return new Project($this->get('/admin/project/'. urlencode($project_id)));
     }
 
-    public function getProjectAssigneeGroups($project_id) {
+    /**
+     * @param string $project_id
+     * @return Group[]
+     */
+    public function getProjectAssigneeGroups($project_id)
+    {
         $xml = $this->get('/admin/project/'. urlencode($project_id) .'/assignee/group');
         $groups = array();
         foreach ($xml->children() as $group) {
@@ -454,11 +523,21 @@ class Connection
         return $groups;
     }
 
-    public function getGroup($name) {
+    /**
+     * @param string $name
+     * @return Group
+     */
+    public function getGroup($name)
+    {
         return new Group($this->get('/admin/group/'. urlencode($name)));
     }
 
-    public function getUserGroups($login) {
+    /**
+     * @param string $login
+     * @return Group[]
+     */
+    public function getUserGroups($login)
+    {
         $xml = $this->get('/admin/user/'. urlencode($login) .'/group');
         $groups = array();
         foreach ($xml->children() as $group) {
@@ -467,27 +546,52 @@ class Connection
         return $groups;
     }
 
-    public function setUserGroup($login, $group_name) {
+    /**
+     * @param string $login
+     * @param string $group_name
+     * @return mixed
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function setUserGroup($login, $group_name)
+    {
         $r = $this->request('POST', '/admin/user/'. urlencode($login) .'/group/'. urlencode($group_name));
         return $r['response'];
     }
 
+    /**
+     * @param Group $group
+     * @return mixed
+     */
     public function createGroup(Group $group)
     {
         $r = $this->put('/admin/group/' . urlencode($group->name) . '?description=noDescription&autoJoin=false');
         return $r['response'];
     }
 
+    /**
+     * @param string $name
+     * @return Role
+     */
     public function getRole($name)
     {
         return new Role($this->get('/admin/role/' . urlencode($name)));
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @return Subsystem
+     */
     public function getSubsystem($project_id, $name)
     {
         return new Subsystem($this->get('/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)));
     }
 
+    /**
+     * @param string $project_id
+     * @return Subsystem[]
+     */
     public function getSubsystems($project_id)
     {
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/subsystem');
@@ -498,6 +602,10 @@ class Connection
         return $subsystems;
     }
 
+    /**
+     * @param string $project_id
+     * @return Version[]
+     */
     public function getVersions($project_id)
     {
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/version?showReleased=true');
@@ -508,11 +616,20 @@ class Connection
         return $versions;
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @return Version
+     */
     public function getVersion($project_id, $name)
     {
         return new Version($this->get('/admin/project/' . urlencode($project_id) . '/version/' . urlencode($name)));
     }
 
+    /**
+     * @param string $project_id
+     * @return Build[]
+     */
     public function getBuilds($project_id)
     {
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/build');
@@ -523,6 +640,10 @@ class Connection
         return $builds;
     }
 
+    /**
+     * @param string $q
+     * @return User[]
+     */
     public function getUsers($q = '')
     {
         $users = array();
@@ -555,6 +676,14 @@ class Connection
         return $this->createProjectDetailed($project->id, $project->name, $project->description, $project->leader);
     }
 
+    /**
+     * @param string $project_id
+     * @param string $project_name
+     * @param string $project_description
+     * @param string $project_lead_login
+     * @param int $starting_number
+     * @return \SimpleXMLElement
+     */
     public function createProjectDetailed(
         $project_id,
         $project_name,
@@ -572,6 +701,10 @@ class Connection
         return $this->put('/admin/project/' . urlencode($project_id) . '?' . http_build_query($params));
     }
 
+    /**
+     * @param string $project_id
+     * @param string[] $subsystems
+     */
     public function createSubsystems($project_id, $subsystems)
     {
         foreach ($subsystems as $subsystem) {
@@ -579,7 +712,12 @@ class Connection
         }
     }
 
-    public function createSubsystem($project_id, $subsystem)
+    /**
+     * @param string $project_id
+     * @param Subsystem $subsystem
+     * @return string
+     */
+    public function createSubsystem($project_id, Subsystem $subsystem)
     {
         return $this->createSubsystemDetailed(
             $project_id,
@@ -589,6 +727,13 @@ class Connection
         );
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @param string $is_default
+     * @param string $default_assignee_login
+     * @return string
+     */
     public function createSubsystemDetailed($project_id, $name, $is_default, $default_assignee_login)
     {
         $params = array(
@@ -603,6 +748,11 @@ class Connection
         return 'Created';
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @return \SimpleXMLElement
+     */
     public function deleteSubsystem($project_id, $name)
     {
         return $this->requestXml(
@@ -611,6 +761,10 @@ class Connection
         );
     }
 
+    /**
+     * @param string $project_id
+     * @param Version[] $versions
+     */
     public function createVersions($project_id, $versions)
     {
         foreach ($versions as $version) {
@@ -618,7 +772,12 @@ class Connection
         }
     }
 
-    public function createVersion($project_id, $version)
+    /**
+     * @param string $project_id
+     * @param Version $version
+     * @return \SimpleXMLElement
+     */
+    public function createVersion($project_id, Version $version)
     {
         return $this->createVersionDetailed(
             $project_id,
@@ -630,6 +789,15 @@ class Connection
         );
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @param string $is_released
+     * @param string $is_archived
+     * @param string $release_date
+     * @param string $description
+     * @return \SimpleXMLElement
+     */
     public function createVersionDetailed(
         $project_id,
         $name,
@@ -712,6 +880,13 @@ class Connection
         return [];
     }
 
+    /**
+     * @param string $project_id
+     * @param string $filter
+     * @param string $after
+     * @param string $max
+     * @return array
+     */
     public function getIssues($project_id, $filter, $after, $max)
     {
         $params = array(
@@ -764,11 +939,18 @@ class Connection
         return sprintf('Command executed, return code %s', $response['http_code']);
     }
 
+    /**
+     * @param string $name
+     * @return CustomField
+     */
     public function getCustomField($name)
     {
         return new CustomField($this->get('/admin/customfield/field/' . urlencode($name)));
     }
 
+    /**
+     * @return CustomField[]
+     */
     public function getCustomFields()
     {
         $xml = $this->get('/admin/customfield/field');
@@ -779,6 +961,9 @@ class Connection
         return $fields;
     }
 
+    /**
+     * @param CustomField[] $fields
+     */
     public function createCustomFields($fields)
     {
         foreach ($fields as $field) {
@@ -786,7 +971,11 @@ class Connection
         }
     }
 
-    public function createCustomField($field)
+    /**
+     * @param CustomField $field
+     * @return string
+     */
+    public function createCustomField(CustomField $field)
     {
         return $this->createCustomFieldDetailed(
             $field->name,
@@ -796,6 +985,13 @@ class Connection
         );
     }
 
+    /**
+     * @param string $name
+     * @param string $type_name
+     * @param string $is_private
+     * @param string $default_visibility
+     * @return string
+     */
     public function createCustomFieldDetailed($name, $type_name, $is_private, $default_visibility)
     {
         $params = array(
@@ -807,27 +1003,51 @@ class Connection
         return 'Created';
     }
 
+    /**
+     * @param string $name
+     * @return EnumBundle
+     */
     public function getEnumBundle($name)
     {
         return new EnumBundle($this->get('/admin/customfield/bundle/' . urlencode($name)));
     }
 
+    /**
+     * @param EnumBundle $bundle
+     * @return \SimpleXMLElement
+     */
     public function createEnumBundle(EnumBundle $bundle)
     {
         return $this->requestXml('PUT', '/admin/customfield/bundle', $bundle->toXML(), 400);
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     * @throws Exception
+     * @throws \Exception
+     */
     public function deleteEnumBundle($name)
     {
         $r = $this->request('DELETE', '/admin/customfield/bundle/' . urlencode($name), '');
         return $r['content'];
     }
 
+    /**
+     * @param string $name
+     * @param string $value
+     * @return \SimpleXMLElement
+     */
     public function addValueToEnumBundle($name, $value)
     {
         return $this->put('/admin/customfield/bundle/' . urlencode($name) . '/' . urlencode($value));
     }
 
+    /**
+     * @param string $name
+     * @param string[] $values
+     * @return string
+     */
     public function addValuesToEnumBundle($name, $values)
     {
         foreach ($values as $value) {
@@ -836,6 +1056,11 @@ class Connection
         return implode(', ', $values);
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @return CustomField
+     */
     public function getProjectCustomField($project_id, $name)
     {
         return new CustomField(
@@ -843,6 +1068,10 @@ class Connection
         );
     }
 
+    /**
+     * @param string $project_id
+     * @return array
+     */
     public function getProjectCustomFields($project_id)
     {
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/customfield');
@@ -853,11 +1082,23 @@ class Connection
         return $fields;
     }
 
+    /**
+     * @param string $project_id
+     * @param CustomField $pcf
+     * @return \SimpleXMLElement
+     */
     public function createProjectCustomField($project_id, CustomField $pcf)
     {
         return $this->createProjectCustomFieldDetailed($project_id, $pcf->name, $pcf->emptyText, $pcf->params);
     }
 
+    /**
+     * @param string $project_id
+     * @param string $name
+     * @param string $empty_field_text
+     * @param array $params
+     * @return \SimpleXMLElement
+     */
     private function createProjectCustomFieldDetailed($project_id, $name, $empty_field_text, $params = array())
     {
         $_params = array(
@@ -873,6 +1114,9 @@ class Connection
         );
     }
 
+    /**
+     * @return IssueLinkType[]
+     */
     public function getIssueLinkTypes()
     {
         $xml = $this->get('/admin/issueLinkType');
@@ -883,6 +1127,9 @@ class Connection
         return $lts;
     }
 
+    /**
+     * @param IssueLinkType[] $lts
+     */
     public function createIssueLinkTypes($lts)
     {
         foreach ($lts as $lt) {
@@ -890,11 +1137,22 @@ class Connection
         }
     }
 
-    public function createIssueLinkType($ilt)
+    /**
+     * @param IssueLinkType $ilt
+     * @return \SimpleXMLElement
+     */
+    public function createIssueLinkType(IssueLinkType $ilt)
     {
         return $this->createIssueLinkTypeDetailed($ilt->name, $ilt->outwardName, $ilt->inwardName, $ilt->directed);
     }
 
+    /**
+     * @param string $name
+     * @param string $outward_name
+     * @param string $inward_name
+     * @param string $directed
+     * @return \SimpleXMLElement
+     */
     public function createIssueLinkTypeDetailed($name, $outward_name, $inward_name, $directed)
     {
         $params = array(
@@ -905,6 +1163,9 @@ class Connection
         return $this->put('/admin/issueLinkType/' . urlencode($name) . '?' . http_build_query($params));
     }
 
+    /**
+     * @return bool
+     */
     public function getVerifySsl()
     {
         return $this->verify_ssl;
@@ -945,8 +1206,7 @@ class Connection
     * i.e. name can not be repeated on youtrack installation.
     *
     * @param string $name
-    * @return hash key: state string
-    *			  value: hash('description' => string, 'isResolved' => boolean)
+    * @return string hash key: state string value: hash('description' => string, 'isResolved' => boolean)
     */
     public function getStateBundle($name)
     {

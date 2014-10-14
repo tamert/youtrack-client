@@ -23,6 +23,11 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
+### 2014-10-14 - v1.0.3
+
+* Added support for long parameter values for method `createIssue` (It was not possible to do a request with more than 8205 chars (InCluod, nginx 414-Error))
+* Improved DocBlocs for Connection class methods
+
 ### 2014-09-01 - v1.0.2
 
 * Added more parameters (full support now) for ´executeCommand´. Thanks [@1ed](https://github.com/1ed). See [Apply Command to an Issue](http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue)

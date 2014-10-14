@@ -11,7 +11,8 @@ $youtrack = new YouTrack\Connection(
 
 $params = array(
     'priority' => 'Higher',
-    'type' => 'Auto-reported CLI exception'
+    'type' => 'Auto-reported CLI exception',
+    'description' => "The full text issue description",
 );
 
 $issue = $youtrack->createIssue('Sandbox', 'Create a basic issue for example', $params);
