@@ -25,7 +25,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ### 2014-10-14 - v1.0.3
 
-* Added support for long parameter values for method `createIssue` (It was not possible to do a request with more than 8205 chars (InCluod, nginx 414-Error))
+* Added support for long parameter values for method `createIssue` (It was not possible to do a request with more than 8205 chars (InCloud, nginx 414-Error))
 * Improved DocBlocs for Connection class methods
 
 ### 2014-09-01 - v1.0.2
