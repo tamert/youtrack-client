@@ -8,9 +8,7 @@ $youtrack = new YouTrack\Connection(
     YOUTRACK_PASSWORD
 );
 
-
 // make sure, this exists!
-#$issueId = 'Sandbox-6';
 
 $issues = [
     'Sandbox-24',

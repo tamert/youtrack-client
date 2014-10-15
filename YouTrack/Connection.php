@@ -4,16 +4,6 @@ namespace YouTrack;
 /**
  * A class for connecting to a YouTrack instance.
  *
- * @internal revision
- * 20120318 - francisco.mancardi@gmail.com
- * new method get_global_issue_states()
- * Important Notice
- * REST API documentation for version 3.x this method is not documented.
- * REST API documentation for version 2.x this method is DOCUMENTED.
- * (http://confluence.jetbrains.net/display/YTD2/Get+Issue+States)
- *
- * new method get_state_bundle()
- *
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 29.03.11 16:13
  *
@@ -23,7 +13,6 @@ class Connection
 {
     private $http = null;
     private $url = '';
-    private $loginName;
     private $base_url = '';
     private $headers = array();
     private $cookies = array();
@@ -31,13 +20,18 @@ class Connection
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
     private $verify_ssl = false;
 
-    public function __construct($url, $login, $password)
+    /**
+     * @param string $url
+     * @param string $username
+     * @param string $password
+     * @throws Exception
+     */
+    public function __construct($url, $username, $password)
     {
         $this->http = curl_init();
         $this->url = $url;
         $this->base_url = $url . '/rest';
-        $this->loginName = $login;
-        $this->login($login, $password);
+        $this->login($username, $password);
     }
 
     /**
@@ -48,7 +42,6 @@ class Connection
     public function isHttps()
     {
         if (!empty($this->url)) {
-
             $url = strtolower($this->url);
             if (substr($url, 0, strlen('https')) == 'https') {
                 return true;
@@ -191,16 +184,18 @@ class Connection
         $response = curl_getinfo($this->http);
         curl_close($this->http);
 
-        if ((int) $response['http_code'] != 200 &&
+        if (
+            (int) $response['http_code'] != 200 &&
             (int) $response['http_code'] != 201 &&
-            (int) $response['http_code'] != $ignore_http_return_status) {
+            (int) $response['http_code'] != $ignore_http_return_status
+        ) {
             throw new Exception($url, $response, $content);
         }
 
         // for fetching results for test data
-        /*if (!empty($content)) {
-            file_put_contents(md5($content).'.xml', $content);
-        }*/
+        // if (!empty($content)) {
+        //     file_put_contents(md5($content).'.xml', $content);
+        // }
 
         return array(
             'content' => $content,
@@ -670,7 +665,11 @@ class Connection
         throw new NotImplementedException("create_builds()");
     }
 
-    public function createProject($project)
+    /**
+     * @param Project $project
+     * @return \SimpleXMLElement
+     */
+    public function createProject(Project $project)
     {
         return $this->createProjectDetailed($project->id, $project->name, $project->description, $project->leader);
     }
@@ -912,7 +911,7 @@ class Connection
      * @param string|null $group User group name. Use to specify visibility settings of a comment to be post.
      * @param bool $disableNotifications  If set 'true' then no notifications about changes made with the specified command will be send. By default, is 'false'.
      * @param string|null $runAs Login for a user on whose behalf the command should be executed.
-     * @return string
+     * @return bool If YouTrack returns with HTTP 200 true, else false
      * @throws Exception
      * @throws \Exception
      */
@@ -934,8 +933,10 @@ class Connection
 
         $result = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
         $response = $result['response'];
-        // TODO Read the response (if any) and return the messages
-        return sprintf('Command executed, return code %s', $response['http_code']);
+        if ($response['http_code'] != 200) {
+            return false;
+        }
+        return true;
     }
 
     /**

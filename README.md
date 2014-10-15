@@ -3,6 +3,7 @@ YouTrack Client PHP Library
 
 [![Build Status](https://travis-ci.org/nepda/youtrack.png?branch=master)](https://travis-ci.org/nepda/youtrack)
 [![Dependency Status](https://www.versioneye.com/user/projects/53f72420e09da3fa11000327/badge.svg)](https://www.versioneye.com/user/projects/53f72420e09da3fa11000327)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/676f5ccd-17ec-4e72-9448-e3c3741e67c3/mini.png)](https://insight.sensiolabs.com/projects/676f5ccd-17ec-4e72-9448-e3c3741e67c3)
 
 The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a
 [REST-API](http://confluence.jetbrains.com/display/YTD5/YouTrack+REST+API+Reference).
