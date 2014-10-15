@@ -21,6 +21,16 @@ class Connection
     private $verify_ssl = false;
 
     /**
+     * @var bool
+     */
+    protected $responseLogging = false;
+
+    /**
+     * @var string
+     */
+    protected $responseLoggingPath = './';
+
+    /**
      * @param string $url
      * @param string $username
      * @param string $password
@@ -192,10 +202,12 @@ class Connection
             throw new Exception($url, $response, $content);
         }
 
-        // for fetching results for test data
-        // if (!empty($content)) {
-        //     file_put_contents(md5($content).'.xml', $content);
-        // }
+        if ($this->responseLogging) {
+            // for fetching results for test data
+            if (!empty($content)) {
+                file_put_contents($this->responseLoggingPath . '/' . md5($content).'.xml', $content);
+            }
+        }
 
         return array(
             'content' => $content,
