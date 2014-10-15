@@ -17,4 +17,6 @@ $params = array(
 
 $issue = $youtrack->createIssue('Sandbox', 'Create a basic issue for example', $params);
 
-var_dump($issue);
+if ($issue) {
+    printf('Issue %s created' . PHP_EOL, $issue->getId());
+}

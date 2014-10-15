@@ -310,7 +310,6 @@ class Connection
             $body = null;
         }
         $issue = $this->requestXml('POST', '/issue?'. http_build_query($params), $body);
-        var_dump($issue);
         return new Issue($issue, $this);
     }
 

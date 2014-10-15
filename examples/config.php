@@ -3,16 +3,16 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// in my .auth.php file:
-//
-// define('YOUTRACK_URL', 'https://...');
-// define('YOUTRACK_USERNAME', '');
-// define('YOUTRACK_PASSWORD', '');
+/*
+ *  in my .auth.php file:
+ *  define('YOUTRACK_URL', 'https://...');
+ *  define('YOUTRACK_USERNAME', '');
+ *  define('YOUTRACK_PASSWORD', '');
+ */
 
 if (file_exists('.auth.php')) {
     include_once '.auth.php';
 }
-
 
 if (!defined('YOUTRACK_URL')
     || !defined('YOUTRACK_USERNAME')
@@ -25,8 +25,6 @@ if (!defined('YOUTRACK_URL')
 define('YOUTRACK_AUTOLOADING', false);
 
 include_once './../vendor/autoload.php';
-
-
 
 if (YOUTRACK_AUTOLOADING) {
 // We need autoloading for this library. If you have already PSR-0 autoloading in you project

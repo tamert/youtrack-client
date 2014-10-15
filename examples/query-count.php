@@ -25,4 +25,12 @@ array (
 )
 */
 
-var_export($result);
+if ($result) {
+    printf('Results:'. PHP_EOL);
+    foreach ($result as $k => $v) {
+        if (!is_int($k)) {
+            printf('"%s": %s' . PHP_EOL, $k, $v);
+        }
+    }
+}
+
