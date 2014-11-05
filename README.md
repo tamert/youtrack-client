@@ -34,7 +34,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 * Improved DocBlocs for Connection class methods
 
 
-(Please look into CHANGELOG for a complete list of the past relases)
+(Please look into CHANGELOG for a complete list of the past releases)
 
 ## Usage
 
