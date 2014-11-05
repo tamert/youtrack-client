@@ -1,0 +1,17 @@
+
+### 2014-11-05 - v1.0.4
+
+* Fixed Issue #2, Throw exception `YouTrack\IncorrectLoginException` on incorrect login or password.
+
+### 2014-10-14 - v1.0.3
+
+* Added support for long parameter values for method `createIssue` (It was not possible to do a request with more than 8205 chars (InCloud, nginx 414-Error))
+* Improved DocBlocs for Connection class methods
+
+### 2014-09-01 - v1.0.2
+
+* Added more parameters (full support now) for `executeCommand`. Thanks [@1ed](https://github.com/1ed). See [Apply Command to an Issue](http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue)
+
+### 2014-09-01 - v1.0.1
+
+* Added executeCountQueries ([Get Number of Issues for Several Queries](http://confluence.jetbrains.com/display/YTD5/Get+Number+of+Issues+for+Several+Queries)). See `./examples/query-count.php`. (Thanks [Limelyte](https://github.com/Limelyte/youtrack/commit/4e4f30e2a118e20f8f364119c37f3e17f38addfa)).
