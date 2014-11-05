@@ -92,10 +92,28 @@ class Connection
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
-        curl_setopt($this->http,CURLOPT_POSTFIELDS, "a");
+        curl_setopt($this->http, CURLOPT_POSTFIELDS, "a");
         $content = curl_exec($this->http);
         $response = curl_getinfo($this->http);
+
+        $this->handleLoginResponse($content, $response);
+
+        $this->headers[CURLOPT_HTTPHEADER] = array('Cache-Control: no-cache');
+        curl_close($this->http);
+    }
+
+    /**
+     * @param string $content
+     * @param array $response
+     * @throws Exception
+     * @throws IncorrectLoginException
+     */
+    protected function handleLoginResponse($content, array $response)
+    {
         if ((int) $response['http_code'] != 200) {
+            if ((int) $response['http_code'] == 403) {
+                throw new IncorrectLoginException('/user/login', $response, $content);
+            }
             throw new Exception('/user/login', $response, $content);
         }
         $cookies = array();
@@ -104,8 +122,6 @@ class Connection
             $parts = parse_url($cookie[0]);
             $this->cookies[] = $parts['path'];
         }
-        $this->headers[CURLOPT_HTTPHEADER] = array('Cache-Control: no-cache');
-        curl_close($this->http);
     }
 
     /**

@@ -1,0 +1,12 @@
+HTTP/1.1 403 Forbidden
+Server: nginx
+Date: Wed, 05 Nov 2014 08:26:22 GMT
+Content-Type: application/xml; charset=UTF-8
+Content-Length: 98
+Connection: keep-alive
+Vary: Accept-Encoding
+Set-Cookie: JSESSIONID=xb755yi5w4pa1im8v2rywq11x;Path=/youtrack;Secure
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control: no-cache, no-store, no-transform, must-revalidate
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error>Incorrect login or password.</error>
