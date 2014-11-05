@@ -24,6 +24,10 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
+### 2014-10-14 - v1.0.4
+
+* Fixed Issue #2, Throw exception `YouTrack\IncorrectLoginException` on incorrect login or password.
+
 ### 2014-10-14 - v1.0.3
 
 * Added support for long parameter values for method `createIssue` (It was not possible to do a request with more than 8205 chars (InCloud, nginx 414-Error))

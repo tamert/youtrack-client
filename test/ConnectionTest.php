@@ -24,9 +24,9 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $method = $refl->getMethod('handleLoginResponse');
         $method->setAccessible(true);
         $content = file_get_contents('test/testdata/incorrect-login.http');
-        $response = [
+        $response = array(
             'http_code' => 403
-        ];
+        );
         $this->setExpectedException('\YouTrack\IncorrectLoginException');
         $method->invoke($con, $content, $response);
     }
