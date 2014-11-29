@@ -340,16 +340,23 @@ class Connection
     }
 
     /**
+     * Get a list of all accessible projects from the server.
+     *
+     * @see http://confluence.jetbrains.com/display/YTD5/Get+Accessible+Projects
+     *
+     * @param bool $verbose If full representation of projects is returned. If this parameter is false,
+     *                      only short names and id's are returned.
      * @return Project[]
      */
-    public function getAccessibleProjects()
+    public function getAccessibleProjects($verbose = false)
     {
-        $xml = $this->get('/project/all');
+        $verbose = ($verbose === true) ? 'true' : 'false';
+        $xml = $this->get('/project/all?verbose=' . $verbose);
         $projects = array();
 
         foreach ($xml->children() as $node) {
-            $node = new Project(new \SimpleXMLElement($node->asXML()));
-            $projects[] = $node;
+            $project = new Project(new \SimpleXMLElement($node->asXML()), $this);
+            $projects[] = $project;
         }
         return $projects;
     }
@@ -467,7 +474,7 @@ class Connection
      */
     public function getUser($login)
     {
-        return new User($this->get('/admin/user/'. urlencode($login)));
+        return new User($this->get('/admin/user/'. urlencode($login)), $this);
     }
 
     /**
@@ -531,7 +538,7 @@ class Connection
      */
     public function getProject($project_id)
     {
-        return new Project($this->get('/admin/project/'. urlencode($project_id)));
+        return new Project($this->get('/admin/project/'. urlencode($project_id)), $this);
     }
 
     /**
@@ -543,7 +550,7 @@ class Connection
         $xml = $this->get('/admin/project/'. urlencode($project_id) .'/assignee/group');
         $groups = array();
         foreach ($xml->children() as $group) {
-            $groups[] = new Group(new \SimpleXMLElement($group->asXML()));
+            $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
         }
         return $groups;
     }
@@ -554,7 +561,7 @@ class Connection
      */
     public function getGroup($name)
     {
-        return new Group($this->get('/admin/group/'. urlencode($name)));
+        return new Group($this->get('/admin/group/'. urlencode($name)), $this);
     }
 
     /**
@@ -566,7 +573,7 @@ class Connection
         $xml = $this->get('/admin/user/'. urlencode($login) .'/group');
         $groups = array();
         foreach ($xml->children() as $group) {
-            $groups[] = new Group(new \SimpleXMLElement($group->asXML()));
+            $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
         }
         return $groups;
     }
@@ -600,7 +607,7 @@ class Connection
      */
     public function getRole($name)
     {
-        return new Role($this->get('/admin/role/' . urlencode($name)));
+        return new Role($this->get('/admin/role/' . urlencode($name)), $this);
     }
 
     /**
@@ -612,7 +619,7 @@ class Connection
         $xml = $this->get('/admin/user/'. urlencode($username) .'/role');
         $roles = array();
         foreach ($xml->children() as $role) {
-            $roles[] = new Role(new \SimpleXMLElement($role->asXML()));
+            $roles[] = new Role(new \SimpleXMLElement($role->asXML()), $this);
         }
         return $roles;
     }
@@ -624,7 +631,10 @@ class Connection
      */
     public function getSubsystem($project_id, $name)
     {
-        return new Subsystem($this->get('/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)));
+        return new Subsystem(
+            $this->get('/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)),
+            $this
+        );
     }
 
     /**
@@ -633,10 +643,13 @@ class Connection
      */
     public function getSubsystems($project_id)
     {
+        if (empty($project_id)) {
+            throw new \InvalidArgumentException('You need to set an valid project id to get the subsystems');
+        }
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/subsystem');
         $subsystems = array();
         foreach ($xml->children() as $subsystem) {
-            $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()));
+            $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()), $this);
         }
         return $subsystems;
     }
@@ -650,7 +663,7 @@ class Connection
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/version?showReleased=true');
         $versions = array();
         foreach ($xml->children() as $version) {
-            $versions[] = new Version(new \SimpleXMLElement($version->asXML()));
+            $versions[] = new Version(new \SimpleXMLElement($version->asXML()), $this);
         }
         return $versions;
     }
@@ -662,7 +675,10 @@ class Connection
      */
     public function getVersion($project_id, $name)
     {
-        return new Version($this->get('/admin/project/' . urlencode($project_id) . '/version/' . urlencode($name)));
+        return new Version(
+            $this->get('/admin/project/' . urlencode($project_id) . '/version/' . urlencode($name)),
+            $this
+        );
     }
 
     /**
@@ -674,7 +690,7 @@ class Connection
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/build');
         $builds = array();
         foreach ($xml->children() as $build) {
-            $builds[] = new Build(new \SimpleXMLElement($build->asXML()));
+            $builds[] = new Build(new \SimpleXMLElement($build->asXML()), $this);
         }
         return $builds;
     }
@@ -694,7 +710,7 @@ class Connection
         $xml = $this->get('/admin/user/?' . http_build_query($params));
         if (!empty($xml) && is_object($xml)) {
             foreach ($xml->children() as $user) {
-                $users[] = new User(new \SimpleXMLElement($user->asXML()));
+                $users[] = new User(new \SimpleXMLElement($user->asXML()), $this);
             }
         }
         return $users;
@@ -990,7 +1006,7 @@ class Connection
      */
     public function getCustomField($name)
     {
-        return new CustomField($this->get('/admin/customfield/field/' . urlencode($name)));
+        return new CustomField($this->get('/admin/customfield/field/' . urlencode($name)), $this);
     }
 
     /**
@@ -1001,7 +1017,7 @@ class Connection
         $xml = $this->get('/admin/customfield/field');
         $fields = array();
         foreach ($xml->children() as $field) {
-            $fields[] = new CustomField(new \SimpleXMLElement($field->asXML()));
+            $fields[] = new CustomField(new \SimpleXMLElement($field->asXML()), $this);
         }
         return $fields;
     }
@@ -1054,7 +1070,7 @@ class Connection
      */
     public function getEnumBundle($name)
     {
-        return new EnumBundle($this->get('/admin/customfield/bundle/' . urlencode($name)));
+        return new EnumBundle($this->get('/admin/customfield/bundle/' . urlencode($name)), $this);
     }
 
     /**
@@ -1109,7 +1125,8 @@ class Connection
     public function getProjectCustomField($project_id, $name)
     {
         return new CustomField(
-            $this->get('/admin/project/' . urlencode($project_id) . '/customfield/' . urlencode($name))
+            $this->get('/admin/project/' . urlencode($project_id) . '/customfield/' . urlencode($name)),
+            $this
         );
     }
 
@@ -1122,7 +1139,7 @@ class Connection
         $xml = $this->get('/admin/project/' . urlencode($project_id) . '/customfield');
         $fields = array();
         foreach ($xml->children() as $cfield) {
-            $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()));
+            $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()), $this);
         }
         return $fields;
     }
@@ -1167,7 +1184,7 @@ class Connection
         $xml = $this->get('/admin/issueLinkType');
         $lts = array();
         foreach ($xml->children() as $node) {
-            $lts[] = new IssueLinkType(new \SimpleXMLElement($node->asXML()));
+            $lts[] = new IssueLinkType(new \SimpleXMLElement($node->asXML()), $this);
         }
         return $lts;
     }

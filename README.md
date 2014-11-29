@@ -20,9 +20,13 @@ The source of this library is released under the BSD license (see LICENSE for de
 * PHP >= 5.4 (Tested with >= 5.5, Travis runs tests with 5.4, 5.5 and 5.6)
 * curl
 * simplexml
-* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 5.0.3)
+* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 5.2.5)
 
 ## Changelog
+
+### 2014-11-29 - v1.0.6
+
+* Fixed Issue #4, Improved `getAccessibleProjects`, see `examples/get-all-projects.php`. Thanks [@openWebX](https://github.com/openWebX)
 
 ### 2014-11-29 - v1.0.5
 

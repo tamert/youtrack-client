@@ -1,4 +1,8 @@
 
+### 2014-11-29 - v1.0.6
+
+* Fixed Issue #4, Improved `getAccessibleProjects`, see `examples/get-all-projects.php`. Thanks [@openWebX](https://github.com/openWebX)
+
 ### 2014-11-29 - v1.0.5
 
 * Fixed Issue #3, Added method `getUserRoles`, see `examples/get-user-roles.php`. Thanks [@openWebX](https://github.com/openWebX)

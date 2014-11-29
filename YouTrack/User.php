@@ -6,8 +6,19 @@ namespace YouTrack;
  */
 class User extends Object
 {
-    public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
+    /**
+     * @return null|string
+     */
+    public function getLogin()
     {
-        parent::__construct($xml, $youtrack);
+        return $this->__get('login');
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getUrl()
+    {
+        return $this->__get('url');
     }
 }
