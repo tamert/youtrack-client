@@ -4,7 +4,13 @@ namespace YouTrack;
 /**
  * A class extending the standard php exception.
  */
-class Exception extends \Exception {
+class Exception extends \Exception
+{
+    /**
+     * @var Error
+     */
+    protected $youTrackError;
+
     /**
      * Constructor
      *
@@ -17,16 +23,57 @@ class Exception extends \Exception {
         $code = (int)$response['http_code'];
         $previous = NULL;
         $message = "Error for '" . $url . "': " . $response['http_code'];
+
+        if ($c = $this->getResponseContent($response, $content)) {
+            $xml = simplexml_load_string($c);
+            $error = new Error($xml);
+            $this->setYouTrackError($error);
+            $message .= ": " . $error->__get("error");
+        }
+        parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * @param array $response
+     * @param string $content
+     * @return bool|string
+     */
+    protected function getResponseContent(array $response, $content)
+    {
         if (!empty($response['content_type']) && !preg_match('/text\/html/', $response['content_type'])) {
             if (substr(trim($content), 0, 1) != '<') {
                 if (substr($content, 0, 4) == 'HTTP') {
                     $content = substr($content, strpos($content, "\r\n\r\n")+4);
                 }
             }
-            $xml = simplexml_load_string($content);
-            $error = new Error($xml);
-            $message .= ": " . $error->__get("error");
+            return $content;
         }
-        parent::__construct($message, $code, $previous);
+        return false;
+    }
+
+    /**
+     * Returns the youTrackError
+     *
+     * @return Error
+     * @see setYouTrackError
+     * @see $youTrackError
+     */
+    public function getYouTrackError()
+    {
+        return $this->youTrackError;
+    }
+
+    /**
+     * Sets the youTrackError
+     *
+     * @param Error $youTrackError
+     * @return Exception
+     * @see getYouTrackError
+     * @see $youTrackError
+     */
+    public function setYouTrackError(Error $youTrackError)
+    {
+        $this->youTrackError = $youTrackError;
+        return $this;
     }
 }

@@ -215,6 +215,9 @@ class Connection
             (int) $response['http_code'] != 201 &&
             (int) $response['http_code'] != $ignore_http_return_status
         ) {
+            if ((int) $response['http_code'] === 403) {
+                throw new NotAuthorizedException($url, $response, $content);
+            }
             throw new Exception($url, $response, $content);
         }
 
@@ -598,6 +601,20 @@ class Connection
     public function getRole($name)
     {
         return new Role($this->get('/admin/role/' . urlencode($name)));
+    }
+
+    /**
+     * @param string $username
+     * @return Role[]
+     */
+    public function getUserRoles($username)
+    {
+        $xml = $this->get('/admin/user/'. urlencode($username) .'/role');
+        $roles = array();
+        foreach ($xml->children() as $role) {
+            $roles[] = new Role(new \SimpleXMLElement($role->asXML()));
+        }
+        return $roles;
     }
 
     /**

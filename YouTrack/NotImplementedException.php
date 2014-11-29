@@ -4,8 +4,8 @@ namespace YouTrack;
 /**
  * A simple exception that should be raised if a function is not yet implemented.
  */
-class NotImplementedException extends \Exception {
-
+class NotImplementedException extends \Exception
+{
     /**
      * Constructor
      *

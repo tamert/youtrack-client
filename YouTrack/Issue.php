@@ -42,38 +42,56 @@ class Issue extends Object
 
     /**
      * Returns the Issue Id (if it is already created or fetched)
-     *
+     * @return string
      */
     public function getId()
     {
         return $this->__get('id');
     }
 
+    /**
+     * @return User
+     */
     public function getReporter()
     {
         return $this->youtrack->getUser($this->__get('reporterName'));
     }
 
-    public function hasAssignee() {
+    /**
+     * @return bool
+     */
+    public function hasAssignee()
+    {
         $name = $this->__get('assigneeName');
         return !empty($name);
     }
 
-    public function getAssignee() {
+    /**
+     * @return User
+     */
+    public function getAssignee()
+    {
         return $this->youtrack->getUser($this->__get('assigneeName'));
     }
 
-    public function getUpdater() {
+    /**
+     * @return User
+     */
+    public function getUpdater()
+    {
         return $this->youtrack->getUser($this->__get('updaterName'));
     }
 
-    public function getComments() {
+    /**
+     * @return array|Comment[]
+     */
+    public function getComments()
+    {
         if (empty($this->comments)) {
             $this->comments = $this->youtrack->getComments($this->__get('id'));
         }
         return $this->comments;
     }
-
 
     /**
      * @return array|Attachment[]

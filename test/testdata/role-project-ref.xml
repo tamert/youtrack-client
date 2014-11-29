@@ -1,0 +1,5 @@
+<userRole name="Developer">
+    <projects>
+        <projectRef id="RELATED_PROJECT" url="http://example.com/youtrack/rest/admin/project/RELATED_PROJECT"/>
+    </projects>
+</userRole>
