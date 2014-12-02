@@ -25,8 +25,13 @@ class Exception extends \Exception
         $message = "Error for '" . $url . "': " . $response['http_code'];
 
         if ($c = $this->getResponseContent($response, $content)) {
-            $xml = simplexml_load_string($c);
-            $error = new Error($xml);
+            if (is_array($c)) {
+                $error = new Error();
+                $error->setJsonResponse($c);
+            } else {
+                $xml = simplexml_load_string($c);
+                $error = new Error($xml);
+            }
             $this->setYouTrackError($error);
             $message .= ": " . $error->__get("error");
         }
@@ -36,11 +41,15 @@ class Exception extends \Exception
     /**
      * @param array $response
      * @param string $content
-     * @return bool|string
+     * @return bool|string|array
      */
     protected function getResponseContent(array $response, $content)
     {
         if (!empty($response['content_type']) && !preg_match('/text\/html/', $response['content_type'])) {
+            if (preg_match('/application\/json/', $response['content_type'])) {
+                $content = json_decode($content, true);
+                return $content;
+            }
             if (substr(trim($content), 0, 1) != '<') {
                 if (substr($content, 0, 4) == 'HTTP') {
                     $content = substr($content, strpos($content, "\r\n\r\n")+4);

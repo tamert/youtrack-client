@@ -127,7 +127,7 @@ class Connection
     /**
     * Execute a request with the given parameters and return the response.
     *
-    * @throws \Exception|Exception An exception is thrown if an error occurs.
+    * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
     * @param string $method The http method (GET, PUT, POST).
     * @param string $url The request url.
     * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an array, it will be used as CURLOPT_POSTFIELDS
@@ -145,9 +145,8 @@ class Connection
         $headers = $this->headers;
         if ($method == 'PUT' || $method == 'POST') {
 
-            if (!file_exists($body)) {
+            if (is_string($body) && !file_exists($body)) {
                 if (is_array($body)) {
-
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 } else {
                     $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
@@ -161,9 +160,8 @@ class Connection
                 break;
             case 'PUT':
                 $handle = null;
-                $size = 0;
                 // Check if we got a file or just a string of data.
-                if (file_exists($body)) {
+                if (is_string($body) && file_exists($body)) {
                     $size = filesize($body);
                     if (!$size) {
                         throw new \Exception("Can't open file $body!");
@@ -171,7 +169,7 @@ class Connection
                     $handle = fopen($body, 'r');
                 } else {
                     $size = mb_strlen($body);
-                    $handle = fopen('data://text/plain,' . $body,'r');
+                    $handle = fopen('data://text/plain,' . $body, 'r');
                 }
                 curl_setopt($this->http, CURLOPT_PUT, true);
                 curl_setopt($this->http, CURLOPT_INFILE, $handle);
@@ -181,7 +179,7 @@ class Connection
                 curl_setopt($this->http, CURLOPT_POST, true);
                 if (!empty($body)) {
 
-                    if (file_exists($body)) {
+                    if (is_string($body) && file_exists($body)) {
 
                         if (version_compare(PHP_VERSION, '5.5', '>=')
                             && class_exists('\\CURLFile')
@@ -198,7 +196,7 @@ class Connection
                 }
             break;
             default:
-                throw new \Exception("Unknown method $method!");
+                throw new \Exception("Unknown HTTP method $method for YouTrack!");
         }
         curl_setopt($this->http, CURLOPT_HTTPHEADER, $headers[CURLOPT_HTTPHEADER]);
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
@@ -217,6 +215,9 @@ class Connection
         ) {
             if ((int) $response['http_code'] === 403) {
                 throw new NotAuthorizedException($url, $response, $content);
+            }
+            if ((int) $response['http_code'] === 404) {
+                throw new NotFoundException($url, $response, $content);
             }
             throw new Exception($url, $response, $content);
         }

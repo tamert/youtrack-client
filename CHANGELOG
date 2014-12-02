@@ -1,3 +1,11 @@
+# Changelog
+
+
+### 2014-12-02 - v1.0.7
+
+* Improved error handling - On 404 error, the call will throw a `YouTrack\NotFoundException`
+* Improved error handling - `YouTrack\Exception`/`YouTrack\Error` is now aware of JSON responses
+* Improved connection request method. If the body is array it will no longer check if the file exists (Notice was thrown by PHP)
 
 ### 2014-11-29 - v1.0.6
 

@@ -20,9 +20,16 @@ The source of this library is released under the BSD license (see LICENSE for de
 * PHP >= 5.4 (Tested with >= 5.5, Travis runs tests with 5.4, 5.5 and 5.6)
 * curl
 * simplexml
-* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 5.2.5)
+* json
+* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 6.0)
 
 ## Changelog
+
+### 2014-12-02 - v1.0.7
+
+* Improved error handling - On 404 error, the call will throw a `YouTrack\NotFoundException`
+* Improved error handling - `YouTrack\Exception`/`YouTrack\Error` is now aware of JSON responses
+* Improved connection request method. If the body is array it will no longer check if the file exists (Notice was thrown by PHP)
 
 ### 2014-11-29 - v1.0.6
 
@@ -37,11 +44,6 @@ The source of this library is released under the BSD license (see LICENSE for de
 ### 2014-11-05 - v1.0.4
 
 * Fixed Issue #2, Throw exception `YouTrack\IncorrectLoginException` on incorrect login or password.
-
-### 2014-10-14 - v1.0.3
-
-* Added support for long parameter values for method `createIssue` (It was not possible to do a request with more than 8205 chars (InCloud, nginx 414-Error))
-* Improved DocBlocs for Connection class methods
 
 
 (Please look into CHANGELOG for a complete list of the past releases)

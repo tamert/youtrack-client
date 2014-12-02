@@ -1,5 +1,5 @@
 <?php
-
+$root = true;
 include_once 'config.php';
 
 $youtrack = new YouTrack\Connection(

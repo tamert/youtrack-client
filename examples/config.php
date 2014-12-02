@@ -4,12 +4,16 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 /*
- *  in my .auth.php file:
+ *  // in my .auth.php file, (needed for working examples):
  *  define('YOUTRACK_URL', 'https://...');
- *  define('YOUTRACK_USERNAME', '');
- *  define('YOUTRACK_PASSWORD', '');
+ *  if (isset($root)) {
+ *  define('YOUTRACK_USERNAME', 'root');
+ *  define('YOUTRACK_PASSWORD', '**secret**');
+ *  } else {
+ *  define('YOUTRACK_USERNAME', 'normal-user');
+ *  define('YOUTRACK_PASSWORD', 'secret**');
+ *  }
  */
-
 if (file_exists('.auth.php')) {
     include_once '.auth.php';
 }
