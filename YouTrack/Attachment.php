@@ -132,7 +132,7 @@ class Attachment extends Object
             try {
                 // The API returns the timestamp in milliseconds
                 // @see http://confluence.jetbrains.com/display/YTD4/Timestamps+in+REST+API
-                $ts = (int)(((int)$created) / 1000);
+                $ts = substr($created, 0, -3); // do not divide by 1000 (small integer php settings cause wrong ints)
                 $tmp = new \DateTime('@' . $ts);
             } catch (\Exception $e) {
 
