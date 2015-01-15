@@ -993,7 +993,7 @@ class Connection
             $params['runAs'] = (string)$runAs;
         }
 
-        $result = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute?' . http_build_query($params));
+        $result = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute', $params);
         $response = $result['response'];
         if ($response['http_code'] != 200) {
             return false;
