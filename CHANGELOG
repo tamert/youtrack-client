@@ -1,6 +1,11 @@
 # Changelog
 
 
+### 2015-01-15 - v1.0.8
+
+* Merged #5 'Fixed executing queries.'. Thanks [@wdamien](https://github.com/wdamien)
+* Added example for executing simple command
+
 ### 2014-12-02 - v1.0.7
 
 * Improved error handling - On 404 error, the call will throw a `YouTrack\NotFoundException`
