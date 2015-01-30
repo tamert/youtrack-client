@@ -45,7 +45,7 @@ class Issue extends Object
         foreach ($xml->children() as $nodeName=>$node) {
             if ($nodeName == 'comment')
             {
-                $this->comments[] = new Comment($node, $this->youtrack);    
+                $this->comments[] = new Comment(new \SimpleXMLElement($node->asXML()));    
                 continue;
             }
             foreach ($node->attributes() as $key => $value) {
