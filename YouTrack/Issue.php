@@ -43,7 +43,7 @@ class Issue extends Object
     protected function updateChildrenAttributes(\SimpleXMLElement $xml)
     {
         foreach ($xml->children() as $nodeName=>$node) {
-            if ($nodename == 'comment')
+            if ($nodeName == 'comment')
             {
                 $this->comments[] = new Comment($node, $this->youtrack);    
                 continue;
