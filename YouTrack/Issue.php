@@ -12,6 +12,7 @@ class Issue extends Object
 
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {
+        //bug
         parent::__construct($xml, $youtrack);
         if ($xml) {
             if (!empty($this->attributes['links'])) {
