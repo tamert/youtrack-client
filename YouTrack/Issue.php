@@ -40,6 +40,23 @@ class Issue extends Object
         }
     }
 
+    protected function updateChildrenAttributes(\SimpleXMLElement $xml)
+    {
+        foreach ($xml->children() as $nodeName => $node) {
+            if ($nodeName == 'comment') {
+                $this->comments[] = new Comment(new \SimpleXMLElement($node->asXML()));
+                continue;
+            }
+            foreach ($node->attributes() as $key => $value) {
+                if ($key == 'name') {
+                    $this->__set($value, (string)$node->value);
+                } else {
+                    $this->__set($key, (string)$value);
+                }
+            }
+        }
+    }
+
     /**
      * Returns the Issue Id (if it is already created or fetched)
      * @return string

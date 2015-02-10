@@ -964,6 +964,46 @@ class Connection
     }
 
     /**
+     * Get issues by filter only. Can be used to fetch issues without specifying project
+     *
+     * @link https://confluence.jetbrains.com/display/YTD6/Get+the+List+of+Issues
+     * @param string $filter A query to search for issues. You can also specify several queries.
+     *  Results for these search filters will be returned in subsequent blocks, a list of issues
+     *  per each filter.
+     * @param string $after A number of issues to skip before getting a list of issues. That is,
+     *  when you specify, for example, after=12 in request, then in the response you will get all
+     *  issues matching request but without first twelve issues found.
+     * @param string $max  Maximum number of issues to get. If not provided, only 10 issues will
+     *  be returned by default.
+     * @param string $with  List of fields that should be included in the result.
+     * @return Issue[]
+     */
+    public function getIssuesByFilter($filter, $after = null, $max = null, $with = null)
+    {
+        $params = array(
+            'filter' => (string)$filter,
+        );
+
+        if (isset($after)) {
+            $params['after'] = (string)$after;
+        }
+        if (isset($max)) {
+            $params['max'] = (string)$max;
+        }
+        if (isset($with)) {
+            $params['with'] = (string)$with;
+        }
+
+        $this->cleanUrlParameters($params);
+        $xml = $this->get('/issue' . '?' . http_build_query($params));
+        $issues = array();
+        foreach ($xml->children() as $issue) {
+            $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+        }
+        return $issues;
+    }
+
+    /**
      *  Apply Command to an Issue
      *
      * @link http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue
