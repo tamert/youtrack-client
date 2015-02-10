@@ -964,6 +964,38 @@ class Connection
     }
 
     /**
+     * Get issues by filter only. Can be used to fetch issues without specifying project
+     * @link https://confluence.jetbrains.com/display/YTD6/Get+the+List+of+Issues
+     * @param string $filter
+     * @param string $after
+     * @param string $max
+     * @param string $with
+     * @return array
+     */
+    public function getIssuesByFilter($filter, $after, $max, $with = null)
+    {
+        $params = array(
+            'after' => (string)$after,
+            'max' => (string)$max,
+            'filter' => (string)$filter,
+        );
+        
+        if (isset($with))
+        {
+            $params['with'] = (string)$with;
+        }
+        
+        $this->cleanUrlParameters($params);
+        $xml = $this->get('/issue' . '?' . http_build_query($params));
+        $issues = array();
+        foreach ($xml->children() as $issue) {
+            $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+        }
+        return $issues;
+    }
+    
+    
+    /**
      *  Apply Command to an Issue
      *
      * @link http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue
