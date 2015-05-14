@@ -86,7 +86,7 @@ class Connection
     {
         curl_setopt($this->http, CURLOPT_POST, true);
         curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1')); // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
-        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login='. urlencode($username) .'&password='. urlencode($password));
+        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login='. rawurlencode($username) .'&password='. rawurlencode($password));
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_HEADER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
@@ -371,7 +371,7 @@ class Connection
     public function getComments($id)
     {
         $comments = array();
-        $req = $this->request('GET', '/issue/'. urlencode($id) .'/comment');
+        $req = $this->request('GET', '/issue/'. rawurlencode($id) .'/comment');
         $xml = simplexml_load_string($req['content']);
         foreach($xml->children() as $node) {
             $comments[] = new Comment($node, $this);
@@ -386,7 +386,7 @@ class Connection
     public function getAttachments($id)
     {
         $attachments = array();
-        $req = $this->request('GET', '/issue/'. urlencode($id) .'/attachment');
+        $req = $this->request('GET', '/issue/'. rawurlencode($id) .'/attachment');
         $xml = simplexml_load_string($req['content']);
         foreach($xml->children() as $node) {
             $attachments[] = new Attachment($node, $this);
@@ -445,7 +445,7 @@ class Connection
 
         return $this->request(
             'POST',
-            '/issue/'. urlencode($issueId) .'/attachment?' . http_build_query($params),
+            '/issue/'. rawurlencode($issueId) .'/attachment?' . http_build_query($params),
             $attachment->getUrl()
         );
     }
@@ -459,7 +459,7 @@ class Connection
     public function getLinks($issueId , $outward_only = false)
     {
         $links = array();
-        $req = $this->request('GET', '/issue/'. urlencode($issueId) .'/link');
+        $req = $this->request('GET', '/issue/'. rawurlencode($issueId) .'/link');
         $xml = simplexml_load_string($req['content']);
         foreach($xml->children() as $node) {
             if (($node->attributes()->source != $issueId) || !$outward_only) {
@@ -475,7 +475,7 @@ class Connection
      */
     public function getUser($login)
     {
-        return new User($this->get('/admin/user/'. urlencode($login)), $this);
+        return new User($this->get('/admin/user/'. rawurlencode($login)), $this);
     }
 
     /**
@@ -510,7 +510,7 @@ class Connection
         foreach ($users as $user) {
             $xml .= "  <user";
             foreach ($user as $key => $value) {
-                $xml .= " $key=". urlencode($value);
+                $xml .= " $key=". rawurlencode($value);
             }
             $xml .= " />\n";
         }
@@ -539,7 +539,7 @@ class Connection
      */
     public function getProject($project_id)
     {
-        return new Project($this->get('/admin/project/'. urlencode($project_id)), $this);
+        return new Project($this->get('/admin/project/'. rawurlencode($project_id)), $this);
     }
 
     /**
@@ -548,7 +548,7 @@ class Connection
      */
     public function getProjectAssigneeGroups($project_id)
     {
-        $xml = $this->get('/admin/project/'. urlencode($project_id) .'/assignee/group');
+        $xml = $this->get('/admin/project/'. rawurlencode($project_id) .'/assignee/group');
         $groups = array();
         foreach ($xml->children() as $group) {
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
@@ -562,7 +562,7 @@ class Connection
      */
     public function getGroup($name)
     {
-        return new Group($this->get('/admin/group/'. urlencode($name)), $this);
+        return new Group($this->get('/admin/group/'. rawurlencode($name)), $this);
     }
 
     /**
@@ -571,7 +571,7 @@ class Connection
      */
     public function getUserGroups($login)
     {
-        $xml = $this->get('/admin/user/'. urlencode($login) .'/group');
+        $xml = $this->get('/admin/user/'. rawurlencode($login) .'/group');
         $groups = array();
         foreach ($xml->children() as $group) {
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
@@ -588,7 +588,7 @@ class Connection
      */
     public function setUserGroup($login, $group_name)
     {
-        $r = $this->request('POST', '/admin/user/'. urlencode($login) .'/group/'. urlencode($group_name));
+        $r = $this->request('POST', '/admin/user/'. rawurlencode($login) .'/group/'. rawurlencode($group_name));
         return $r['response'];
     }
 
@@ -598,7 +598,7 @@ class Connection
      */
     public function createGroup(Group $group)
     {
-        $r = $this->put('/admin/group/' . urlencode($group->name) . '?description=noDescription&autoJoin=false');
+        $r = $this->put('/admin/group/' . rawurlencode($group->name) . '?description=noDescription&autoJoin=false');
         return $r['response'];
     }
 
@@ -608,7 +608,7 @@ class Connection
      */
     public function getRole($name)
     {
-        return new Role($this->get('/admin/role/' . urlencode($name)), $this);
+        return new Role($this->get('/admin/role/' . rawurlencode($name)), $this);
     }
 
     /**
@@ -617,7 +617,7 @@ class Connection
      */
     public function getUserRoles($username)
     {
-        $xml = $this->get('/admin/user/'. urlencode($username) .'/role');
+        $xml = $this->get('/admin/user/'. rawurlencode($username) .'/role');
         $roles = array();
         foreach ($xml->children() as $role) {
             $roles[] = new Role(new \SimpleXMLElement($role->asXML()), $this);
@@ -633,7 +633,7 @@ class Connection
     public function getSubsystem($project_id, $name)
     {
         return new Subsystem(
-            $this->get('/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)),
+            $this->get('/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name)),
             $this
         );
     }
@@ -647,7 +647,7 @@ class Connection
         if (empty($project_id)) {
             throw new \InvalidArgumentException('You need to set an valid project id to get the subsystems');
         }
-        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/subsystem');
+        $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/subsystem');
         $subsystems = array();
         foreach ($xml->children() as $subsystem) {
             $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()), $this);
@@ -661,7 +661,7 @@ class Connection
      */
     public function getVersions($project_id)
     {
-        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/version?showReleased=true');
+        $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/version?showReleased=true');
         $versions = array();
         foreach ($xml->children() as $version) {
             $versions[] = new Version(new \SimpleXMLElement($version->asXML()), $this);
@@ -677,7 +677,7 @@ class Connection
     public function getVersion($project_id, $name)
     {
         return new Version(
-            $this->get('/admin/project/' . urlencode($project_id) . '/version/' . urlencode($name)),
+            $this->get('/admin/project/' . rawurlencode($project_id) . '/version/' . rawurlencode($name)),
             $this
         );
     }
@@ -688,7 +688,7 @@ class Connection
      */
     public function getBuilds($project_id)
     {
-        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/build');
+        $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/build');
         $builds = array();
         foreach ($xml->children() as $build) {
             $builds[] = new Build(new \SimpleXMLElement($build->asXML()), $this);
@@ -758,7 +758,7 @@ class Connection
             'lead' => (string)$project_lead_login,
             'startingNumber' => (string)$starting_number,
         );
-        return $this->put('/admin/project/' . urlencode($project_id) . '?' . http_build_query($params));
+        return $this->put('/admin/project/' . rawurlencode($project_id) . '?' . http_build_query($params));
     }
 
     /**
@@ -801,7 +801,7 @@ class Connection
             'defaultAssignee' => (string)$default_assignee_login,
         );
         $this->put(
-            '/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name) . '?' . http_build_query(
+            '/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name) . '?' . http_build_query(
                 $params
             )
         );
@@ -817,7 +817,7 @@ class Connection
     {
         return $this->requestXml(
             'DELETE',
-            '/admin/project/' . urlencode($project_id) . '/subsystem/' . urlencode($name)
+            '/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name)
         );
     }
 
@@ -875,7 +875,7 @@ class Connection
             $params['releaseDate'] = $release_date;
         }
         return $this->put(
-            '/admin/project/' . urldecode($project_id) . '/version/' . urlencode($name) . '?' . http_build_query(
+            '/admin/project/' . urldecode($project_id) . '/version/' . rawurlencode($name) . '?' . http_build_query(
                 $params
             )
         );
@@ -1033,7 +1033,7 @@ class Connection
             $params['runAs'] = (string)$runAs;
         }
 
-        $result = $this->request('POST', '/issue/' . urlencode($issue_id) . '/execute', $params);
+        $result = $this->request('POST', '/issue/' . rawurlencode($issue_id) . '/execute', $params);
         $response = $result['response'];
         if ($response['http_code'] != 200) {
             return false;
@@ -1047,7 +1047,7 @@ class Connection
      */
     public function getCustomField($name)
     {
-        return new CustomField($this->get('/admin/customfield/field/' . urlencode($name)), $this);
+        return new CustomField($this->get('/admin/customfield/field/' . rawurlencode($name)), $this);
     }
 
     /**
@@ -1101,7 +1101,7 @@ class Connection
             'isPrivate' => (string)$is_private,
             'defaultVisibility' => (string)$default_visibility,
         );
-        $this->put('/admin/customfield/field/' . urlencode($name) . '?' . http_build_query($params));
+        $this->put('/admin/customfield/field/' . rawurlencode($name) . '?' . http_build_query($params));
         return 'Created';
     }
 
@@ -1111,7 +1111,7 @@ class Connection
      */
     public function getEnumBundle($name)
     {
-        return new EnumBundle($this->get('/admin/customfield/bundle/' . urlencode($name)), $this);
+        return new EnumBundle($this->get('/admin/customfield/bundle/' . rawurlencode($name)), $this);
     }
 
     /**
@@ -1131,7 +1131,7 @@ class Connection
      */
     public function deleteEnumBundle($name)
     {
-        $r = $this->request('DELETE', '/admin/customfield/bundle/' . urlencode($name), '');
+        $r = $this->request('DELETE', '/admin/customfield/bundle/' . rawurlencode($name), '');
         return $r['content'];
     }
 
@@ -1142,7 +1142,7 @@ class Connection
      */
     public function addValueToEnumBundle($name, $value)
     {
-        return $this->put('/admin/customfield/bundle/' . urlencode($name) . '/' . urlencode($value));
+        return $this->put('/admin/customfield/bundle/' . rawurlencode($name) . '/' . rawurlencode($value));
     }
 
     /**
@@ -1166,7 +1166,7 @@ class Connection
     public function getProjectCustomField($project_id, $name)
     {
         return new CustomField(
-            $this->get('/admin/project/' . urlencode($project_id) . '/customfield/' . urlencode($name)),
+            $this->get('/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name)),
             $this
         );
     }
@@ -1177,7 +1177,7 @@ class Connection
      */
     public function getProjectCustomFields($project_id)
     {
-        $xml = $this->get('/admin/project/' . urlencode($project_id) . '/customfield');
+        $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/customfield');
         $fields = array();
         foreach ($xml->children() as $cfield) {
             $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()), $this);
@@ -1211,7 +1211,7 @@ class Connection
             $_params = array_merge($_params, $params);
         }
         return $this->put(
-            '/admin/project/' . urlencode($project_id) . '/customfield/' . urlencode($name) . '?' . http_build_query(
+            '/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name) . '?' . http_build_query(
                 $_params
             )
         );
@@ -1263,7 +1263,7 @@ class Connection
             'inwardName' => (string)$inward_name,
             'directed' => (string)$directed,
         );
-        return $this->put('/admin/issueLinkType/' . urlencode($name) . '?' . http_build_query($params));
+        return $this->put('/admin/issueLinkType/' . rawurlencode($name) . '?' . http_build_query($params));
     }
 
     /**
@@ -1313,7 +1313,7 @@ class Connection
     */
     public function getStateBundle($name)
     {
-        $cmd = '/admin/customfield/stateBundle/' . urlencode($name);
+        $cmd = '/admin/customfield/stateBundle/' . rawurlencode($name);
         $xml = $this->get($cmd);
         $bundle = null;
         foreach($xml->children() as $node) {
