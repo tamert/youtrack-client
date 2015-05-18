@@ -336,7 +336,7 @@ class Connection
         if (empty($body)) {
             $body = null;
         }
-        $issue = $this->requestXml('POST', '/issue?'. http_build_query($params), $body);
+        $issue = $this->requestXml('PUT', '/issue?'. http_build_query($params), $body);
         return new Issue($issue, $this);
     }
 
