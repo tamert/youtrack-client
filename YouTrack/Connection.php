@@ -419,35 +419,75 @@ class Connection
      */
     public function createAttachmentFromAttachment($issueId, Attachment $attachment)
     {
-        $params = array(
-            // 'group' => '',
-            // 'name' => '',
-            // 'authorLogin' => '',
-            // 'created' => time()*1000
+        $params = $this->getAttachmentParams(
+            $attachment->getName(),
+            $attachment->getAuthorLogin(),
+            $attachment->getCreated(),
+            $attachment->getGroup()
         );
-
-        if ($attachment->getGroup()) {
-            $params['group'] = $attachment->getGroup();
-        }
-        if ($attachment->getName()) {
-            $params['name'] = $attachment->getName();
-        }
-        if ($attachment->getAuthorLogin()) {
-            $params['authorLogin'] = $attachment->getAuthorLogin();
-        }
-        if ($attachment->getCreated()) {
-            $created = $attachment->getCreated();
-            if ($created instanceof \DateTime) {
-                $created = $created->getTimestamp()*1000;
-            }
-            $params['created'] = $created;
-        }
 
         return $this->request(
             'POST',
             '/issue/'. rawurlencode($issueId) .'/attachment?' . http_build_query($params),
             $attachment->getUrl()
         );
+    }
+
+    /**
+     * @param string    $issueId
+     * @param string    $filename
+     * @param string    $name
+     * @param string    $authorLogin
+     * @param \DateTime $created
+     * @param string    $group
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public function createAttachment($issueId, $filename, $name = '', $authorLogin = '', \DateTime $created = null, $group = '')
+    {
+        if (!file_exists($filename)) {
+            throw new \Exception("Can't open file $filename!");
+        }
+
+        $params = $this->getAttachmentParams($name, $authorLogin, $created, $group);
+
+        return $this->request(
+            'POST',
+            '/issue/' . rawurlencode($issueId) . '/attachment?' . http_build_query($params),
+            $filename
+        );
+    }
+
+    /**
+     * @param string    $name
+     * @param string    $authorLogin
+     * @param \DateTime $created
+     * @param string    $group
+     *
+     * @return array
+     */
+    protected function getAttachmentParams($name, $authorLogin, $created, $group)
+    {
+        $params = array();
+
+        if ($name) {
+            $params['name'] = $name;
+        }
+        if ($authorLogin) {
+            $params['authorLogin'] = $authorLogin;
+        }
+        if ($group) {
+            $params['group'] = $group;
+        }
+        if ($created) {
+            if ($created instanceof \DateTime) {
+                $created = $created->getTimestamp() * 1000;
+            }
+            $params['created'] = $created;
+        }
+
+        return $params;
     }
 
     /**
