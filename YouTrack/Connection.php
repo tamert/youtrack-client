@@ -61,11 +61,11 @@ class Connection
     }
 
     /**
-    * Loop through the given array and remove all entries
-    * that have no value assigned.
-    *
-    * @param array &$params The array to inspect and clean up.
-    */
+     * Loop through the given array and remove all entries
+     * that have no value assigned.
+     *
+     * @param array &$params The array to inspect and clean up.
+     */
     private function cleanUrlParameters(&$params)
     {
         if (!empty($params) && is_array($params)) {
@@ -86,7 +86,7 @@ class Connection
     {
         curl_setopt($this->http, CURLOPT_POST, true);
         curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1')); // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
-        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login='. rawurlencode($username) .'&password='. rawurlencode($password));
+        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login=' . rawurlencode($username) . '&password=' . rawurlencode($password));
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_HEADER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
@@ -110,30 +110,30 @@ class Connection
      */
     protected function handleLoginResponse($content, array $response)
     {
-        if ((int) $response['http_code'] != 200) {
-            if ((int) $response['http_code'] == 403) {
+        if ((int)$response['http_code'] != 200) {
+            if ((int)$response['http_code'] == 403) {
                 throw new IncorrectLoginException('/user/login', $response, $content);
             }
             throw new Exception('/user/login', $response, $content);
         }
         $cookies = array();
         preg_match_all('/^Set-Cookie: (.*?)=(.*?)$/sm', $content, $cookies, PREG_SET_ORDER);
-        foreach($cookies as $cookie) {
+        foreach ($cookies as $cookie) {
             $parts = parse_url($cookie[0]);
             $this->cookies[] = $parts['path'];
         }
     }
 
     /**
-    * Execute a request with the given parameters and return the response.
-    *
-    * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
-    * @param string $method The http method (GET, PUT, POST).
-    * @param string $url The request url.
-    * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an array, it will be used as CURLOPT_POSTFIELDS
-    * @param int $ignore_http_return_status Ignore the given http status code.
-    * @return array An array holding the response content in 'content' and the response status in 'response'.
-    */
+     * Execute a request with the given parameters and return the response.
+     *
+     * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
+     * @param string $method The http method (GET, PUT, POST).
+     * @param string $url The request url.
+     * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an array, it will be used as CURLOPT_POSTFIELDS
+     * @param int $ignore_http_return_status Ignore the given http status code.
+     * @return array An array holding the response content in 'content' and the response status in 'response'.
+     */
     protected function request($method, $url, $body = null, $ignore_http_return_status = 0)
     {
         if (substr($url, 0, strlen('http://')) != 'http://'
@@ -150,7 +150,7 @@ class Connection
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 } else {
                     $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: '. mb_strlen($body);
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . mb_strlen($body);
                 }
             }
         }
@@ -194,7 +194,7 @@ class Connection
                     }
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 }
-            break;
+                break;
             default:
                 throw new \Exception("Unknown HTTP method $method for YouTrack!");
         }
@@ -209,14 +209,14 @@ class Connection
         curl_close($this->http);
 
         if (
-            (int) $response['http_code'] != 200 &&
-            (int) $response['http_code'] != 201 &&
-            (int) $response['http_code'] != $ignore_http_return_status
+            (int)$response['http_code'] != 200 &&
+            (int)$response['http_code'] != 201 &&
+            (int)$response['http_code'] != $ignore_http_return_status
         ) {
-            if ((int) $response['http_code'] === 403) {
+            if ((int)$response['http_code'] === 403) {
                 throw new NotAuthorizedException($url, $response, $content);
             }
-            if ((int) $response['http_code'] === 404) {
+            if ((int)$response['http_code'] === 404) {
                 throw new NotFoundException($url, $response, $content);
             }
             throw new Exception($url, $response, $content);
@@ -225,12 +225,12 @@ class Connection
         if ($this->responseLogging) {
             // for fetching results for test data
             if (!empty($content)) {
-                file_put_contents($this->responseLoggingPath . '/' . md5($content).'.xml', $content);
+                file_put_contents($this->responseLoggingPath . '/' . md5($content) . '.xml', $content);
             }
         }
 
         return array(
-            'content' => $content,
+            'content'  => $content,
             'response' => $response,
         );
     }
@@ -297,18 +297,18 @@ class Connection
      * may be this is an general $params value:
      * <code>
      *  $params = array(
-        'project' => $project,
-        'assignee' => $assignee,
-        'summary' => $summary,
-        'description' => $description,
-        'priority' => $priority,
-        'type' => $type,
-        'subsystem' => $subsystem,
-        'state' => $state,
-        'affectsVersion' => $affectsVersion,
-        'fixedVersion' => $fixedVersion,
-        'fixedInBuild' => $fixedInBuild,
-        );
+     * 'project' => $project,
+     * 'assignee' => $assignee,
+     * 'summary' => $summary,
+     * 'description' => $description,
+     * 'priority' => $priority,
+     * 'type' => $type,
+     * 'subsystem' => $subsystem,
+     * 'state' => $state,
+     * 'affectsVersion' => $affectsVersion,
+     * 'fixedVersion' => $fixedVersion,
+     * 'fixedInBuild' => $fixedInBuild,
+     * );
      * </code>
      *
      * @param string $project the obligatory project name
@@ -358,9 +358,9 @@ class Connection
     public function getComments($id)
     {
         $comments = array();
-        $req = $this->request('GET', '/issue/'. rawurlencode($id) .'/comment');
+        $req = $this->request('GET', '/issue/' . rawurlencode($id) . '/comment');
         $xml = simplexml_load_string($req['content']);
-        foreach($xml->children() as $node) {
+        foreach ($xml->children() as $node) {
             $comments[] = new Comment($node, $this);
         }
         return $comments;
@@ -373,9 +373,9 @@ class Connection
     public function getAttachments($id)
     {
         $attachments = array();
-        $req = $this->request('GET', '/issue/'. rawurlencode($id) .'/attachment');
+        $req = $this->request('GET', '/issue/' . rawurlencode($id) . '/attachment');
         $xml = simplexml_load_string($req['content']);
-        foreach($xml->children() as $node) {
+        foreach ($xml->children() as $node) {
             $attachments[] = new Attachment($node, $this);
         }
         return $attachments;
@@ -415,18 +415,18 @@ class Connection
 
         return $this->request(
             'POST',
-            '/issue/'. rawurlencode($issueId) .'/attachment?' . http_build_query($params),
+            '/issue/' . rawurlencode($issueId) . '/attachment?' . http_build_query($params),
             $attachment->getUrl()
         );
     }
 
     /**
-     * @param string    $issueId
-     * @param string    $filename
-     * @param string    $name
-     * @param string    $authorLogin
+     * @param string $issueId
+     * @param string $filename
+     * @param string $name
+     * @param string $authorLogin
      * @param \DateTime $created
-     * @param string    $group
+     * @param string $group
      *
      * @return array
      * @throws \Exception
@@ -447,10 +447,10 @@ class Connection
     }
 
     /**
-     * @param string    $name
-     * @param string    $authorLogin
+     * @param string $name
+     * @param string $authorLogin
      * @param \DateTime $created
-     * @param string    $group
+     * @param string $group
      *
      * @return array
      */
@@ -483,12 +483,12 @@ class Connection
      * @return Link[]
      * @throws \Exception
      */
-    public function getLinks($issueId , $outward_only = false)
+    public function getLinks($issueId, $outward_only = false)
     {
         $links = array();
-        $req = $this->request('GET', '/issue/'. rawurlencode($issueId) .'/link');
+        $req = $this->request('GET', '/issue/' . rawurlencode($issueId) . '/link');
         $xml = simplexml_load_string($req['content']);
-        foreach($xml->children() as $node) {
+        foreach ($xml->children() as $node) {
             if (($node->attributes()->source != $issueId) || !$outward_only) {
                 $links[] = new Link($node, $this);
             }
@@ -502,7 +502,7 @@ class Connection
      */
     public function getUser($login)
     {
-        return new User($this->get('/admin/user/'. rawurlencode($login)), $this);
+        return new User($this->get('/admin/user/' . rawurlencode($login)), $this);
     }
 
     /**
@@ -537,7 +537,7 @@ class Connection
         foreach ($users as $user) {
             $xml .= "  <user";
             foreach ($user as $key => $value) {
-                $xml .= " $key=". rawurlencode($value);
+                $xml .= " $key=" . rawurlencode($value);
             }
             $xml .= " />\n";
         }
@@ -566,7 +566,7 @@ class Connection
      */
     public function getProject($project_id)
     {
-        return new Project($this->get('/admin/project/'. rawurlencode($project_id)), $this);
+        return new Project($this->get('/admin/project/' . rawurlencode($project_id)), $this);
     }
 
     /**
@@ -575,7 +575,7 @@ class Connection
      */
     public function getProjectAssigneeGroups($project_id)
     {
-        $xml = $this->get('/admin/project/'. rawurlencode($project_id) .'/assignee/group');
+        $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/assignee/group');
         $groups = array();
         foreach ($xml->children() as $group) {
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
@@ -589,7 +589,7 @@ class Connection
      */
     public function getGroup($name)
     {
-        return new Group($this->get('/admin/group/'. rawurlencode($name)), $this);
+        return new Group($this->get('/admin/group/' . rawurlencode($name)), $this);
     }
 
     /**
@@ -598,7 +598,7 @@ class Connection
      */
     public function getUserGroups($login)
     {
-        $xml = $this->get('/admin/user/'. rawurlencode($login) .'/group');
+        $xml = $this->get('/admin/user/' . rawurlencode($login) . '/group');
         $groups = array();
         foreach ($xml->children() as $group) {
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
@@ -615,7 +615,7 @@ class Connection
      */
     public function setUserGroup($login, $group_name)
     {
-        $r = $this->request('POST', '/admin/user/'. rawurlencode($login) .'/group/'. rawurlencode($group_name));
+        $r = $this->request('POST', '/admin/user/' . rawurlencode($login) . '/group/' . rawurlencode($group_name));
         return $r['response'];
     }
 
@@ -644,7 +644,7 @@ class Connection
      */
     public function getUserRoles($username)
     {
-        $xml = $this->get('/admin/user/'. rawurlencode($username) .'/role');
+        $xml = $this->get('/admin/user/' . rawurlencode($username) . '/role');
         $roles = array();
         foreach ($xml->children() as $role) {
             $roles[] = new Role(new \SimpleXMLElement($role->asXML()), $this);
@@ -777,13 +777,14 @@ class Connection
         $project_description,
         $project_lead_login,
         $starting_number = 1
-    ) {
+    )
+    {
         $params = array(
-            'projectName' => (string)$project_name,
-            'description' => (string)$project_description,
+            'projectName'      => (string)$project_name,
+            'description'      => (string)$project_description,
             'projectLeadLogin' => (string)$project_lead_login,
-            'lead' => (string)$project_lead_login,
-            'startingNumber' => (string)$starting_number,
+            'lead'             => (string)$project_lead_login,
+            'startingNumber'   => (string)$starting_number,
         );
         return $this->put('/admin/project/' . rawurlencode($project_id) . '?' . http_build_query($params));
     }
@@ -824,7 +825,7 @@ class Connection
     public function createSubsystemDetailed($project_id, $name, $is_default, $default_assignee_login)
     {
         $params = array(
-            'isDefault' => (string)$is_default,
+            'isDefault'       => (string)$is_default,
             'defaultAssignee' => (string)$default_assignee_login,
         );
         $this->put(
@@ -892,11 +893,12 @@ class Connection
         $is_archived,
         $release_date = null,
         $description = ''
-    ) {
+    )
+    {
         $params = array(
             'description' => (string)$description,
-            'isReleased' => (string)$is_released,
-            'isArchived' => (string)$is_archived,
+            'isReleased'  => (string)$is_released,
+            'isArchived'  => (string)$is_archived,
         );
         if (!empty($release_date)) {
             $params['releaseDate'] = $release_date;
@@ -944,7 +946,7 @@ class Connection
         $body .= '</queries>';
 
         $rough = $rough ? 'true' : 'false';
-        $sync  = $sync  ? 'true' : 'false';
+        $sync = $sync ? 'true' : 'false';
 
         $xml = $this->requestXml(
             'POST',
@@ -977,8 +979,8 @@ class Connection
     public function getIssues($project_id, $filter, $after, $max)
     {
         $params = array(
-            'after' => (string)$after,
-            'max' => (string)$max,
+            'after'  => (string)$after,
+            'max'    => (string)$max,
             'filter' => (string)$filter,
         );
         $this->cleanUrlParameters($params);
@@ -1000,9 +1002,9 @@ class Connection
      * @param string $after A number of issues to skip before getting a list of issues. That is,
      *  when you specify, for example, after=12 in request, then in the response you will get all
      *  issues matching request but without first twelve issues found.
-     * @param string $max  Maximum number of issues to get. If not provided, only 10 issues will
+     * @param string $max Maximum number of issues to get. If not provided, only 10 issues will
      *  be returned by default.
-     * @param string $with  List of fields that should be included in the result.
+     * @param string $with List of fields that should be included in the result.
      * @return Issue[]
      */
     public function getIssuesByFilter($filter, $after = null, $max = null, $with = null)
@@ -1038,7 +1040,7 @@ class Connection
      * @param string $command A command to apply
      * @param string|null $comment A comment to add to an issue.
      * @param string|null $group User group name. Use to specify visibility settings of a comment to be post.
-     * @param bool $disableNotifications  If set 'true' then no notifications about changes made with the specified command will be send. By default, is 'false'.
+     * @param bool $disableNotifications If set 'true' then no notifications about changes made with the specified command will be send. By default, is 'false'.
      * @param string|null $runAs Login for a user on whose behalf the command should be executed.
      * @return bool If YouTrack returns with HTTP 200 true, else false
      * @throws Exception
@@ -1047,7 +1049,7 @@ class Connection
     public function executeCommand($issue_id, $command, $comment = null, $group = null, $disableNotifications = false, $runAs = null)
     {
         $params = array(
-            'command' => (string)$command,
+            'command'              => (string)$command,
             'disableNotifications' => (boolean)$disableNotifications,
         );
         if (!empty($comment)) {
@@ -1124,8 +1126,8 @@ class Connection
     public function createCustomFieldDetailed($name, $type_name, $is_private, $default_visibility)
     {
         $params = array(
-            'typeName' => (string)$type_name,
-            'isPrivate' => (string)$is_private,
+            'typeName'          => (string)$type_name,
+            'isPrivate'         => (string)$is_private,
             'defaultVisibility' => (string)$default_visibility,
         );
         $this->put('/admin/customfield/field/' . rawurlencode($name) . '?' . http_build_query($params));
@@ -1287,8 +1289,8 @@ class Connection
     {
         $params = array(
             'outwardName' => (string)$outward_name,
-            'inwardName' => (string)$inward_name,
-            'directed' => (string)$directed,
+            'inwardName'  => (string)$inward_name,
+            'directed'    => (string)$directed,
         );
         return $this->put('/admin/issueLinkType/' . rawurlencode($name) . '?' . http_build_query($params));
     }
@@ -1302,51 +1304,52 @@ class Connection
     }
 
     /**
-    * Use this method to enable or disable the ssl_verifypeer option of curl.
-    * This is usefull if you use self-signed ssl certificates.
-    *
-    * @param bool $verify_ssl
-    * @return void
-    */
-    public function setVerifySsl($verify_ssl) {
+     * Use this method to enable or disable the ssl_verifypeer option of curl.
+     * This is usefull if you use self-signed ssl certificates.
+     *
+     * @param bool $verify_ssl
+     * @return void
+     */
+    public function setVerifySsl($verify_ssl)
+    {
         $this->verify_ssl = $verify_ssl;
     }
 
     /**
-    * get pairs (state,revolved attribute) in hash.
-    * same info is get online on:
-    * Project Fields › States (Click to change bundle name)
-    *
-    * @return null|array hash key: state string
-    *              value: true is resolved attribute set to true
-    */
+     * get pairs (state,revolved attribute) in hash.
+     * same info is get online on:
+     * Project Fields › States (Click to change bundle name)
+     *
+     * @return null|array hash key: state string
+     *              value: true is resolved attribute set to true
+     */
     public function getGlobalIssueStates()
     {
         $xml = $this->get('/project/states');
         $states = null;
-        foreach($xml->children() as $node) {
+        foreach ($xml->children() as $node) {
             $states[(string)$node['name']] = ((string)$node['resolved'] == 'true');
         }
         return $states;
     }
 
     /**
-    * useful when you have configured different states for different projects
-    * in this cases you will create bundles with name with global scope,
-    * i.e. name can not be repeated on youtrack installation.
-    *
-    * @param string $name
-    * @return string hash key: state string value: hash('description' => string, 'isResolved' => boolean)
-    */
+     * useful when you have configured different states for different projects
+     * in this cases you will create bundles with name with global scope,
+     * i.e. name can not be repeated on youtrack installation.
+     *
+     * @param string $name
+     * @return string hash key: state string value: hash('description' => string, 'isResolved' => boolean)
+     */
     public function getStateBundle($name)
     {
         $cmd = '/admin/customfield/stateBundle/' . rawurlencode($name);
         $xml = $this->get($cmd);
         $bundle = null;
-        foreach($xml->children() as $node) {
+        foreach ($xml->children() as $node) {
             $bundle[(string)$node] = array(
                 'description' => (isset($node['description']) ? (string)$node['description'] : ''),
-                'isResolved' => ((string)$node['isResolved']=='true')
+                'isResolved'  => ((string)$node['isResolved'] == 'true')
             );
         }
         return $bundle;
