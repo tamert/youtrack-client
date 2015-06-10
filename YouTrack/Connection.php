@@ -185,6 +185,10 @@ class Connection
                             && class_exists('\\CURLFile')
                         ) {
                             $file = new \CURLFile($body);
+                            $mimeType = $this->getMimeTypeByFileExtension($body);
+                            if (null !== $mimeType) {
+                                $file->setMimeType($mimeType);
+                            }
                         } else {
                             $file = '@' . $body;
                         }
@@ -1353,5 +1357,29 @@ class Connection
             );
         }
         return $bundle;
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return null|string
+     */
+    private function getMimeTypeByFileExtension($filename)
+    {
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $ext = strtolower($ext);
+
+        $map = array(
+            'png'  => 'image/png',
+            'gif'  => 'image/gif',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg'
+        );
+
+        if (isset($map[$ext])) {
+            return $map[$ext];
+        }
+
+        return null;
     }
 }
