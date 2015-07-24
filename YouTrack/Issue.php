@@ -111,6 +111,14 @@ class Issue extends Object
     }
 
     /**
+     * @return bool
+     */
+    public function hasComments()
+    {
+        return count($this->comments) > 0;
+    }
+
+    /**
      * @return array|Attachment[]
      */
     public function getAttachments()
@@ -122,6 +130,14 @@ class Issue extends Object
     }
 
     /**
+     * @return bool
+     */
+    public function hasAttachments()
+    {
+        return count($this->attachments) > 0;
+    }
+
+    /**
      * @return Link[]
      */
     public function getLinks()
@@ -130,5 +146,13 @@ class Issue extends Object
             $this->links = $this->youtrack->getLinks($this->__get('id'));
         }
         return $this->links;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasLinks()
+    {
+        return count($this->links) > 0;
     }
 }
