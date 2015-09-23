@@ -40,6 +40,23 @@ class Issue extends Object
         }
     }
 
+    protected function updateChildrenAttributes(\SimpleXMLElement $xml)
+    {
+        foreach ($xml->children() as $nodeName => $node) {
+            if ($nodeName == 'comment') {
+                $this->comments[] = new Comment(new \SimpleXMLElement($node->asXML()));
+                continue;
+            }
+            foreach ($node->attributes() as $key => $value) {
+                if ($key == 'name') {
+                    $this->__set($value, (string)$node->value);
+                } else {
+                    $this->__set($key, (string)$value);
+                }
+            }
+        }
+    }
+
     /**
      * Returns the Issue Id (if it is already created or fetched)
      * @return string
@@ -94,6 +111,14 @@ class Issue extends Object
     }
 
     /**
+     * @return bool
+     */
+    public function hasComments()
+    {
+        return count($this->comments) > 0;
+    }
+
+    /**
      * @return array|Attachment[]
      */
     public function getAttachments()
@@ -105,6 +130,14 @@ class Issue extends Object
     }
 
     /**
+     * @return bool
+     */
+    public function hasAttachments()
+    {
+        return count($this->attachments) > 0;
+    }
+
+    /**
      * @return Link[]
      */
     public function getLinks()
@@ -113,5 +146,13 @@ class Issue extends Object
             $this->links = $this->youtrack->getLinks($this->__get('id'));
         }
         return $this->links;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasLinks()
+    {
+        return count($this->links) > 0;
     }
 }

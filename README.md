@@ -25,6 +25,15 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
+### 2015-02-10 - v1.0.9
+
+* Merged #6 'Fetch issues by filter only + with comments'. Thanks [@chabberwock](https://github.com/chabberwock)
+
+### 2015-01-15 - v1.0.8
+
+* Merged #5 'Fixed executing queries.'. Thanks [@wdamien](https://github.com/wdamien)
+* Added example for executing simple command
+
 ### 2014-12-02 - v1.0.7
 
 * Improved error handling - On 404 error, the call will throw a `YouTrack\NotFoundException`
@@ -34,16 +43,6 @@ The source of this library is released under the BSD license (see LICENSE for de
 ### 2014-11-29 - v1.0.6
 
 * Fixed Issue #4, Improved `getAccessibleProjects`, see `examples/get-all-projects.php`. Thanks [@openWebX](https://github.com/openWebX)
-
-### 2014-11-29 - v1.0.5
-
-* Fixed Issue #3, Added method `getUserRoles`, see `examples/get-user-roles.php`. Thanks [@openWebX](https://github.com/openWebX)
-* Improved exception handling (on 403 errors, an `NotAuthorizedException` will be thrown)
-* YouTrack-Exceptions are now `YouTrack\Error` aware (`$e->getYouTrackError()`)
-
-### 2014-11-05 - v1.0.4
-
-* Fixed Issue #2, Throw exception `YouTrack\IncorrectLoginException` on incorrect login or password.
 
 
 (Please look into CHANGELOG for a complete list of the past releases)
@@ -122,3 +121,6 @@ The unit tests are incomplete but you can run them using `phpunit` like this:
 * [@Limelyte](https://github.com/Limelyte)
 * [@1ed](https://github.com/1ed)
 * [@openWebX](https://github.com/openWebX)
+* [@wdamien](https://github.com/wdamien)
+
+(and more: https://github.com/nepda/youtrack/network/members)
