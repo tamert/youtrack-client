@@ -1402,4 +1402,15 @@ class Connection
         $xml .= "</workItems>";
         return $this->requestXml('PUT', '/import/issue/'. urlencode($issueId) .'/workitems', $xml, 400);
     }
+
+    public function getWorkitems($issueId)
+    {
+        $items = array();
+        $req = $this->request('GET', '/issue/'. urlencode($issueId) .'/timetracking/workitem/');
+        $xml = simplexml_load_string($req['content']);
+        foreach($xml->children() as $node) {
+            $items[] = new Workitem($node, $this);
+        }
+        return $items;
+    }
 }

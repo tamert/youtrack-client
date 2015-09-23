@@ -100,4 +100,15 @@ class Project extends Object
     {
         return $this->__get('shortName');
     }
+
+    /**
+     * Returns the name
+     *
+     * @return string
+     * @see setName
+     */
+    public function getName()
+    {
+        return $this->__get('name');
+    }
 }
