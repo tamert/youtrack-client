@@ -19,9 +19,12 @@ class Workitem extends Object
             $this->author = new User(null, $youtrack);
             $this->author->__set('login', (string)$xml->author);
         }
+    }
 
-        if (isset($xml->duration)) {
-             $this->duration = (string)$xml->duration;
+    protected function updateChildrenAttributes(\SimpleXMLElement $xml)
+    {
+        foreach ($xml->children() as $nodeName => $node) {
+            $this->attributes[$nodeName] = (string)$node;
         }
     }
 }

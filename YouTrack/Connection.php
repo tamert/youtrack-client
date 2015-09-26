@@ -1480,7 +1480,16 @@ class Connection
         return null;
     }
 
-    public function importWorkitem($issueId, $workItems)
+    /**
+     * Import workitems for a given issue
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Import+Workitems
+     *
+     * @param $issueId
+     * @param $workItems
+     * @return \SimpleXMLElement
+     */
+    public function importWorkitems($issueId, $workItems)
     {
         if (count($workItems) <= 0) {
             return;
@@ -1501,6 +1510,15 @@ class Connection
         return $this->requestXml('PUT', '/import/issue/'. urlencode($issueId) .'/workitems', $xml, 400);
     }
 
+    /**
+     * Get all workitems for a given issue
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Get+Available+Work+Items+of+Issue
+     *
+     * @param $issueId
+     *
+     * @return array
+     */
     public function getWorkitems($issueId)
     {
         $items = array();
