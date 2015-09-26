@@ -33,6 +33,22 @@ class Object {
         return null;
     }
 
+    public function __call($name, $args)
+    {
+        // Magic getter
+        if (substr($name, 0, 3) === 'get' && strlen($name) > 3) {
+            $name = strtolower($name{3}) . substr($name, 4);
+            if (!empty($this->attributes[$name])) {
+                return $this->attributes[$name];
+            }
+        }
+        // Magic setter
+        if (substr($name, 0, 3) === 'set' && strlen($name) > 3) {
+            $name = strtolower($name{3}) . substr($name, 4);
+            $this->attributes[$name] = $args[0];
+        }
+    }
+
     public function __set($name, $value)
     {
         $this->attributes["$name"] = $value;

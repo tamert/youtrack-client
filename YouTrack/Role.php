@@ -3,14 +3,21 @@ namespace YouTrack;
 
 /**
  * A class describing a youtrack role.
+ *
+ * @property string name
+ * @method string getName
+ * @method string setName(string $value)
+ * @property string description
+ * @method string getDescription
+ * @method string setDescription(string $value)
+ * @property string permissionsUrl
+ * @method string getPermissionsUrl
+ * @method string setPermissionsUrl(string $value)
+ *
+ * @link https://confluence.jetbrains.com/display/YTD65/GET+Role
  */
 class Role extends Object
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
     /**
      * @var ProjectRef[]
      */
@@ -40,17 +47,5 @@ class Role extends Object
     public function getProjectRefs()
     {
         return $this->projectRefs;
-    }
-
-    /**
-     * Returns the name
-     *
-     * @return string
-     * @see setName
-     * @see $name
-     */
-    public function getName()
-    {
-        return $this->__get('name');
     }
 }

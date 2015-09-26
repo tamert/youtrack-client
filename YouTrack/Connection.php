@@ -1173,28 +1173,28 @@ class Connection
 
     /**
      * @param string $name
-     * @return CustomField
+     * @return CustomFieldPrototype
      */
     public function getCustomField($name)
     {
-        return new CustomField($this->get('/admin/customfield/field/' . rawurlencode($name)), $this);
+        return new CustomFieldPrototype($this->get('/admin/customfield/field/' . rawurlencode($name)), $this);
     }
 
     /**
-     * @return CustomField[]
+     * @return CustomFieldPrototype[]
      */
     public function getCustomFields()
     {
         $xml = $this->get('/admin/customfield/field');
         $fields = array();
         foreach ($xml->children() as $field) {
-            $fields[] = new CustomField(new \SimpleXMLElement($field->asXML()), $this);
+            $fields[] = new CustomFieldPrototype(new \SimpleXMLElement($field->asXML()), $this);
         }
         return $fields;
     }
 
     /**
-     * @param CustomField[] $fields
+     * @param CustomFieldPrototype[] $fields
      */
     public function createCustomFields($fields)
     {
@@ -1204,7 +1204,7 @@ class Connection
     }
 
     /**
-     * @param CustomField $field
+     * @param CustomFieldPrototype $field
      * @return string
      */
     public function createCustomField(CustomField $field)
