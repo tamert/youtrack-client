@@ -199,6 +199,9 @@ class Connection
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 }
                 break;
+            case 'DELETE':
+                curl_setopt($this->http, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                break;
             default:
                 throw new \Exception("Unknown HTTP method $method for YouTrack!");
         }
@@ -234,7 +237,7 @@ class Connection
         }
 
         return array(
-            'content'  => $content,
+            'content' => $content,
             'response' => $response,
         );
     }
@@ -448,6 +451,35 @@ class Connection
             '/issue/' . rawurlencode($issueId) . '/attachment?' . http_build_query($params),
             $filename
         );
+    }
+
+    /**
+     * Deletes an attachment
+     *
+     * @param Issue $issue
+     * @param Attachment $attachment
+     * @return bool
+     * @throws Exception
+     * @throws NotAuthorizedException
+     * @throws NotFoundException
+     * @throws \Exception
+     */
+    public function deleteAttachment(Issue $issue, Attachment $attachment)
+    {
+        $issueId = $issue->getId();
+        $attachmentId = $attachment->getId();
+
+        $result = $this->request(
+            'DELETE',
+            '/issue/' . rawurlencode($issueId) . '/attachment/' . rawurlencode($attachmentId)
+        );
+
+        $response = $result['response'];
+
+        if ($response['http_code'] == 200) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -784,11 +816,11 @@ class Connection
     )
     {
         $params = array(
-            'projectName'      => (string)$project_name,
-            'description'      => (string)$project_description,
+            'projectName' => (string)$project_name,
+            'description' => (string)$project_description,
             'projectLeadLogin' => (string)$project_lead_login,
-            'lead'             => (string)$project_lead_login,
-            'startingNumber'   => (string)$starting_number,
+            'lead' => (string)$project_lead_login,
+            'startingNumber' => (string)$starting_number,
         );
         return $this->put('/admin/project/' . rawurlencode($project_id) . '?' . http_build_query($params));
     }
@@ -829,7 +861,7 @@ class Connection
     public function createSubsystemDetailed($project_id, $name, $is_default, $default_assignee_login)
     {
         $params = array(
-            'isDefault'       => (string)$is_default,
+            'isDefault' => (string)$is_default,
             'defaultAssignee' => (string)$default_assignee_login,
         );
         $this->put(
@@ -901,8 +933,8 @@ class Connection
     {
         $params = array(
             'description' => (string)$description,
-            'isReleased'  => (string)$is_released,
-            'isArchived'  => (string)$is_archived,
+            'isReleased' => (string)$is_released,
+            'isArchived' => (string)$is_archived,
         );
         if (!empty($release_date)) {
             $params['releaseDate'] = $release_date;
@@ -983,8 +1015,8 @@ class Connection
     public function getIssues($project_id, $filter, $after, $max)
     {
         $params = array(
-            'after'  => (string)$after,
-            'max'    => (string)$max,
+            'after' => (string)$after,
+            'max' => (string)$max,
             'filter' => (string)$filter,
         );
         $this->cleanUrlParameters($params);
@@ -1053,7 +1085,7 @@ class Connection
     public function executeCommand($issue_id, $command, $comment = null, $group = null, $disableNotifications = false, $runAs = null)
     {
         $params = array(
-            'command'              => (string)$command,
+            'command' => (string)$command,
             'disableNotifications' => (boolean)$disableNotifications,
         );
         if (!empty($comment)) {
@@ -1130,8 +1162,8 @@ class Connection
     public function createCustomFieldDetailed($name, $type_name, $is_private, $default_visibility)
     {
         $params = array(
-            'typeName'          => (string)$type_name,
-            'isPrivate'         => (string)$is_private,
+            'typeName' => (string)$type_name,
+            'isPrivate' => (string)$is_private,
             'defaultVisibility' => (string)$default_visibility,
         );
         $this->put('/admin/customfield/field/' . rawurlencode($name) . '?' . http_build_query($params));
@@ -1304,8 +1336,8 @@ class Connection
     {
         $params = array(
             'outwardName' => (string)$outward_name,
-            'inwardName'  => (string)$inward_name,
-            'directed'    => (string)$directed,
+            'inwardName' => (string)$inward_name,
+            'directed' => (string)$directed,
         );
         return $this->put('/admin/issueLinkType/' . rawurlencode($name) . '?' . http_build_query($params));
     }
@@ -1364,7 +1396,7 @@ class Connection
         foreach ($xml->children() as $node) {
             $bundle[(string)$node] = array(
                 'description' => (isset($node['description']) ? (string)$node['description'] : ''),
-                'isResolved'  => ((string)$node['isResolved'] == 'true')
+                'isResolved' => ((string)$node['isResolved'] == 'true')
             );
         }
         return $bundle;
@@ -1381,9 +1413,9 @@ class Connection
         $ext = strtolower($ext);
 
         $map = array(
-            'png'  => 'image/png',
-            'gif'  => 'image/gif',
-            'jpg'  => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'jpg' => 'image/jpeg',
             'jpeg' => 'image/jpeg'
         );
 
