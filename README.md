@@ -21,7 +21,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 * curl
 * simplexml
 * json
-* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 6.0)
+* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 6.5)
 
 ## Changelog
 

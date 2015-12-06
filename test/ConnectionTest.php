@@ -15,6 +15,7 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
     public function testCreateConnection()
     {
         $con = new TestConnection();
+        $this->assertInstanceOf(TestConnection::class, $con);
     }
 
     public function testIncorrectLoginThrowsException()

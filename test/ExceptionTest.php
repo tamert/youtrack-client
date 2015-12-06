@@ -2,6 +2,8 @@
 namespace YouTrack;
 require_once("requirements.php");
 
+use YouTrack\Exception as YouTrackException;
+
 /**
  * Unit tests for the youtrack exception class.
  *
@@ -52,7 +54,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
             'content_type' => 'text/plain',
         );
         $content = "<error>You have no rights to read user.</error>";
-        $e = new \YouTrack\Exception($url, $response, $content);
+        $e = new YouTrackException($url, $response, $content);
         $this->assertEquals("Error for 'http://example.com': 403: You have no rights to read user.", $e->getMessage());
     }
 }

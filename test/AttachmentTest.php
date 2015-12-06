@@ -18,10 +18,10 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
     {
         try {
             $attachment = new Attachment();
+            $this->assertInstanceOf('\\YouTrack\\Attachment', $attachment);
         } catch (\Exception $e) {
             $this->fail();
         }
-        $this->assertInstanceOf('\\YouTrack\\Attachment', $attachment);
     }
 
     public function testCanCreateAttachmentFromResponse()
@@ -31,10 +31,10 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $xml = $xml[0];
         try {
             $attachment = new Attachment($xml);
+            $this->assertInstanceOf('\\YouTrack\\Attachment', $attachment);
         } catch (\Exception $e) {
             $this->fail();
         }
-        $this->assertInstanceOf('\\YouTrack\\Attachment', $attachment);
     }
 
     private function createAttachment()

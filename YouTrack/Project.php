@@ -77,17 +77,23 @@ class Project extends Object
 
     /**
      * @param string $name
-     * @param $is_default
-     * @param $default_assignee_login
+     * @param bool $isDefault
+     * @param string $default_assignee_login
      * @return string
      * @throws NotConnectedException
      */
-    public function createSubsystem($name, $is_default, $default_assignee_login)
+    public function createSubsystem($name, $isDefault, $default_assignee_login)
     {
         if (is_null($this->youtrack)) {
             throw new NotConnectedException();
         }
-        return $this->youtrack->createSubsystem($this->getShortName(), $name, $is_default, $default_assignee_login);
+
+        $subsystem = new Subsystem(null, $this->youtrack);
+        $subsystem->__set('name', $name);
+        $subsystem->__set('isDefault', $isDefault);
+        $subsystem->__set('defaultAssignee', $default_assignee_login);
+
+        return $this->youtrack->createSubsystem($this->getShortName(), $subsystem);
     }
 
     /**

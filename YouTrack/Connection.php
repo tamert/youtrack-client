@@ -827,9 +827,9 @@ class Connection
 
     /**
      * @param string $project_id
-     * @param string[] $subsystems
+     * @param Subsystem[] $subsystems
      */
-    public function createSubsystems($project_id, $subsystems)
+    public function createSubsystems($project_id, array $subsystems)
     {
         foreach ($subsystems as $subsystem) {
             $this->createSubsystem($project_id, $subsystem);

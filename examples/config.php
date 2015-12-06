@@ -36,11 +36,10 @@ if (YOUTRACK_AUTOLOADING) {
 spl_autoload_register(function ($className)
     {
         if (class_exists($className)) {
-            return true;
+            return;
         }
         $className = ltrim($className, '\\');
         $fileName  = '';
-        $namespace = '';
         if ($lastNsPos = strrpos($className, '\\')) {
             $namespace = substr($className, 0, $lastNsPos);
             $className = substr($className, $lastNsPos + 1);
