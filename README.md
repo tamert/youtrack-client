@@ -17,13 +17,25 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Requirements
 
-* PHP >= 5.4 (Tested with >= 5.5, Travis runs tests with 5.4, 5.5 and 5.6)
+* PHP >= 5.6 (Tested with >= 5.6, Travis runs tests with 5.6 and 7.0)
 * curl
 * simplexml
 * json
 * YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 6.5)
 
 ## Changelog
+
+### 2015-12-06 - v1.1.0
+
+* Dropped support for PHP lower than 5.6
+* Merged #14
+* Merged #13
+* Merged #12
+* Merged #11
+* Merged #10
+* Merged #9
+* Merged #8
+* Merged #7
 
 ### 2015-02-10 - v1.0.9
 
@@ -39,11 +51,6 @@ The source of this library is released under the BSD license (see LICENSE for de
 * Improved error handling - On 404 error, the call will throw a `YouTrack\NotFoundException`
 * Improved error handling - `YouTrack\Exception`/`YouTrack\Error` is now aware of JSON responses
 * Improved connection request method. If the body is array it will no longer check if the file exists (Notice was thrown by PHP)
-
-### 2014-11-29 - v1.0.6
-
-* Fixed Issue #4, Improved `getAccessibleProjects`, see `examples/get-all-projects.php`. Thanks [@openWebX](https://github.com/openWebX)
-
 
 (Please look into CHANGELOG for a complete list of the past releases)
 
