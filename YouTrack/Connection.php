@@ -1448,7 +1448,7 @@ class Connection
      */
     public function setConnectTimeout($connectTimeout)
     {
-        $this->connectTimeout = (int) $connectTimeout;
+        $this->connectTimeout = (int)$connectTimeout;
 
         return $this;
     }
