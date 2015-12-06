@@ -3,7 +3,6 @@ namespace YouTrack;
 
 abstract class BundleElement extends Object
 {
-
     /**
      * @var \SimpleXMLElement
      */
@@ -19,9 +18,9 @@ abstract class BundleElement extends Object
     private $colorIndex;
 
     /**
-     * @param string                 $elementTagName
+     * @param string $elementTagName
      * @param \SimpleXMLElement|null $xml
-     * @param Connection|null        $youtrack
+     * @param Connection|null $youtrack
      */
     public function __construct($elementTagName, \SimpleXMLElement $xml = null, Connection $youtrack = null)
     {

@@ -58,6 +58,7 @@ class Object {
     protected function updateChildrenAttributes(\SimpleXMLElement $xml)
     {
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             foreach ($node->attributes() as $key => $value) {
                 if ($key == 'name') {
                     $this->__set($value, (string)$node->value);

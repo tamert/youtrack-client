@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: nepda
- * Date: 24.03.13
- * Time: 14:51
- * To change this template use File | Settings | File Templates.
- */
 namespace YouTrack;
 
 /**

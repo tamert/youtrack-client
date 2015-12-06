@@ -1,13 +1,11 @@
 <?php
-
 namespace YouTrack;
 
 class OwnedFieldBundle extends Bundle
 {
-
     /**
      * @param \SimpleXMLElement|null $xml
-     * @param Connection|null        $youtrack
+     * @param Connection|null $youtrack
      */
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {
@@ -16,7 +14,7 @@ class OwnedFieldBundle extends Bundle
 
     /**
      * @param \SimpleXMLElement $xml
-     * @param Connection|null   $youtrack
+     * @param Connection|null $youtrack
      *
      * @return OwnedField
      */

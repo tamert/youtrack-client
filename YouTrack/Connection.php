@@ -20,13 +20,15 @@ class Connection
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
     private $verify_ssl = false;
 
-    private $bundle_paths  = array(
+    private $bundle_paths = array(
         'ownedField' => 'ownedFieldBundle',
-        'enum'       => 'bundle',
-        /*'build'      => 'buildBundle',
+        'enum' => 'bundle',
+        /*
+        'build'      => 'buildBundle',
         'state'      => 'stateBundle',
         'version'    => 'versionBundle',
-        'user'       => 'userBundle'*/
+        'user'       => 'userBundle'
+        */
     );
 
     /**
@@ -1190,7 +1192,7 @@ class Connection
     {
         $fieldType = $this->getFieldType($fieldType);
 
-        $className= 'YouTrack\\' . ucfirst($fieldType) . 'Bundle';
+        $className = 'YouTrack\\' . ucfirst($fieldType) . 'Bundle';
 
         $bundlePath = null;
         if (isset($this->bundle_paths[$fieldType])) {
@@ -1217,7 +1219,6 @@ class Connection
         if (false !== strpos($fieldType, '[')) {
             return substr($fieldType, 0, -3);
         }
-
         return $fieldType;
     }
 

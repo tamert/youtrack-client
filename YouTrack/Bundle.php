@@ -3,7 +3,9 @@ namespace YouTrack;
 
 abstract class Bundle extends Object
 {
-
+    /**
+     * @var array
+     */
     protected $values = array();
 
     /**
@@ -22,10 +24,10 @@ abstract class Bundle extends Object
     private $name;
 
     /**
-     * @param string                 $elementTagName
-     * @param string                 $bundleTagName
+     * @param string $elementTagName
+     * @param string $bundleTagName
      * @param \SimpleXMLElement|null $xml
-     * @param Connection|null        $youtrack
+     * @param Connection|null $youtrack
      */
     public function __construct($elementTagName, $bundleTagName, \SimpleXMLElement $xml = null, Connection $youtrack = null)
     {
@@ -55,7 +57,7 @@ abstract class Bundle extends Object
 
     /**
      * @param \SimpleXMLElement $xml
-     * @param Connection|null   $youtrack
+     * @param Connection|null $youtrack
      *
      * @return mixed
      */
@@ -68,7 +70,7 @@ abstract class Bundle extends Object
     {
         $xml = sprintf('<%s name="%s">', $this->bundleTagName, utf8_encode($this->name));
         foreach ($this->values as $v) {
-            $xml .= '<value>'. $v .'</value>';
+            $xml .= '<value>' . $v . '</value>';
         }
         $xml .= sprintf('</%s>', $this->bundleTagName);
 

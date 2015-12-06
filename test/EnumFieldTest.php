@@ -18,6 +18,5 @@ class EnumFieldTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame('V1', $bundleElements[0]->getName());
         $this->assertSame('V1', (string)$bundleElements[0]);
-
     }
 }

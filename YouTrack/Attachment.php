@@ -265,7 +265,7 @@ class Attachment extends Object
             if (substr($url, 0, strlen('https')) != 'https') {
                 if ($this->youtrack->isHttps()) {
 
-                    $url = 'https' . substr($url, strlen('https')-1);
+                    $url = 'https' . substr($url, strlen('https') - 1);
                 }
             }
         }
