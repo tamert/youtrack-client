@@ -1105,7 +1105,7 @@ class Connection
      *  issues matching request but without first twelve issues found.
      * @param string $max Maximum number of issues to get. If not provided, only 10 issues will
      *  be returned by default.
-     * @param string $with List of fields that should be included in the result.
+     * @param array $with List of fields that should be included in the result.
      * @return Issue[]
      */
     public function getIssuesByFilter($filter, $after = null, $max = null, $with = null)
@@ -1125,7 +1125,15 @@ class Connection
         }
 
         $this->cleanUrlParameters($params);
-        $xml = $this->get('/issue' . '?' . http_build_query($params));
+
+        $params_string = http_build_query($params, NULL, '&', PHP_QUERY_RFC3986);
+        if (isset($with)) {
+            foreach ($with as $with_value) {
+                $params_string .= '&with=' . $with_value;
+            }
+        }
+
+        $xml = $this->get('/issue' . '?' . $params_string);
         $issues = array();
         foreach ($xml->children() as $issue) {
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
