@@ -1521,4 +1521,11 @@ class Connection
 
         return null;
     }
+    
+    /**
+     * Update existing agile configuration.
+     */
+    public function updateAgile($agileId, $xml) {
+        return $this->requestXml('PUT', '/admin/agile/' . $agileId, $xml);
+    }
 }
