@@ -314,7 +314,7 @@ class Connection
 
     /**
      * @param string $id
-     * @param array  $params key/values, e.g. 'wikifyDescription' => 'true'
+     * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
      */
     public function getIssue($id, $params = array())
@@ -1521,11 +1521,17 @@ class Connection
 
         return null;
     }
-    
+
     /**
      * Update existing agile configuration.
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Update+Agile+Configuration
+     * @param string $agileId Id of agile configuration that should be updated
+     * @param string $xml
+     * @return \SimpleXMLElement
      */
-    public function updateAgile($agileId, $xml) {
+    public function updateAgile($agileId, $xml)
+    {
         return $this->requestXml('PUT', '/admin/agile/' . $agileId, $xml);
     }
 }
