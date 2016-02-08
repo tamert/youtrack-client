@@ -23,25 +23,18 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
+### 2016-02-08 - v1.0.10
+
+* A lot of new methods added (updateIssue, deleteIssue, createAttachment, importAttachment, importLinks, importIssues, importWorkitems, getWorkitems)
+* Merged #7 from REDLINK/fix-createIssue
+* Merged #8 from REDLINK/replace-urlencode-with-rawurlencode
+* Merged #9 from REDLINK/feature-createAttachment
+* Merged #10 from REDLINK/set-mimetype
+* Merged #12 from REDLINK/feature-newIssueMethods
+
 ### 2015-02-10 - v1.0.9
 
 * Merged #6 'Fetch issues by filter only + with comments'. Thanks [@chabberwock](https://github.com/chabberwock)
-
-### 2015-01-15 - v1.0.8
-
-* Merged #5 'Fixed executing queries.'. Thanks [@wdamien](https://github.com/wdamien)
-* Added example for executing simple command
-
-### 2014-12-02 - v1.0.7
-
-* Improved error handling - On 404 error, the call will throw a `YouTrack\NotFoundException`
-* Improved error handling - `YouTrack\Exception`/`YouTrack\Error` is now aware of JSON responses
-* Improved connection request method. If the body is array it will no longer check if the file exists (Notice was thrown by PHP)
-
-### 2014-11-29 - v1.0.6
-
-* Fixed Issue #4, Improved `getAccessibleProjects`, see `examples/get-all-projects.php`. Thanks [@openWebX](https://github.com/openWebX)
-
 
 (Please look into CHANGELOG for a complete list of the past releases)
 

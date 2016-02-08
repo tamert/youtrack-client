@@ -1,6 +1,15 @@
 # Changelog
 
 
+### 2016-02-08 - v1.0.10
+
+* A lot of new methods added (updateIssue, deleteIssue, createAttachment, importAttachment, importLinks, importIssues, importWorkitems, getWorkitems)
+* Merged #7 from REDLINK/fix-createIssue
+* Merged #8 from REDLINK/replace-urlencode-with-rawurlencode
+* Merged #9 from REDLINK/feature-createAttachment
+* Merged #10 from REDLINK/set-mimetype
+* Merged #12 from REDLINK/feature-newIssueMethods
+
 ### 2015-02-10 - v1.0.9
 
 * Merged #6 'Fetch issues by filter only + with comments'. Thanks [@chabberwock](https://github.com/chabberwock)
