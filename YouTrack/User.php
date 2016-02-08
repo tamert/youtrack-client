@@ -3,22 +3,31 @@ namespace YouTrack;
 
 /**
  * A class describing a youtrack user.
+ *
+ * @property string login
+ * @method string getLogin
+ * @method string setLogin(string $value)
+ * @property string fullName
+ * @method string getFullName
+ * @method string setFullName(string $value)
+ * @property string email
+ * @method string getEmail
+ * @method string setEmail(string $value)
+ * @property string jabber
+ * @method string getJabber
+ * @method string setJabber(string $value)
+ * @property string lastAccess
+ * @method string getLastAccess
+ * @method string setLastAccess(string $value)
+ * @property string groupsUrl
+ * @method string getGroupsUrl
+ * @method string setGroupsUrl(string $value)
+ * @property string roleUrl
+ * @method string getRoleUrl
+ * @method string setRoleUrl(string $value)
+ *
+ * @link https://confluence.jetbrains.com/display/YTD65/GET+User
  */
 class User extends Object
 {
-    /**
-     * @return null|string
-     */
-    public function getLogin()
-    {
-        return $this->__get('login');
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getUrl()
-    {
-        return $this->__get('url');
-    }
 }

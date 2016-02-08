@@ -172,7 +172,8 @@ class Connection
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 } else {
                     $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . mb_strlen($body);
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . strlen($body);
+                    curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
                 }
             }
         }
@@ -181,25 +182,32 @@ class Connection
                 curl_setopt($this->http, CURLOPT_HTTPGET, true);
                 break;
             case 'PUT':
-                $handle = null;
-                // Check if we got a file or just a string of data.
-                if (is_string($body) && file_exists($body)) {
-                    $size = filesize($body);
-                    if (!$size) {
-                        throw new \Exception("Can't open file $body!");
-                    }
-                    $handle = fopen($body, 'r');
-                } else {
-                    $size = mb_strlen($body);
-                    $handle = fopen('data://text/plain,' . $body, 'r');
-                }
-                curl_setopt($this->http, CURLOPT_PUT, true);
-                curl_setopt($this->http, CURLOPT_INFILE, $handle);
-                curl_setopt($this->http, CURLOPT_INFILESIZE, $size);
+                curl_setopt($this->http, CURLOPT_CUSTOMREQUEST, 'PUT');
+//                $handle = null;
+//                // Check if we got a file or just a string of data.
+//                if (is_string($body) && file_exists($body)) {
+//                    $size = filesize($body);
+//                    if (!$size) {
+//                        throw new \Exception("Can't open file $body!");
+//                    }
+//                    $handle = fopen($body, 'r');
+//                } else {
+//                    $size = strlen($body);
+//                    $handle = fopen('data://text/plain,' . $body, 'r');
+//                }
+//                curl_setopt($this->http, CURLOPT_PUT, true);
+//                curl_setopt($this->http, CURLOPT_INFILE, $handle);
+//                curl_setopt($this->http, CURLOPT_INFILESIZE, $size);
                 break;
             case 'POST':
                 curl_setopt($this->http, CURLOPT_POST, true);
                 if (!empty($body)) {
+
+                    $filename = null;
+                    if (is_array($body) && isset($body['filename']) && isset($body['file'])) {
+                        $filename = $body['filename'];
+                        $body = $body['file'];
+                    }
 
                     if (is_string($body) && file_exists($body)) {
 
@@ -211,8 +219,14 @@ class Connection
                             if (null !== $mimeType) {
                                 $file->setMimeType($mimeType);
                             }
+                            if (isset($filename)) {
+                                $file->setPostFilename($filename);
+                            }
                         } else {
                             $file = '@' . $body;
+                            if (isset($filename)) {
+                                $file .= '; filename=' . $filename;
+                            }
                         }
                         $body = array(
                             'file' => $file
@@ -283,12 +297,13 @@ class Connection
      */
     protected function requestXml($method, $url, $body = null, $ignore_status = 0)
     {
-        $r = $this->request($method, $url, $body, $ignore_status);
+        $r = $this->request($method, $url, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $body, $ignore_status);
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
             if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
-                return simplexml_load_string($content);
+                $result = simplexml_load_string($content);
+                return $result;
             }
         }
         return $content;
@@ -365,6 +380,32 @@ class Connection
         });
         $issue = $this->requestXml('POST', '/issue', $params);
         return new Issue($issue, $this);
+    }
+
+    /**
+     * @param string $id
+     * @param string $summary
+     * @param string $description
+     * @return mixed
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function updateIssue($id, $summary, $description)
+    {
+        $r = $this->request('POST', '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description));
+        return $r['content'];
+    }
+
+    /**
+     * @param string $id
+     * @return mixed
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function deleteIssue($id)
+    {
+        $r = $this->request('DELETE', '/issue/' . urlencode($id), '');
+        return $r['content'];
     }
 
     /**
@@ -547,6 +588,34 @@ class Connection
     }
 
     /**
+     * // TODO document the parameters
+     * @param string $issueId The issue id
+     * @param $authorLogin
+     * @param $filename
+     * @param $file
+     * @param $created
+     * @return array
+     * @throws Exception
+     * @throws NotAuthorizedException
+     * @throws NotFoundException
+     * @throws \Exception
+     */
+    public function importAttachment($issueId, $authorLogin, $filename, $file, $created)
+    {
+        $params = array(
+            'name' => $filename,
+            'authorLogin' => $authorLogin,
+            'created' => $created
+        );
+
+        return $this->request(
+            'POST',
+            '/issue/' . urlencode($issueId) . '/attachment?' . http_build_query($params),
+            $file
+        );
+    }
+
+    /**
      * @param string $issueId
      * @param bool $outward_only
      * @return Link[]
@@ -587,10 +656,11 @@ class Connection
      * @param string $full_name
      * @param string $email
      * @param string $jabber
+     * @return \SimpleXMLElement|void
      */
     public function createUserDetailed($login, $full_name, $email, $jabber)
     {
-        $this->importUsers(array(array('login' => $login, 'fullName' => $full_name, 'email' => $email, 'jabber' => $jabber)));
+        return $this->importUsers(array(array('login' => $login, 'fullName' => $full_name, 'email' => $email)));
     }
 
     /**
@@ -606,7 +676,7 @@ class Connection
         foreach ($users as $user) {
             $xml .= "  <user";
             foreach ($user as $key => $value) {
-                $xml .= " $key=" . rawurlencode($value);
+                $xml .= " $key=\"" . htmlspecialchars($value) . "\"";
             }
             $xml .= " />\n";
         }
@@ -621,12 +691,46 @@ class Connection
 
     public function importLinks($links)
     {
-        throw new NotImplementedException("import_links(links)");
+        if (count($links) <= 0) {
+            return;
+        }
+        $xml = "<list>\n";
+        foreach ($links as $link) {
+            $xml .= "  <link";
+            foreach ($link as $key => $value) {
+                $xml .= " $key=\"" . htmlspecialchars($value) . "\"";
+            }
+            $xml .= " />\n";
+        }
+        $xml .= "</list>";
+        return $this->requestXml('PUT', '/import/links', $xml, 400);
     }
 
-    public function importIssues($project_id, $assignee_group, $issues)
+    public function importIssues($project_id, $issues)
     {
-        throw new NotImplementedException("import_issues(project_id, assignee_group, issues)");
+        if (count($issues) <= 0) {
+            return;
+        }
+        $xml = "<issues>\n";
+        foreach ($issues as $issue) {
+            $xml .= "  <issue>";
+            if (isset($issue['comments'])) {
+                foreach ($issue['comments'] as $comment) {
+                    $xml .= "    <comment";
+                    foreach ($comment as $key => $value) {
+                        $xml .= " $key=\"" . $value . "\"";
+                    }
+                    $xml .= " />";
+                }
+                unset($issue['comments']);
+            }
+            foreach ($issue as $key => $value) {
+                $xml .= "<field name=\"$key\"><value>" . htmlspecialchars($value) . "</value></field>";
+            }
+            $xml .= "</issue>\n";
+        }
+        $xml .= "</issues>";
+        return $this->requestXml('PUT', '/import/' . $project_id . '/issues', $xml, 400);
     }
 
     /**
@@ -1073,7 +1177,7 @@ class Connection
      *  issues matching request but without first twelve issues found.
      * @param string $max Maximum number of issues to get. If not provided, only 10 issues will
      *  be returned by default.
-     * @param string $with List of fields that should be included in the result.
+     * @param array $with List of fields that should be included in the result.
      * @return Issue[]
      */
     public function getIssuesByFilter($filter, $after = null, $max = null, $with = null)
@@ -1088,12 +1192,17 @@ class Connection
         if (isset($max)) {
             $params['max'] = (string)$max;
         }
-        if (isset($with)) {
-            $params['with'] = (string)$with;
-        }
 
         $this->cleanUrlParameters($params);
-        $xml = $this->get('/issue' . '?' . http_build_query($params));
+
+        $params_string = http_build_query($params, NULL, '&', PHP_QUERY_RFC3986);
+        if (isset($with)) {
+            foreach ($with as $with_value) {
+                $params_string .= '&with=' . $with_value;
+            }
+        }
+
+        $xml = $this->get('/issue' . '?' . $params_string);
         $issues = array();
         foreach ($xml->children() as $issue) {
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
@@ -1141,28 +1250,28 @@ class Connection
 
     /**
      * @param string $name
-     * @return CustomField
+     * @return CustomFieldPrototype
      */
     public function getCustomField($name)
     {
-        return new CustomField($this->get('/admin/customfield/field/' . rawurlencode($name)), $this);
+        return new CustomFieldPrototype($this->get('/admin/customfield/field/' . rawurlencode($name)), $this);
     }
 
     /**
-     * @return CustomField[]
+     * @return CustomFieldPrototype[]
      */
     public function getCustomFields()
     {
         $xml = $this->get('/admin/customfield/field');
         $fields = array();
         foreach ($xml->children() as $field) {
-            $fields[] = new CustomField(new \SimpleXMLElement($field->asXML()), $this);
+            $fields[] = new CustomFieldPrototype(new \SimpleXMLElement($field->asXML()), $this);
         }
         return $fields;
     }
 
     /**
-     * @param CustomField[] $fields
+     * @param CustomFieldPrototype[] $fields
      */
     public function createCustomFields($fields)
     {
@@ -1172,7 +1281,7 @@ class Connection
     }
 
     /**
-     * @param CustomField $field
+     * @param CustomFieldPrototype $field
      * @return string
      */
     public function createCustomField(CustomField $field)
@@ -1533,5 +1642,55 @@ class Connection
     public function updateAgile($agileId, $xml)
     {
         return $this->requestXml('PUT', '/admin/agile/' . $agileId, $xml);
+    }
+
+    /**
+     * Import workitems for a given issue
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Import+Workitems
+     *
+     * @param $issueId
+     * @param $workItems
+     * @return \SimpleXMLElement
+     */
+    public function importWorkitems($issueId, $workItems)
+    {
+        if (count($workItems) <= 0) {
+            return;
+        }
+        $xml = "<workItems>\n";
+        foreach ($workItems as $workItem) {
+            $xml .= "  <workItem>\n";
+            if (isset($workItem['author'])) {
+                $xml .= "    <author login=\"" . htmlspecialchars($workItem['author']) . "\"></author>\n";
+                unset($workItem['author']);
+            }
+            foreach ($workItem as $key => $value) {
+                $xml .= "    <$key>" . htmlspecialchars($value) . "</$key>\n";
+            }
+            $xml .= "  </workItem>\n";
+        }
+        $xml .= "</workItems>";
+        return $this->requestXml('PUT', '/import/issue/' . urlencode($issueId) . '/workitems', $xml, 400);
+    }
+
+    /**
+     * Get all workitems for a given issue
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Get+Available+Work+Items+of+Issue
+     *
+     * @param $issueId
+     *
+     * @return array
+     */
+    public function getWorkitems($issueId)
+    {
+        $items = array();
+        $req = $this->request('GET', '/issue/' . urlencode($issueId) . '/timetracking/workitem/');
+        $xml = simplexml_load_string($req['content']);
+        foreach ($xml->children() as $node) {
+            $items[] = new Workitem($node, $this);
+        }
+        return $items;
     }
 }

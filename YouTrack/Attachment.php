@@ -3,70 +3,31 @@ namespace YouTrack;
 
 /**
  * A class describing a YouTrack attachment.
+ *
+ * @property string url
+ * @method string getUrl
+ * @property string name
+ * @method string getName
+ * @method string setName(string $value)
+ * @property string group
+ * @method string getGroup
+ * @method string setGroup(string $value)
+ * @property string created
+ * @method string getCreated
+ *
+ * @link https://confluence.jetbrains.com/display/YTD65/Get+Attachments+of+an+Issue
  */
 class Attachment extends Object
 {
-    /**
-     * The attachment id
-     *
-     * @var string
-     */
-    protected $id;
-
-    /**
-     * The url to the real file content
-     * @var string
-     */
-    protected $url;
-
-
-    /**
-     * The filename
-     *
-     * @var string
-     */
-    protected $name;
-
-
-    /**
-     * The username who has uploaded this attachment
-     *
-     * @var string
-     */
-    protected $authorLogin;
-
-
-    /**
-     * The group who has access rights
-     *
-     * @var string
-     */
-    protected $group;
-
-
-    /**
-     * The upload date
-     *
-     * @var \DateTime
-     * @see setCreated
-     * @see getCreated
-     */
-    protected $created;
-
-
     public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
     {
         parent::__construct($xml, $youtrack);
-
-        $methods = get_class_methods($this);
 
         if ($xml) {
             foreach ($xml->attributes() as $key => $value) {
                 $method = 'set' . ucfirst($key);
 
-                if (in_array($method, $methods)) {
-                    $this->$method((string)$value);
-                }
+                $this->$method((string)$value);
             }
         }
     }
@@ -87,35 +48,6 @@ class Attachment extends Object
             return false;
         }
     }
-
-
-    /**
-     * Sets the authorLogin
-     *
-     * @param string $authorLogin
-     * @return Attachment
-     * @see getAuthorLogin
-     * @see $authorLogin
-     */
-    public function setAuthorLogin($authorLogin)
-    {
-        $this->authorLogin = $authorLogin;
-        return $this;
-    }
-
-
-    /**
-     * Returns the authorLogin
-     *
-     * @return string
-     * @see setAuthorLogin
-     * @see $authorLogin
-     */
-    public function getAuthorLogin()
-    {
-        return $this->authorLogin;
-    }
-
 
     /**
      * Sets the created
@@ -142,107 +74,9 @@ class Attachment extends Object
                 $created = $tmp;
             }
         }
-        $this->created = $created;
+        $this->attributes['created'] = $created;
         return $this;
     }
-
-
-    /**
-     * Returns the created
-     *
-     * @return \DateTime
-     * @see setCreated
-     * @see $created
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-
-    /**
-     * Sets the group
-     *
-     * @param string $group
-     * @return Attachment
-     * @see getGroup
-     * @see $group
-     */
-    public function setGroup($group)
-    {
-        $this->group = $group;
-        return $this;
-    }
-
-
-    /**
-     * Returns the group
-     *
-     * @return string
-     * @see setGroup
-     * @see $group
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-
-    /**
-     * Sets the id
-     *
-     * @param string $id
-     * @return Attachment
-     * @see getId
-     * @see $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-
-    /**
-     * Returns the id
-     *
-     * @return string
-     * @see setId
-     * @see $id
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-
-    /**
-     * Sets the name
-     *
-     * @param string $name
-     * @return Attachment
-     * @see getName
-     * @see $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-
-    /**
-     * Returns the name
-     *
-     * @return string
-     * @see setName
-     * @see $name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
 
     /**
      * Sets the url
@@ -269,20 +103,7 @@ class Attachment extends Object
                 }
             }
         }
-        $this->url = $url;
+        $this->attributes['url'] = $url;
         return $this;
-    }
-
-
-    /**
-     * Returns the url
-     *
-     * @return string
-     * @see setUrl
-     * @see $url
-     */
-    public function getUrl()
-    {
-        return $this->url;
     }
 }

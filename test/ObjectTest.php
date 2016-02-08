@@ -34,11 +34,26 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('T-2', $item->__get('id'));
     }
 
+    public function test___get03()
+    {
+        $xml = simplexml_load_file($this->filename);
+        $item = new Object($xml);
+        $this->assertEquals('T-2', $item->getId());
+    }
+
     public function test___set01()
     {
         $item = new Object();
         $value = 'bar';
         $item->__set('foo', $value);
+        $this->assertEquals($value, $item->__get('foo'));
+    }
+
+    public function test___set02()
+    {
+        $item = new Object();
+        $value = 'bar';
+        $item->setFoo($value);
         $this->assertEquals($value, $item->__get('foo'));
     }
 }
