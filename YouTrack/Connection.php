@@ -1120,9 +1120,6 @@ class Connection
         if (isset($max)) {
             $params['max'] = (string)$max;
         }
-        if (isset($with)) {
-            $params['with'] = (string)$with;
-        }
 
         $this->cleanUrlParameters($params);
 
