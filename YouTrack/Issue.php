@@ -3,6 +3,8 @@ namespace YouTrack;
 
 /**
  * A class describing a youtrack issue.
+ *
+ * @link https://confluence.jetbrains.com/display/YTD65/Get+an+Issue
  */
 class Issue extends Object
 {
@@ -55,15 +57,6 @@ class Issue extends Object
                 }
             }
         }
-    }
-
-    /**
-     * Returns the Issue Id (if it is already created or fetched)
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->__get('id');
     }
 
     /**

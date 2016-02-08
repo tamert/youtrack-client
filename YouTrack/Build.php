@@ -3,6 +3,8 @@ namespace YouTrack;
 
 /**
  * A class describing a youtrack build.
+ *
+ * @todo add properties and methods docs
  */
 class Build extends Object
 {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workItems>
+<workItem url="http://unit-258.labs.intellij.net:8080/charisma/rest/issue/HBR-63/timetracking/workitem/101-1">
+  <id>101-1</id>
+  <date>1353316956611</date>
+  <duration>240</duration>
+  <description>first work item</description>
+  <author login="root" url="http://unit-258.labs.intellij.net:8080/charisma/rest/admin/user/root"/>
+</workItem>
+<workItem url="http://unit-258.labs.intellij.net:8080/charisma/rest/issue/HBR-63/timetracking/workitem/101-2">
+  <id>101-2</id>
+  <date>1352894400000</date>
+  <duration>480</duration>
+  <description>second work item</description>
+  <author login="root" url="http://unit-258.labs.intellij.net:8080/charisma/rest/admin/user/root"/>
+</workItem>
+</workItems>

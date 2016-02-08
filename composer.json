@@ -7,6 +7,10 @@
         {
             "name": "Nepomuk Fraedrich",
             "email": "info@nepda.eu"
+        },
+        {
+            "name": "Sergey Susikov",
+            "email": "sergey.susikov@coldbrainweb.com"
         }
     ],
     "autoload": {
