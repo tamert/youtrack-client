@@ -23,6 +23,10 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
+### 2015-12-06 - v1.2.0
+
+* Merged #15 (new methods available) Thanks [@angerslave](https://github.com/Angerslave)
+
 ### 2015-12-06 - v1.1.0
 
 * Dropped support for PHP lower than 5.6
