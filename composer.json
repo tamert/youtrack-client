@@ -1,12 +1,12 @@
 {
-    "name": "nepda/youtrack-client",
+    "name": "coldbrain/youtrack-client",
     "description": "A PHP YouTrack client library",
     "minimum-stability": "dev",
     "license": "BSD-4-Clause",
     "authors": [
         {
-            "name": "Nepomuk Fraedrich",
-            "email": "info@nepda.eu"
+            "name": "Sergey Susikov",
+            "email": "sergey.susikov@coldbrainweb.com"
         }
     ],
     "autoload": {
