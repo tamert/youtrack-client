@@ -15,7 +15,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Requirements
 
-* PHP >= 5.6 (Tested with >= 5.6, Travis runs tests with 5.6 and 7.0)
+* PHP >= 5.4 (Tested with >= 5.4, Travis runs tests with 5.4, 5.5, 5.6 and 7.0)
 * curl
 * simplexml
 * json
@@ -23,41 +23,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Changelog
 
-### 2016-02-08 - v1.2.0
-
-* Merged #15 (new methods available) Thanks [@angerslave](https://github.com/Angerslave)
-
-### 2015-12-06 - v1.1.0
-
-* Dropped support for PHP lower than 5.6
-* Merged #14
-* Merged #13
-* Merged #12
-* Merged #11
-* Merged #10
-* Merged #9
-* Merged #8
-* Merged #7
-
-### 2016-02-08 - v1.0.10
-
-* A lot of new methods added (updateIssue, deleteIssue, createAttachment, importAttachment, importLinks, importIssues, importWorkitems, getWorkitems)
-* Merged #7 from REDLINK/fix-createIssue
-* Merged #8 from REDLINK/replace-urlencode-with-rawurlencode
-* Merged #9 from REDLINK/feature-createAttachment
-* Merged #10 from REDLINK/set-mimetype
-* Merged #12 from REDLINK/feature-newIssueMethods
-
-### 2015-02-10 - v1.0.9
-
-* Merged #6 'Fetch issues by filter only + with comments'. Thanks [@chabberwock](https://github.com/chabberwock)
-
-### 2015-01-15 - v1.0.8
-
-* Merged #5 'Fixed executing queries.'. Thanks [@wdamien](https://github.com/wdamien)
-* Added example for executing simple command
-
-(Please look into CHANGELOG for a complete list of the past releases)
+Please look into CHANGELOG for a list of the past releases.
 
 ## Usage
 

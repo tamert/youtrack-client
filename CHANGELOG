@@ -1,5 +1,13 @@
 # Changelog
 
+### 2016-02-11 - v1.2.2
+
+* Merged #19 Re-added PHP 5.4 support, Thanks to Angerslave
+
+### 2016-02-08 - v1.2.1
+
+* Just README and CHANGELOG updates
+
 ### 2016-02-08 - v1.2.0
 
 * Merged #15 (new methods available) Thanks [@angerslave](https://github.com/Angerslave)
