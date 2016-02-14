@@ -34,8 +34,7 @@ class Workitem extends Object
         }
 
         if (isset($xml->author)) {
-            $this->attributes['author'] = new User(null, $youtrack);
-            $this->attributes['author']->__set('login', (string)$xml->author);
+            $this->attributes['author'] = new User($xml->author, $youtrack);
         }
     }
 
