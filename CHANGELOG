@@ -1,5 +1,10 @@
 # Changelog
 
+### 2016-02-14 - v1.2.3
+
+* Merged #19 Fix of create issue method - [angerslave](https://github.com/Angerslave)
+* Removed non project related lines from .gitignore
+
 ### 2016-02-11 - v1.2.2
 
 * Merged #19 Re-added PHP 5.4 support, Thanks to Angerslave
