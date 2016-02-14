@@ -392,7 +392,19 @@ class Connection
         if (empty($body)) {
             $body = null;
         }
-        $issue = $this->requestXml('POST', '/issue?'. http_build_query($params), $body);
+        $r = $this->request('POST', '/issue?'. http_build_query($params), $body);
+        $response = $r['response'];
+        $content = $r['content'];
+        if (!empty($response['content_type'])) {
+            if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
+                $result = simplexml_load_string($content);
+                $issue = $result;
+            }
+        }
+        if (!isset($issue)) {
+            $issue = $content;
+        }
+
         return new Issue($issue, $this);
     }
 
