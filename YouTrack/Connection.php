@@ -375,10 +375,24 @@ class Connection
     {
         $params['project'] = (string)$project;
         $params['summary'] = (string)$summary;
+
         array_walk($params, function (&$value) {
+            // php manual: If funcname needs to be working with the actual values of the array,
+            //  specify the first parameter of funcname as a reference. Then, any changes made to
+            //  those elements will be made in the original array itself.
             $value = (string)$value;
         });
-        $issue = $this->requestXml('POST', '/issue', $params);
+        $body = [];
+        foreach ($params as $k => $v) {
+            if (strlen($v) > 100) {
+                $body[$k] = $v;
+                unset($params[$k]);
+            }
+        }
+        if (empty($body)) {
+            $body = null;
+        }
+        $issue = $this->requestXml('POST', '/issue?'. http_build_query($params), $body);
         return new Issue($issue, $this);
     }
 
