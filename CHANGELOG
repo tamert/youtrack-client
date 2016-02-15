@@ -1,5 +1,9 @@
 # Changelog
 
+### 2016-02-15 - v1.2.4
+
+* Merged #22 Fix error getting login of the author of WorkItem - [stingmu](https://github.com/stingmu)
+
 ### 2016-02-14 - v1.2.3
 
 * Merged #19 Fix of create issue method - [angerslave](https://github.com/Angerslave)
