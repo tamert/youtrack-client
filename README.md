@@ -2,6 +2,7 @@ YouTrack Client PHP Library
 ===========================
 
 [![Build Status](https://travis-ci.org/nepda/youtrack.png?branch=master)](https://travis-ci.org/nepda/youtrack)
+[![Packagist](https://img.shields.io/packagist/v/nepda/youtrack-client.svg)](https://packagist.org/packages/nepda/youtrack-client)
 
 The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a
 [REST-API](http://confluence.jetbrains.com/display/YTD5/YouTrack+REST+API+Reference).
