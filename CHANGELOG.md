@@ -2,6 +2,7 @@
 
 ### 2016-04-25 - v1.3.0
 
+* Merged #23 Remove dublicated xml declaration - [pilov-pa](https://github.com/pilov-pa)
 * Added AgileBoard settings call
 
 ### 2016-02-15 - v1.2.4
