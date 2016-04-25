@@ -1138,7 +1138,7 @@ class Connection
      */
     public function executeCountQueries(array $queries, $rough = false, $sync = true)
     {
-        $body = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><queries>';
+        $body = '<queries>';
         foreach ($queries as $query) {
             $body .= '<query><![CDATA[' . $query . ']]></query>';
         }
