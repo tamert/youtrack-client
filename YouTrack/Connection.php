@@ -152,7 +152,8 @@ class Connection
      * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
      * @param string $method The http method (GET, PUT, POST).
      * @param string $url The request url.
-     * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an array, it will be used as CURLOPT_POSTFIELDS
+     * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an
+     *     array, it will be used as CURLOPT_POSTFIELDS
      * @param int $ignore_http_return_status Ignore the given http status code.
      * @return array An array holding the response content in 'content' and the response status in 'response'.
      */
@@ -229,7 +230,7 @@ class Connection
                             }
                         }
                         $body = array(
-                            'file' => $file
+                            'file' => $file,
                         );
                     }
                     curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
@@ -368,7 +369,8 @@ class Connection
      *
      * @param string $project the obligatory project name
      * @param string $summary the obligatory issue summary
-     * @param array $params optional additional parameters for the new issue (look into your personal youtrack instance!)
+     * @param array $params optional additional parameters for the new issue (look into your personal youtrack
+     *     instance!)
      * @return Issue
      */
     public function createIssue($project, $summary, $params = array())
@@ -392,7 +394,7 @@ class Connection
         if (empty($body)) {
             $body = null;
         }
-        $r = $this->request('POST', '/issue?'. http_build_query($params), $body);
+        $r = $this->request('POST', '/issue?' . http_build_query($params), $body);
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
@@ -409,6 +411,10 @@ class Connection
     }
 
     /**
+     * Please note that this POST method allows updating issue summary and/or description, only. To update issue
+     * fields, please use method to Apply Command to an Issue.
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Update+an+Issue
      * @param string $id
      * @param string $summary
      * @param string $description
@@ -631,7 +637,7 @@ class Connection
         $params = array(
             'name' => $filename,
             'authorLogin' => $authorLogin,
-            'created' => $created
+            'created' => $created,
         );
 
         return $this->request(
@@ -1221,7 +1227,7 @@ class Connection
 
         $this->cleanUrlParameters($params);
 
-        $params_string = http_build_query($params, NULL, '&', PHP_QUERY_RFC3986);
+        $params_string = http_build_query($params, null, '&', PHP_QUERY_RFC3986);
         if (isset($with)) {
             foreach ($with as $with_value) {
                 $params_string .= '&with=' . $with_value;
@@ -1244,7 +1250,8 @@ class Connection
      * @param string $command A command to apply
      * @param string|null $comment A comment to add to an issue.
      * @param string|null $group User group name. Use to specify visibility settings of a comment to be post.
-     * @param bool $disableNotifications If set 'true' then no notifications about changes made with the specified command will be send. By default, is 'false'.
+     * @param bool $disableNotifications If set 'true' then no notifications about changes made with the specified
+     *     command will be send. By default, is 'false'.
      * @param string|null $runAs Login for a user on whose behalf the command should be executed.
      * @return bool If YouTrack returns with HTTP 200 true, else false
      * @throws Exception
@@ -1627,7 +1634,7 @@ class Connection
         foreach ($xml->children() as $node) {
             $bundle[(string)$node] = array(
                 'description' => (isset($node['description']) ? (string)$node['description'] : ''),
-                'isResolved' => ((string)$node['isResolved'] == 'true')
+                'isResolved' => ((string)$node['isResolved'] == 'true'),
             );
         }
         return $bundle;
@@ -1647,7 +1654,7 @@ class Connection
             'png' => 'image/png',
             'gif' => 'image/gif',
             'jpg' => 'image/jpeg',
-            'jpeg' => 'image/jpeg'
+            'jpeg' => 'image/jpeg',
         );
 
         if (isset($map[$ext])) {
@@ -1655,6 +1662,22 @@ class Connection
         }
 
         return null;
+    }
+
+    /**
+     * Get list of all available agile board configurations.
+     *
+     * @link https://confluence.jetbrains.com/display/YTD65/Get+List+of+Agile+Boards
+     * @return AgileSetting[]
+     */
+    public function getAgileBoards()
+    {
+        $xml = $this->requestXml('GET', '/admin/agile');
+        $boards = array();
+        foreach ($xml->children() as $board) {
+            $boards[] = new AgileSetting(new \SimpleXMLElement($board->asXML()), $this);
+        }
+        return $boards;
     }
 
     /**

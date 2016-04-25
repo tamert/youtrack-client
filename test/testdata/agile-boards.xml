@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<projectAgileSettingss>
+    <agileSettings id="76-6" name="Agile Board 1" query="">
+        <projects>
+            <project id="P1" url="https://example.myjetbrains.com/youtrack/rest/admin/project/P1"/>
+            <project id="P2" url="https://example.myjetbrains.com/youtrack/rest/admin/project/P2"/>
+            <project id="P3" url="https://example.myjetbrains.com/youtrack/rest/admin/project/P3"/>
+        </projects>
+        <columnSettings>
+            <field name="State" localizedName="State"
+                   url="https://example.myjetbrains.com/youtrack/rest/admin/customfield/field/State"/>
+            <visibleValues>
+                <column>
+                    <value>Submitted</value>
+                </column>
+                <column>
+                    <value>Open</value>
+                </column>
+                <column>
+                    <value>In Progress</value>
+                </column>
+                <column>
+                    <value>Pending</value>
+                </column>
+                <column>
+                    <value>Fixed</value>
+                </column>
+            </visibleValues>
+        </columnSettings>
+        <versionField name="SprintField1" localizedName="SprintField1"
+                      url="https://example.myjetbrains.com/youtrack/rest/admin/customfield/field/SprintField1"/>
+        <timeField name="Estimation" localizedName="Estimation"
+                   url="https://example.myjetbrains.com/youtrack/rest/admin/customfield/field/Estimation"/>
+        <colorConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="FieldBasedColorCoding">
+            <field name="Priority" localizedName="Priority"
+                   url="https://example.myjetbrains.com/youtrack/rest/admin/customfield/field/Priority"/>
+        </colorConfig>
+        <completeBacklogHierarhy>true</completeBacklogHierarhy>
+        <swimlaneSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="IssueBasedSwimlaneSettings">
+            <field name="Type" localizedName="Type"
+                   url="https://example.myjetbrains.com/youtrack/rest/admin/customfield/field/Type"/>
+            <values>
+                <value>Bug</value>
+                <value>Feature</value>
+                <value>Performance Problem</value>
+            </values>
+        </swimlaneSettings>
+        <backlog name="Board Backlog" visibleForGroup="All Users">project: P1, P2, P3, -Resolved
+            for: me, Unassigned
+        </backlog>
+        <sprints>
+            <sprint>
+                <id>77-26</id>
+                <url>https://example.myjetbrains.com/youtrack/rest/admin/agile/76-6/sprint/77-26</url>
+            </sprint>
+            <sprint>
+                <id>77-27</id>
+                <url>https://example.myjetbrains.com/youtrack/rest/admin/agile/76-6/sprint/77-27</url>
+            </sprint>
+        </sprints>
+    </agileSettings>
+</projectAgileSettingss>

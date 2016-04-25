@@ -4,8 +4,8 @@ namespace YouTrack;
 /**
  * A class describing a youtrack object.
  */
-class Object {
-
+class Object
+{
     /**
      * @var null|Connection
      */
@@ -78,8 +78,7 @@ class Object {
             foreach ($node->attributes() as $key => $value) {
                 if ($key == 'name') {
                     $this->__set($value, (string)$node->value);
-                }
-                else {
+                } else {
                     $this->__set($key, (string)$value);
                 }
             }
