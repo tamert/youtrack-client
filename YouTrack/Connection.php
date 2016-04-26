@@ -618,12 +618,13 @@ class Connection
     }
 
     /**
-     * // TODO document the parameters
+     * @link https://confluence.jetbrains.com/display/YTD65/Import+Attachment+to+an+Issue
+     *
      * @param string $issueId The issue id
-     * @param $authorLogin
-     * @param $filename
+     * @param string $authorLogin Attachment submitter login
+     * @param string $filename
      * @param $file
-     * @param $created
+     * @param string $created Attachment creation time
      * @return array
      * @throws Exception
      * @throws NotAuthorizedException

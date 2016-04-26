@@ -11,7 +11,7 @@ $youtrack = new YouTrack\Connection(
 // make sure, this issue exists!
 
 $issues = [
-    'Sandbox-281'
+    'Sandbox-281',
 ];
 
 // see the description here: https://confluence.jetbrains.com/display/YTD65/Get+Issue+History
@@ -20,5 +20,5 @@ $issues = [
 foreach ($issues as $issueId) {
 
     $history = $youtrack->getIssueHistory($issueId);
-    var_dump($history);
+    echo count($history) . ' History entries found for issue ' . $issueId . PHP_EOL;
 }
