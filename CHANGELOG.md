@@ -1,5 +1,10 @@
 # Changelog
 
+### 2016-04-26 - v1.4.0
+
+* Merged #24 Add methods for getting issue history - [pilov-pa](https://github.com/pilov-pa)
+* Improved XML call for getting issue history and worktimes and some other calls.
+
 ### 2016-04-25 - v1.3.0
 
 * Merged #23 Remove dublicated xml declaration - [pilov-pa](https://github.com/pilov-pa)

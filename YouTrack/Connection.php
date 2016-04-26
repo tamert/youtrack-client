@@ -463,16 +463,15 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * @param string $issueId
      * @return Comment[]
      * @throws Exception
      * @throws \Exception
      */
-    public function getComments($id)
+    public function getComments($issueId)
     {
         $comments = array();
-        $req = $this->request('GET', '/issue/' . rawurlencode($id) . '/comment');
-        $xml = simplexml_load_string($req['content']);
+        $xml = $this->requestXml('GET', '/issue/' . rawurlencode($issueId) . '/comment');
         foreach ($xml->children() as $node) {
             $comments[] = new Comment($node, $this);
         }
@@ -486,8 +485,7 @@ class Connection
     public function getAttachments($id)
     {
         $attachments = array();
-        $req = $this->request('GET', '/issue/' . rawurlencode($id) . '/attachment');
-        $xml = simplexml_load_string($req['content']);
+        $xml = $this->requestXml('GET', '/issue/' . rawurlencode($id) . '/attachment');
         foreach ($xml->children() as $node) {
             $attachments[] = new Attachment($node, $this);
         }
@@ -656,8 +654,7 @@ class Connection
     public function getLinks($issueId, $outward_only = false)
     {
         $links = array();
-        $req = $this->request('GET', '/issue/' . rawurlencode($issueId) . '/link');
-        $xml = simplexml_load_string($req['content']);
+        $xml = $this->requestXml('GET', '/issue/' . rawurlencode($issueId) . '/link');
         foreach ($xml->children() as $node) {
             if (($node->attributes()->source != $issueId) || !$outward_only) {
                 $links[] = new Link($node, $this);
@@ -1735,8 +1732,7 @@ class Connection
     public function getWorkitems($issueId)
     {
         $items = array();
-        $req = $this->request('GET', '/issue/' . urlencode($issueId) . '/timetracking/workitem/');
-        $xml = simplexml_load_string($req['content']);
+        $xml = $this->requestXml('GET', '/issue/' . urlencode($issueId) . '/timetracking/workitem/');
         foreach ($xml->children() as $node) {
             $items[] = new Workitem($node, $this);
         }
@@ -1746,17 +1742,16 @@ class Connection
     /**
      * Get issue history by issue id
      *
-     * @link https://confluence.jetbrains.com/display/YTD6/Get+Issue+History
+     * @link https://confluence.jetbrains.com/display/YTD65/Get+Issue+History
      *
-     * @param $issueId
+     * @param string $issueId
      *
      * @return array
      */
     public function getIssueHistory($issueId)
     {
         $items = array();
-        $req = $this->request('GET', '/issue/' . urlencode($issueId) . '/history');
-        $xml = simplexml_load_string($req['content']);
+        $xml = $this->requestXml('GET', '/issue/' . urlencode($issueId) . '/history');
         foreach ($xml->children() as $node) {
             $item = array();
             foreach($node as $fieldNode) {
