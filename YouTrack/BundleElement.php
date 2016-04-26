@@ -6,16 +6,16 @@ abstract class BundleElement extends Object
     /**
      * @var \SimpleXMLElement
      */
-    private $elementTagName;
+    protected $elementTagName;
 
     /** @var string */
-    private $name;
+    protected $name;
 
     /** @var string */
-    private $description;
+    protected $description;
 
     /** @var int */
-    private $colorIndex;
+    protected $colorIndex;
 
     /**
      * @param string $elementTagName

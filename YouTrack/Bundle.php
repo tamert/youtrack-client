@@ -11,17 +11,17 @@ abstract class Bundle extends Object
     /**
      * @var \SimpleXMLElement
      */
-    private $elementTagName;
+    protected $elementTagName;
 
     /**
      * @var Connection
      */
-    private $bundleTagName;
+    protected $bundleTagName;
 
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @param string $elementTagName

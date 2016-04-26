@@ -184,21 +184,6 @@ class Connection
                 break;
             case 'PUT':
                 curl_setopt($this->http, CURLOPT_CUSTOMREQUEST, 'PUT');
-//                $handle = null;
-//                // Check if we got a file or just a string of data.
-//                if (is_string($body) && file_exists($body)) {
-//                    $size = filesize($body);
-//                    if (!$size) {
-//                        throw new \Exception("Can't open file $body!");
-//                    }
-//                    $handle = fopen($body, 'r');
-//                } else {
-//                    $size = strlen($body);
-//                    $handle = fopen('data://text/plain,' . $body, 'r');
-//                }
-//                curl_setopt($this->http, CURLOPT_PUT, true);
-//                curl_setopt($this->http, CURLOPT_INFILE, $handle);
-//                curl_setopt($this->http, CURLOPT_INFILESIZE, $size);
                 break;
             case 'POST':
                 curl_setopt($this->http, CURLOPT_POST, true);
