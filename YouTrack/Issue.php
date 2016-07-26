@@ -73,7 +73,7 @@ class Issue extends Object
      */
     public function hasAssignee()
     {
-        $name = $this->__get('assigneeName');
+        $name = $this->__get('Assignee');
         return !empty($name);
     }
 
@@ -82,7 +82,7 @@ class Issue extends Object
      */
     public function getAssignee()
     {
-        return $this->youtrack->getUser($this->__get('assigneeName'));
+        return $this->youtrack->getUser($this->__get('Assignee'));
     }
 
     /**
