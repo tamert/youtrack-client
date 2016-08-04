@@ -10,7 +10,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+List+of+Agile+Boards
  */
-class Sprint extends Object
+class Sprint extends BaseObject
 {
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {

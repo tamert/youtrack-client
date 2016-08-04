@@ -22,7 +22,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+Available+Work+Items+of+Issue
  */
-class Workitem extends Object
+class Workitem extends BaseObject
 {
 
     public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)

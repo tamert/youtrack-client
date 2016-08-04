@@ -22,7 +22,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+Links+of+an+Issue
  */
-class Link extends Object
+class Link extends BaseObject
 {
     public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
     {

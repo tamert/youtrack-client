@@ -19,7 +19,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/GET+Project
  */
-class Project extends Object
+class Project extends BaseObject
 {
     /**
      * This extra constructor sets subsystems, if they are present in the response

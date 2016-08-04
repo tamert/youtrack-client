@@ -31,7 +31,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+Comments+of+an+Issue
  */
-class Comment extends Object
+class Comment extends BaseObject
 {
     public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
     {

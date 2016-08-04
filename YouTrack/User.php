@@ -28,6 +28,6 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/GET+User
  */
-class User extends Object
+class User extends BaseObject
 {
 }

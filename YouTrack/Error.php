@@ -4,7 +4,7 @@ namespace YouTrack;
 /**
  * A class describing a youtrack error.
  */
-class Error extends Object
+class Error extends BaseObject
 {
     /**
      * @param \SimpleXMLElement $xml

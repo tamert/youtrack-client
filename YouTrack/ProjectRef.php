@@ -7,6 +7,6 @@ namespace YouTrack;
  *
  * @package YouTrack
  */
-class ProjectRef extends Object
+class ProjectRef extends BaseObject
 {
 }

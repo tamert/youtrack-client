@@ -25,7 +25,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/GET+Prototype
  */
-class CustomFieldPrototype extends Object
+class CustomFieldPrototype extends BaseObject
 {
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {

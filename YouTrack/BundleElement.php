@@ -1,7 +1,7 @@
 <?php
 namespace YouTrack;
 
-abstract class BundleElement extends Object
+abstract class BundleElement extends BaseObject
 {
     /**
      * @var \SimpleXMLElement

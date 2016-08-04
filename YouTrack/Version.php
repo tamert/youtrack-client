@@ -11,7 +11,7 @@ namespace YouTrack;
 /**
  * A class describing a youtrack version.
  */
-class Version extends Object
+class Version extends BaseObject
 {
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {

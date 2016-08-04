@@ -6,7 +6,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+an+Issue
  */
-class Issue extends Object
+class Issue extends BaseObject
 {
     private $links = array();
     private $attachments = array();

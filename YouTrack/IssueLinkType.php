@@ -19,6 +19,6 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/GET+Issue+Link+Type
  */
-class IssueLinkType extends Object
+class IssueLinkType extends BaseObject
 {
 }

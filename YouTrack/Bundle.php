@@ -1,7 +1,7 @@
 <?php
 namespace YouTrack;
 
-abstract class Bundle extends Object
+abstract class Bundle extends BaseObject
 {
     /**
      * @var array

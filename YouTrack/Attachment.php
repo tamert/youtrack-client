@@ -17,7 +17,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+Attachments+of+an+Issue
  */
-class Attachment extends Object
+class Attachment extends BaseObject
 {
     public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
     {

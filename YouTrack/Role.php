@@ -16,7 +16,7 @@ namespace YouTrack;
  *
  * @link https://confluence.jetbrains.com/display/YTD65/GET+Role
  */
-class Role extends Object
+class Role extends BaseObject
 {
     /**
      * @var ProjectRef[]

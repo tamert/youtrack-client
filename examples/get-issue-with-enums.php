@@ -15,7 +15,10 @@ $issue = $youtrack->getIssue($issueId);
 
 if ($issue) {
     $module = $issue->getModule();
-    var_dump($module);
+    echo 'Modules:' . PHP_EOL;
+    foreach ($module as $m) {
+        echo ' - ' . $m . PHP_EOL;
+    }
 } else {
     echo sprintf('Issue "%s" does not exist!%s', $issueId, PHP_EOL);
 }

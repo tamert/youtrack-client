@@ -4,7 +4,7 @@ namespace YouTrack;
 /**
  * A class describing a youtrack object.
  */
-class Object
+class BaseObject
 {
     /**
      * @var null|Connection
