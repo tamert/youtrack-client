@@ -1,6 +1,6 @@
 # Changelog
 
-### 2016-04-26 - v1.4.1
+### 2016-08-04 - v1.4.1
 
 * Fixed #25, added support for multiple values for enum fields
 
