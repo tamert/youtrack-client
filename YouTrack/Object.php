@@ -24,8 +24,28 @@ class Object
         }
     }
 
+    protected function guessAttributeName($name)
+    {
+        $oName = $name;
+
+        if (!empty($this->attributes[$name])) {
+            return $name;
+        }
+
+        $name = lcfirst($name);
+        if (!empty($this->attributes[$name])) {
+            return $name;
+        }
+        $name = ucfirst($name);
+        if (!empty($this->attributes[$name])) {
+            return $name;
+        }
+        return $oName;
+    }
+
     public function __get($name)
     {
+        $name = $this->guessAttributeName($name);
         if (!empty($this->attributes["$name"])) {
             return $this->attributes["$name"];
         }
@@ -36,20 +56,21 @@ class Object
     {
         // Magic getter
         if (strlen($name) > 3 && substr($name, 0, 3) === 'get') {
-            $name = strtolower($name{3}) . substr($name, 4);
+            $name = $this->guessAttributeName(substr($name, 3));
             if (!empty($this->attributes[$name])) {
                 return $this->attributes[$name];
             }
         }
         // Magic setter
         if (strlen($name) > 3 && substr($name, 0, 3) === 'set') {
-            $name = strtolower($name{3}) . substr($name, 4);
+            $name = $this->guessAttributeName(substr($name, 3));
             $this->attributes[$name] = $args[0];
         }
     }
 
     public function __set($name, $value)
     {
+        $name = $this->guessAttributeName($name);
         $this->attributes["$name"] = $value;
     }
 

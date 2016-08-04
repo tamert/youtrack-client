@@ -19,8 +19,8 @@ class Issue extends Object
         if ($xml) {
             if (!empty($this->attributes['links'])) {
                 $links = array();
-                foreach($xml->xpath('//field[@name="links"]') as $node) {
-                    foreach($node->children() as $link) {
+                foreach ($xml->xpath('//field[@name="links"]') as $node) {
+                    foreach ($node->children() as $link) {
                         $links[(string)$link] = array(
                             'type' => (string)$link->attributes()->type,
                             'role' => (string)$link->attributes()->role,
@@ -31,8 +31,8 @@ class Issue extends Object
             }
             if (!empty($this->attributes['attachments'])) {
                 $attachments = array();
-                foreach($xml->xpath('//field[@name="attachments"]') as $node) {
-                    foreach($node->children() as $attachment) {
+                foreach ($xml->xpath('//field[@name="attachments"]') as $node) {
+                    foreach ($node->children() as $attachment) {
                         $attachments[(string)$attachment] = array(
                             'url' => (string)$attachment->attributes()->url,
                         );
@@ -52,10 +52,17 @@ class Issue extends Object
             }
             foreach ($node->attributes() as $key => $value) {
                 if ($key == 'name') {
-                    $this->__set($value, (string)$node->value);
-                } else {
-                    $this->__set($key, (string)$value);
+                    $key = $value;
+                    $value = $node->value;
                 }
+                $key = (string)$key;
+
+                if (count($value) > 1) {
+                    $value = (array)$value;
+                } else {
+                    $value = (string)$value;
+                }
+                $this->__set($key, $value);
             }
         }
     }
