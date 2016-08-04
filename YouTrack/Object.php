@@ -26,6 +26,7 @@ class Object
 
     protected function guessAttributeName($name)
     {
+        $name = (string)$name;
         $oName = $name;
 
         if (!empty($this->attributes[$name])) {
