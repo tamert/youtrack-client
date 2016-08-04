@@ -1,5 +1,9 @@
 # Changelog
 
+### 2016-04-26 - v1.4.1
+
+* Fixed #25, added support for multiple values for enum fields
+
 ### 2016-04-26 - v1.4.0
 
 * Merged #24 Add methods for getting issue history - [pilov-pa](https://github.com/pilov-pa)
