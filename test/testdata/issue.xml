@@ -30,6 +30,9 @@
   <field name="assigneeName">
     <value>nameOfTheAssignee</value>
   </field>
+  <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="MultiUserField" name="Assignee">
+    <value fullName="Nepomuk Frädrich">root</value>
+  </field>
   <field name="type">
     <value>Task</value>
   </field>
