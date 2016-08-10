@@ -5,6 +5,22 @@ namespace YouTrack;
  * A class describing a youtrack issue.
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+an+Issue
+ *
+ * @method mixed getId()
+ * @method mixed getJiraId()
+ * @method mixed getProjectShortName()
+ * @method mixed getNumberInProject()
+ * @method mixed getSummary()
+ * @method mixed getDescription()
+ * @method mixed getCreated()
+ * @method mixed getUpdated()
+ * @method mixed getUpdaterName()
+ * @method mixed getResolved()
+ * @method mixed getReporterName()
+ * @method mixed getVoterName()
+ * @method mixed getCommentsCount()
+ * @method mixed getVotes()
+ * @method mixed getPermittedGroup()
  */
 class Issue extends BaseObject
 {
