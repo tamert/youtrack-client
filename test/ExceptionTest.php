@@ -12,7 +12,7 @@ use YouTrack\Exception as YouTrackException;
  */
 class ExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function test___construct01()
+    public function testConstruct01()
     {
         $url = "http://example.com";
         $response = array(
@@ -23,7 +23,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Error for 'http://example.com': 200", $e->getMessage());
     }
 
-    public function test___construct02()
+    public function testConstruct02()
     {
         $url = "http://example.com";
         $response = array(
@@ -34,7 +34,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Error for 'http://example.com': 404", $e->getMessage());
     }
 
-    public function test___construct03()
+    public function testConstruct03()
     {
         $url = "http://example.com";
         $response = array(
@@ -46,7 +46,7 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Error for 'http://example.com': 500", $e->getMessage());
     }
 
-    public function test___construct04()
+    public function testConstruct04()
     {
         $url = "http://example.com";
         $response = array(

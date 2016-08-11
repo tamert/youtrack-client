@@ -42,7 +42,7 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $xml = simplexml_load_file($this->singleAttachmentFile);
         $xml = $xml->children();
         $xml = $xml[0];
-        return $attachment = new Attachment($xml);
+        return new Attachment($xml);
     }
 
     public function testUrlIsSetAfterXmlLoad()

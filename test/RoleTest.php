@@ -26,7 +26,7 @@ class RoleTest extends \PHPUnit_Framework_TestCase
     {
         $xml = simplexml_load_file($this->roleProjectFile);
         $expectedId = 'RELATED_PROJECT';
-        $expectedUrl = 'http://example.com/youtrack/rest/admin/project/'.$expectedId;
+        $expectedUrl = 'http://example.com/youtrack/rest/admin/project/' . $expectedId;
         $role = new Role($xml);
         $this->assertEquals('Developer', $role->getName());
         $this->assertNotEmpty($role->getProjectRefs());

@@ -42,7 +42,7 @@ class AgileBoardSettingTest extends \PHPUnit_Framework_TestCase
         $xml = simplexml_load_file($this->singleAgileSettingFile);
         $xml = $xml->children();
         $xml = $xml[0];
-        return $agileBoard = new AgileSetting($xml);
+        return new AgileSetting($xml);
     }
 
     public function testIdIsSetAfterXmlLoad()

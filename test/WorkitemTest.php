@@ -11,28 +11,28 @@ class WorkitemTest extends \PHPUnit_Framework_TestCase
 {
     private $filename = "test/testdata/workitem.xml";
 
-    public function test___construct01()
+    public function testConstruct01()
     {
-        $items = $this->_loadWorkitems();
+        $items = $this->loadWorkitems();
         $this->assertEquals(2, count($items));
     }
 
     public function testWorkItemAuthorIsUser()
     {
-        $items = $this->_loadWorkitems();
+        $items = $this->loadWorkitems();
         $this->assertTrue($items[0]->author instanceof User);
     }
 
     public function testWorkitemGetDescription()
     {
-        $items = $this->_loadWorkitems();
+        $items = $this->loadWorkitems();
         $this->assertEquals('first work item', $items[0]->description);
     }
 
     /**
      * @return array
      */
-    private function _loadWorkitems()
+    private function loadWorkitems()
     {
         $items = array();
         $xml = simplexml_load_file($this->filename);
