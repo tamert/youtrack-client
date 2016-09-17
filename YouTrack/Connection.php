@@ -271,6 +271,27 @@ class Connection
     }
 
     /**
+     * @param string $content
+     *
+     * @return \SimpleXMLElement
+     */
+    private function parseXML($content)
+    {
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_string($content);
+        if ($xml instanceof \SimpleXMLElement) {
+            return $xml;
+        }
+        /** @var \LibXMLError[] $errors */
+        $errors = libxml_get_errors();
+        $message = "Failed to parse YouTrack XML:";
+        foreach ($errors as $error) {
+            $message .= "\n{$error->code} {$error->message}";
+        }
+        throw new \RuntimeException($message);
+    }
+
+    /**
      * Makes a request and parses the response as XML
      *
      * @param string $method
@@ -288,7 +309,11 @@ class Connection
         $content = $r['content'];
         if (!empty($response['content_type'])) {
             if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
-                $result = simplexml_load_string($content);
+                try {
+                    $result = $this->parseXML($content);
+                } catch (\RuntimeException $exc) {
+                    throw new \RuntimeException("Malformed data received from $method $url", 0, $exc);
+                }
                 return $result;
             }
         }
@@ -384,7 +409,11 @@ class Connection
         $content = $r['content'];
         if (!empty($response['content_type'])) {
             if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
-                $result = simplexml_load_string($content);
+                try {
+                    $result = $this->parseXML($content);
+                } catch (\RuntimeException $exc) {
+                    throw new \RuntimeException("Malformed data received from POST /issue", 0, $exc);
+                }
                 $issue = $result;
             }
         }
