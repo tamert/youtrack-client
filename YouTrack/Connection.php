@@ -106,6 +106,9 @@ class Connection
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_HEADER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
+        if (!$this->verify_ssl) {
+            curl_setopt($this->http, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
         curl_setopt($this->http, CURLOPT_POSTFIELDS, "a");
@@ -231,6 +234,9 @@ class Connection
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
+        if (!$this->verify_ssl) {
+            curl_setopt($this->http, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
         curl_setopt($this->http, CURLOPT_COOKIE, implode(';', $this->cookies));
         if (is_numeric($this->connectTimeout)) {
