@@ -1,5 +1,10 @@
 # Changelog
 
+### 2016-10-01 - v1.5.0
+
+* Merged #27, Changed verify_ssl default value to true, and fixed some cURL settings according to
+ this config - [perk11](https://github.com/perk11)
+
 ### 2016-08-11 - v1.4.2
 
 * Merged #26, added PHPDocs for method for Issue
