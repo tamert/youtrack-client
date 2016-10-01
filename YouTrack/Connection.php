@@ -18,7 +18,7 @@ class Connection
     private $cookies = array();
     private $debug_verbose = false; // Set to TRUE to enable verbose logging of curl messages.
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
-    private $verify_ssl = false;
+    private $verify_ssl = true;
     private $connectTimeout; // seconds
     private $timeout; // seconds
 
