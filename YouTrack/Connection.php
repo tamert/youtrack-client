@@ -49,14 +49,16 @@ class Connection
      * @param string $password
      * @param int $connectTimeout seconds
      * @param int $timeout seconds
+     * @param bool $verifySsl
      */
-    public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null)
+    public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
         $this->http = curl_init();
         $this->url = $url;
         $this->base_url = $url . '/rest';
         $this->setConnectTimeout($connectTimeout);
         $this->setTimeout($timeout);
+        $this->setVerifySsl($verifySsl);
         $this->login($username, $password);
     }
 

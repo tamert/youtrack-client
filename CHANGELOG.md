@@ -1,5 +1,10 @@
 # Changelog
 
+
+### 2016-10-03 - v1.5.1
+
+* Fixed #28, added `$verifySsl` parameter to constructor.
+
 ### 2016-10-01 - v1.5.0
 
 * Merged #27, Changed verify_ssl default value to true, and fixed some cURL settings according to
