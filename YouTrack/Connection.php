@@ -11,15 +11,34 @@ namespace YouTrack;
  */
 class Connection
 {
+    /**
+     * @var null|resource cURL component
+     */
     private $http = null;
+
     private $url = '';
+
+    /**
+     * @var string Base URL of the API (for example. http://youtrack.company.com)
+     */
     private $base_url = '';
+
+
     private $headers = array();
     private $cookies = array();
     private $debug_verbose = false; // Set to TRUE to enable verbose logging of curl messages.
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
+
+    /**
+     * @var bool Enables/Disables SSL verification when sending requests using cURL
+     */
     private $verify_ssl = true;
+
+    /**
+     * @var int Connection timeout
+     */
     private $connectTimeout; // seconds
+
     private $timeout; // seconds
 
     private $bundle_paths = array(
@@ -44,6 +63,7 @@ class Connection
     protected $responseLoggingPath = './';
 
     /**
+     * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
      * @param string $url
      * @param string $username
      * @param string $password
@@ -96,8 +116,9 @@ class Connection
     }
 
     /**
-     * @param string $username
-     * @param string $password
+     * Tries to log in with provided credentials (username, password). If login is successful, then cookies are saved in $cookies attribute, if not, exception is thrown.
+     * @param string $username Youtrack username
+     * @param string $password Youtrack password
      * @throws Exception
      */
     protected function login($username, $password)
@@ -130,8 +151,9 @@ class Connection
     }
 
     /**
-     * @param string $content
-     * @param array $response
+     * Handles a login response from youtrack. If login was successful, then cookies are saved in $cookies attribute, otherwise Exception is thrown.
+     * @param string $content Response content returned from Youtrack server
+     * @param array $response Response from function curl_getinfo
      * @throws Exception
      * @throws IncorrectLoginException
      */
