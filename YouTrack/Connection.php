@@ -64,12 +64,12 @@ class Connection
 
     /**
      * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
-     * @param string $url
-     * @param string $username
-     * @param string $password
-     * @param int $connectTimeout seconds
+     * @param string $url URL of the API
+     * @param string $username Username to login with
+     * @param string $password User's password
+     * @param int $connectTimeout Connection timeout in seconds
      * @param int $timeout seconds
-     * @param bool $verifySsl
+     * @param bool $verifySsl Flag to enable/disable SSL verification
      */
     public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
@@ -153,7 +153,7 @@ class Connection
     /**
      * Handles a login response from youtrack. If login was successful, then cookies are saved in $cookies attribute, otherwise Exception is thrown.
      * @param string $content Response content returned from Youtrack server
-     * @param array $response Response from function curl_getinfo 
+     * @param array $response Response from function curl_getinfo
      * @throws Exception
      * @throws IncorrectLoginException
      */
