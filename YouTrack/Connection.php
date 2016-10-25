@@ -23,10 +23,25 @@ class Connection
      */
     private $base_url = '';
 
-
+    /**
+     * @var array Request headers
+     */
     private $headers = array();
+
+    /**
+     * @var array Request Cookies
+     */
     private $cookies = array();
-    private $debug_verbose = false; // Set to TRUE to enable verbose logging of curl messages.
+
+    /**
+     * Set to TRUE to enable verbose logging of curl messages.
+     * @var bool
+     */
+    private $debug_verbose = false;
+
+    /**
+     * @var string User agent
+     */
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
 
     /**
@@ -83,7 +98,7 @@ class Connection
     }
 
     /**
-     * Checks if the connection is via HTTPS
+     * Checks if the HTTPS protocol is used
      *
      * @return bool
      */
@@ -174,7 +189,7 @@ class Connection
     }
 
     /**
-     * Execute a request with the given parameters and return the response.
+     * Executes a request with the given parameters and returns the response.
      *
      * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
      * @param string $method The http method (GET, PUT, POST).
@@ -344,7 +359,8 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * Gets all information about requested issue
+     * @param string $id Youtrack issue ID
      * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
      */
@@ -444,7 +460,8 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * Deletes an issue with specified ID
+     * @param string $id Youtrack issue ID
      * @return mixed
      * @throws Exception
      * @throws \Exception
@@ -478,6 +495,7 @@ class Connection
     }
 
     /**
+     * Returns all comments related with provided issueId
      * @param string $issueId
      * @return Comment[]
      * @throws Exception
@@ -494,7 +512,8 @@ class Connection
     }
 
     /**
-     * @param $id
+     * Returns all attachments for specified issue ID
+     * @param $id string Issue ID
      * @return Attachment[]
      */
     public function getAttachments($id)
@@ -547,6 +566,7 @@ class Connection
     }
 
     /**
+     * Creates an attachment for specified issue ID
      * @param string $issueId
      * @param string $filename
      * @param string $name
@@ -602,6 +622,7 @@ class Connection
     }
 
     /**
+     * Returns attachment parameters
      * @param string $name
      * @param string $authorLogin
      * @param \DateTime $created
@@ -680,6 +701,7 @@ class Connection
     }
 
     /**
+     * Returns an user object
      * @param string $login
      * @return User
      */
