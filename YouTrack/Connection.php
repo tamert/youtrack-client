@@ -116,7 +116,9 @@ class Connection
     }
 
     /**
-     * Tries to log in with provided credentials (username, password). If login is successful, then cookies are saved in $cookies attribute, if not, exception is thrown.
+     * Tries to log in with provided credentials (username, password). If login is successful, then cookies are saved
+     * in $cookies attribute, if not, exception is thrown.
+     *
      * @param string $username Youtrack username
      * @param string $password Youtrack password
      * @throws Exception
@@ -124,8 +126,17 @@ class Connection
     protected function login($username, $password)
     {
         curl_setopt($this->http, CURLOPT_POST, true);
-        curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1')); // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
-        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login=' . rawurlencode($username) . '&password=' . rawurlencode($password));
+
+        // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
+        curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1'));
+
+        curl_setopt(
+            $this->http,
+            CURLOPT_URL,
+            $this->base_url . '/user/login?login=' . rawurlencode($username) . '&password=' . rawurlencode(
+                $password
+            )
+        );
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_HEADER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
@@ -151,9 +162,11 @@ class Connection
     }
 
     /**
-     * Handles a login response from youtrack. If login was successful, then cookies are saved in $cookies attribute, otherwise Exception is thrown.
+     * Handles a login response from youtrack. If login was successful, then cookies are saved in $cookies attribute,
+     * otherwise Exception is thrown.
+     *
      * @param string $content Response content returned from Youtrack server
-     * @param array $response Response from function curl_getinfo 
+     * @param array $response Response from function curl_getinfo
      * @throws Exception
      * @throws IncorrectLoginException
      */
@@ -313,11 +326,19 @@ class Connection
      */
     protected function requestXml($method, $url, $body = null, $ignore_status = 0)
     {
-        $r = $this->request($method, $url, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $body, $ignore_status);
+        $r = $this->request(
+            $method,
+            $url,
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $body,
+            $ignore_status
+        );
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
-            if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
+            if (
+                preg_match('/application\/xml/', $response['content_type'])
+                || preg_match('/text\/xml/', $response['content_type'])
+            ) {
                 $result = simplexml_load_string($content);
                 return $result;
             }
@@ -393,12 +414,15 @@ class Connection
         $params['project'] = (string)$project;
         $params['summary'] = (string)$summary;
 
-        array_walk($params, function (&$value) {
-            // php manual: If funcname needs to be working with the actual values of the array,
-            //  specify the first parameter of funcname as a reference. Then, any changes made to
-            //  those elements will be made in the original array itself.
-            $value = (string)$value;
-        });
+        array_walk(
+            $params,
+            function (&$value) {
+                // php manual: If funcname needs to be working with the actual values of the array,
+                //  specify the first parameter of funcname as a reference. Then, any changes made to
+                //  those elements will be made in the original array itself.
+                $value = (string)$value;
+            }
+        );
         $body = [];
         foreach ($params as $k => $v) {
             if (strlen($v) > 100) {
@@ -413,7 +437,10 @@ class Connection
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
-            if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
+            if (
+                preg_match('/application\/xml/', $response['content_type'])
+                || preg_match('/text\/xml/', $response['content_type'])
+            ) {
                 $result = simplexml_load_string($content);
                 $issue = $result;
             }
@@ -439,7 +466,10 @@ class Connection
      */
     public function updateIssue($id, $summary, $description)
     {
-        $r = $this->request('POST', '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description));
+        $r = $this->request(
+            'POST',
+            '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description)
+        );
         return $r['content'];
     }
 
@@ -557,8 +587,14 @@ class Connection
      * @return array
      * @throws \Exception
      */
-    public function createAttachment($issueId, $filename, $name = '', $authorLogin = '', \DateTime $created = null, $group = '')
-    {
+    public function createAttachment(
+        $issueId,
+        $filename,
+        $name = '',
+        $authorLogin = '',
+        \DateTime $created = null,
+        $group = ''
+    ) {
         if (!file_exists($filename)) {
             throw new \Exception("Can't open file $filename!");
         }
@@ -995,8 +1031,7 @@ class Connection
         $project_description,
         $project_lead_login,
         $starting_number = 1
-    )
-    {
+    ) {
         $params = array(
             'projectName' => (string)$project_name,
             'description' => (string)$project_description,
@@ -1047,9 +1082,8 @@ class Connection
             'defaultAssignee' => (string)$default_assignee_login,
         );
         $this->put(
-            '/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name) . '?' . http_build_query(
-                $params
-            )
+            '/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name) .
+            '?' . http_build_query($params)
         );
         return 'Created';
     }
@@ -1111,8 +1145,7 @@ class Connection
         $is_archived,
         $release_date = null,
         $description = ''
-    )
-    {
+    ) {
         $params = array(
             'description' => (string)$description,
             'isReleased' => (string)$is_released,
@@ -1270,8 +1303,14 @@ class Connection
      * @throws Exception
      * @throws \Exception
      */
-    public function executeCommand($issue_id, $command, $comment = null, $group = null, $disableNotifications = false, $runAs = null)
-    {
+    public function executeCommand(
+        $issue_id,
+        $command,
+        $comment = null,
+        $group = null,
+        $disableNotifications = false,
+        $runAs = null
+    ) {
         $params = array(
             'command' => (string)$command,
             'disableNotifications' => (boolean)$disableNotifications,
@@ -1327,7 +1366,7 @@ class Connection
     }
 
     /**
-     * @param CustomFieldPrototype $field
+     * @param CustomField $field
      * @return string
      */
     public function createCustomField(CustomField $field)
@@ -1447,7 +1486,11 @@ class Connection
      */
     public function updateValueInEnumBundle($name, $value, $newValue)
     {
-        return $this->request('POST', '/admin/customfield/bundle/' . rawurlencode($name) . '/' . rawurlencode($value) . '?newValue=' . rawurlencode($newValue));
+        return $this->request(
+            'POST',
+            '/admin/customfield/bundle/' . rawurlencode($name) . '/' . rawurlencode($value) .
+            '?newValue=' . rawurlencode($newValue)
+        );
     }
 
     /**
@@ -1516,9 +1559,8 @@ class Connection
             $_params = array_merge($_params, $params);
         }
         return $this->put(
-            '/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name) . '?' . http_build_query(
-                $_params
-            )
+            '/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name) .
+            '?' . http_build_query($_params)
         );
     }
 
@@ -1770,8 +1812,8 @@ class Connection
         $xml = $this->requestXml('GET', '/issue/' . urlencode($issueId) . '/history');
         foreach ($xml->children() as $node) {
             $item = array();
-            foreach($node as $fieldNode) {
-                if((string)$fieldNode['name'] === '') {
+            foreach ($node as $fieldNode) {
+                if ((string)$fieldNode['name'] === '') {
                     continue;
                 }
                 $item[(string)$fieldNode['name']] = (string)$fieldNode->value;
