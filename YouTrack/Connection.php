@@ -801,6 +801,7 @@ class Connection
     }
 
     /**
+     * Returns project for given project ID
      * @param string $project_id
      * @return Project
      */
@@ -1214,7 +1215,7 @@ class Connection
      * @param string $filter
      * @param string $after
      * @param string $max
-     * @return array
+     * @return Issue[]
      */
     public function getIssues($project_id, $filter, $after, $max)
     {
@@ -1226,6 +1227,10 @@ class Connection
         $this->cleanUrlParameters($params);
         $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
         $issues = array();
+
+        if(is_a($xml,'SimpleXMLElement') == false)
+            return $issues;
+
         foreach ($xml->children() as $issue) {
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
         }
@@ -1500,7 +1505,7 @@ class Connection
 
     /**
      * @param string $project_id
-     * @return array
+     * @return CustomField []
      */
     public function getProjectCustomFields($project_id)
     {
