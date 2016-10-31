@@ -23,10 +23,25 @@ class Connection
      */
     private $base_url = '';
 
-
+    /**
+     * @var array Request headers
+     */
     private $headers = array();
+
+    /**
+     * @var array Request Cookies
+     */
     private $cookies = array();
-    private $debug_verbose = false; // Set to TRUE to enable verbose logging of curl messages.
+
+    /**
+     * Set to TRUE to enable verbose logging of curl messages.
+     * @var bool
+     */
+    private $debug_verbose = false;
+
+    /**
+     * @var string User agent
+     */
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
 
     /**
@@ -64,12 +79,12 @@ class Connection
 
     /**
      * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
-     * @param string $url
-     * @param string $username
-     * @param string $password
-     * @param int $connectTimeout seconds
+     * @param string $url URL of the API
+     * @param string $username Username to login with
+     * @param string $password User's password
+     * @param int $connectTimeout Connection timeout in seconds
      * @param int $timeout seconds
-     * @param bool $verifySsl
+     * @param bool $verifySsl Flag to enable/disable SSL verification
      */
     public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
@@ -83,7 +98,7 @@ class Connection
     }
 
     /**
-     * Checks if the connection is via HTTPS
+     * Checks if the HTTPS protocol is used
      *
      * @return bool
      */
@@ -187,7 +202,7 @@ class Connection
     }
 
     /**
-     * Execute a request with the given parameters and return the response.
+     * Executes a request with the given parameters and returns the response.
      *
      * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
      * @param string $method The http method (GET, PUT, POST).
@@ -365,7 +380,8 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * Gets all information about requested issue
+     * @param string $id Youtrack issue ID
      * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
      */
@@ -474,7 +490,8 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * Deletes an issue with specified ID
+     * @param string $id Youtrack issue ID
      * @return mixed
      * @throws Exception
      * @throws \Exception
@@ -508,6 +525,7 @@ class Connection
     }
 
     /**
+     * Returns all comments related with provided issueId
      * @param string $issueId
      * @return Comment[]
      * @throws Exception
@@ -524,7 +542,8 @@ class Connection
     }
 
     /**
-     * @param $id
+     * Returns all attachments for specified issue ID
+     * @param $id string Issue ID
      * @return Attachment[]
      */
     public function getAttachments($id)
@@ -577,6 +596,7 @@ class Connection
     }
 
     /**
+     * Creates an attachment for specified issue ID
      * @param string $issueId
      * @param string $filename
      * @param string $name
@@ -638,6 +658,7 @@ class Connection
     }
 
     /**
+     * Returns attachment parameters
      * @param string $name
      * @param string $authorLogin
      * @param \DateTime $created
@@ -716,6 +737,7 @@ class Connection
     }
 
     /**
+     * Returns an user object
      * @param string $login
      * @return User
      */
@@ -815,6 +837,7 @@ class Connection
     }
 
     /**
+     * Returns project for given project ID
      * @param string $project_id
      * @return Project
      */
@@ -1225,7 +1248,7 @@ class Connection
      * @param string $filter
      * @param string $after
      * @param string $max
-     * @return array
+     * @return Issue[]
      */
     public function getIssues($project_id, $filter, $after, $max)
     {
@@ -1237,6 +1260,10 @@ class Connection
         $this->cleanUrlParameters($params);
         $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
         $issues = array();
+
+        if(is_a($xml,'SimpleXMLElement') == false)
+            return $issues;
+
         foreach ($xml->children() as $issue) {
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
         }
@@ -1521,7 +1548,7 @@ class Connection
 
     /**
      * @param string $project_id
-     * @return array
+     * @return CustomField []
      */
     public function getProjectCustomFields($project_id)
     {
