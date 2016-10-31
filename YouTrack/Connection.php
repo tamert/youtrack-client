@@ -335,7 +335,7 @@ class Connection
      * @param string $url
      * @param string|array $body If this is an array, it will be used as CURLOPT_POSTFIELDS
      * @param int $ignore_status
-     * @return \SimpleXMLElement
+     * @return \SimpleXMLElement|string
      * @throws Exception
      * @throws \Exception
      */
@@ -1261,8 +1261,9 @@ class Connection
         $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
         $issues = array();
 
-        if(is_a($xml,'SimpleXMLElement') == false)
+        if (is_a($xml, 'SimpleXMLElement') == false) {
             return $issues;
+        }
 
         foreach ($xml->children() as $issue) {
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
