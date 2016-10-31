@@ -9,6 +9,8 @@ namespace YouTrack;
  * @method string setName(string $value)
  * @property string id
  * @method string getId
+ * @method string getShortName
+ * @method string getAssigneesUsers
  * @method string setId(string $value)
  * @property string lead
  * @method string getLead
