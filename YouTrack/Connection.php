@@ -1261,7 +1261,7 @@ class Connection
         $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
         $issues = array();
 
-        if (is_a($xml, 'SimpleXMLElement') == false) {
+        if (!$xml instanceof \SimpleXMLElement) {
             return $issues;
         }
 
