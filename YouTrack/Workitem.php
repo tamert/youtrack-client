@@ -6,19 +6,27 @@ namespace YouTrack;
  *
  * @property string id
  * @method string getId
- * @method string setId(string $value)
+ * @method void setId(string $value)
+ *
  * @property int date
  * @method int getDate
- * @method int setDate(int $value)
+ * @method void setDate(int $value)
+ *
  * @property int duration
  * @method int getDuration
- * @method int setDuration(int $value)
+ * @method void setDuration(int $value)
+ *
+ * @property Worktype worktype
+ * @method Worktype getWorktype
+ * @method void setWorktype(string $value)
+ *
  * @property string description
  * @method string getDescription
- * @method string setDescription(string $value)
+ * @method void setDescription(string $value)
+ *
  * @property User author
  * @method User getAuthor
- * @method User setAuthor(int $value)
+ * @method void setAuthor(int $value)
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+Available+Work+Items+of+Issue
  */
@@ -35,6 +43,10 @@ class Workitem extends BaseObject
 
         if (isset($xml->author)) {
             $this->attributes['author'] = new User($xml->author, $youtrack);
+        }
+
+        if (isset($xml->worktype)) {
+            $this->attributes['worktype'] = new Worktype($xml->worktype, $youtrack);
         }
     }
 
