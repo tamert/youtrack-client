@@ -18,6 +18,7 @@ class AgileSetting extends BaseObject
         if (isset($xml->projects)) {
             $projects = array();
             foreach ($xml->projects->project as $test) {
+                /** @var \SimpleXMLElement $test */
                 $projects[] = new Project(new \SimpleXMLElement($test->asXML()), $youtrack);
             }
             $this->attributes['projects'] = $projects;
@@ -25,6 +26,7 @@ class AgileSetting extends BaseObject
         if (isset($xml->sprints)) {
             $sprints = array();
             foreach ($xml->sprints->sprint as $sprint) {
+                /** @var \SimpleXMLElement $sprint */
                 $sprints[] = new Sprint(new \SimpleXMLElement($sprint->asXML()), $youtrack);
             }
             $this->attributes['sprints'] = $sprints;

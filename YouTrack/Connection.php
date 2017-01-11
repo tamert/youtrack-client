@@ -484,6 +484,7 @@ class Connection
         $projects = array();
 
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             $project = new Project(new \SimpleXMLElement($node->asXML()), $this);
             $projects[] = $project;
         }
@@ -685,6 +686,7 @@ class Connection
         $links = array();
         $xml = $this->requestXml('GET', '/issue/' . rawurlencode($issueId) . '/link');
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             if (($node->attributes()->source != $issueId) || !$outward_only) {
                 $links[] = new Link($node, $this);
             }
@@ -809,6 +811,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/assignee/group');
         $groups = array();
         foreach ($xml->children() as $group) {
+            /** @var \SimpleXMLElement $group */
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
         }
         return $groups;
@@ -832,6 +835,7 @@ class Connection
         $xml = $this->get('/admin/user/' . rawurlencode($login) . '/group');
         $groups = array();
         foreach ($xml->children() as $group) {
+            /** @var \SimpleXMLElement $group */
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
         }
         return $groups;
@@ -878,6 +882,7 @@ class Connection
         $xml = $this->get('/admin/user/' . rawurlencode($username) . '/role');
         $roles = array();
         foreach ($xml->children() as $role) {
+            /** @var \SimpleXMLElement $role */
             $roles[] = new Role(new \SimpleXMLElement($role->asXML()), $this);
         }
         return $roles;
@@ -908,6 +913,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/subsystem');
         $subsystems = array();
         foreach ($xml->children() as $subsystem) {
+            /** @var \SimpleXMLElement $subsystem */
             $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()), $this);
         }
         return $subsystems;
@@ -922,6 +928,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/version?showReleased=true');
         $versions = array();
         foreach ($xml->children() as $version) {
+            /** @var \SimpleXMLElement $version */
             $versions[] = new Version(new \SimpleXMLElement($version->asXML()), $this);
         }
         return $versions;
@@ -953,6 +960,7 @@ class Connection
         $xml = $this->get('/admin/customfield/buildBundle');
         $bundles = array();
         foreach ($xml->children() as $bundle) {
+            /** @var \SimpleXMLElement $bundle */
             $bundles[] = new BuildBundle(new \SimpleXMLElement($bundle->asXML()), $this);
         }
         return $bundles;
@@ -970,6 +978,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/build');
         $builds = array();
         foreach ($xml->children() as $build) {
+            /** @var \SimpleXMLElement $build */
             $builds[] = new Build(new \SimpleXMLElement($build->asXML()), $this);
         }
         return $builds;
@@ -990,6 +999,7 @@ class Connection
         $xml = $this->get('/admin/user/?' . http_build_query($params));
         if (!empty($xml) && is_object($xml)) {
             foreach ($xml->children() as $user) {
+                /** @var \SimpleXMLElement $user */
                 $users[] = new User(new \SimpleXMLElement($user->asXML()), $this);
             }
         }
@@ -1260,6 +1270,7 @@ class Connection
         $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
         $issues = array();
         foreach ($xml->children() as $issue) {
+            /** @var \SimpleXMLElement $issue */
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
         }
         return $issues;
@@ -1305,6 +1316,7 @@ class Connection
         $xml = $this->get('/issue' . '?' . $params_string);
         $issues = array();
         foreach ($xml->children() as $issue) {
+            /** @var \SimpleXMLElement $issue */
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
         }
         return $issues;
@@ -1366,6 +1378,7 @@ class Connection
         $xml = $this->get('/admin/customfield/field');
         $fields = array();
         foreach ($xml->children() as $field) {
+            /** @var \SimpleXMLElement $field */
             $fields[] = new CustomFieldPrototype(new \SimpleXMLElement($field->asXML()), $this);
         }
         return $fields;
@@ -1540,6 +1553,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/customfield');
         $fields = array();
         foreach ($xml->children() as $cfield) {
+            /** @var \SimpleXMLElement $cfield */
             $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()), $this);
         }
         return $fields;
@@ -1585,6 +1599,7 @@ class Connection
         $xml = $this->get('/admin/issueLinkType');
         $lts = array();
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             $lts[] = new IssueLinkType(new \SimpleXMLElement($node->asXML()), $this);
         }
         return $lts;
@@ -1743,6 +1758,7 @@ class Connection
         $xml = $this->requestXml('GET', '/admin/agile');
         $boards = array();
         foreach ($xml->children() as $board) {
+            /** @var \SimpleXMLElement $board */
             $boards[] = new AgileSetting(new \SimpleXMLElement($board->asXML()), $this);
         }
         return $boards;

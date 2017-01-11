@@ -21,7 +21,7 @@ class EnumBundle extends Bundle
      * @param \SimpleXMLElement $xml
      * @param Connection|null $youtrack
      *
-     * @return OwnedField
+     * @return EnumField
      */
     protected function createElement(\SimpleXMLElement $xml, Connection $youtrack = null)
     {

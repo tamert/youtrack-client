@@ -85,6 +85,7 @@ class Issue extends BaseObject
                 $links = array();
                 foreach ($xml->xpath('//field[@name="links"]') as $node) {
                     foreach ($node->children() as $link) {
+                        /** @var \SimpleXMLElement $link */
                         $links[(string)$link] = array(
                             'type' => (string)$link->attributes()->type,
                             'role' => (string)$link->attributes()->role,
@@ -97,6 +98,7 @@ class Issue extends BaseObject
                 $attachments = array();
                 foreach ($xml->xpath('//field[@name="attachments"]') as $node) {
                     foreach ($node->children() as $attachment) {
+                        /** @var \SimpleXMLElement $attachment */
                         $attachments[(string)$attachment] = array(
                             'url' => (string)$attachment->attributes()->url,
                         );
@@ -113,6 +115,7 @@ class Issue extends BaseObject
     protected function updateChildrenAttributes(\SimpleXMLElement $xml)
     {
         foreach ($xml->children() as $nodeName => $node) {
+            /** @var \SimpleXMLElement $node */
             if ($nodeName == 'comment') {
                 $this->comments[] = new Comment(new \SimpleXMLElement($node->asXML()));
                 continue;
