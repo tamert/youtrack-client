@@ -24,9 +24,9 @@ class Connection
 
     private $bundle_paths = array(
         'ownedField' => 'ownedFieldBundle',
-        'enum' => 'bundle',
-        /*
+        'enum'       => 'bundle',
         'build'      => 'buildBundle',
+        /*
         'state'      => 'stateBundle',
         'version'    => 'versionBundle',
         'user'       => 'userBundle'
@@ -927,7 +927,28 @@ class Connection
     }
 
     /**
+     * @link https://confluence.jetbrains.com/display/YTD3/Get+All+Build+Bundles
+     *
+     * To get a specific build bundle: getBundle('build', $bundleName)
+     *
+     * @see getBundle
+     * @return BuildBundle[]
+     */
+    public function getBuildBundles()
+    {
+        $xml = $this->get('/admin/customfield/buildBundle');
+        $bundles = array();
+        foreach ($xml->children() as $bundle) {
+            $bundles[] = new BuildBundle(new \SimpleXMLElement($bundle->asXML()), $this);
+        }
+        return $bundles;
+    }
+
+    /**
+     * @link https://confluence.jetbrains.com/display/YTD2/GET+Builds
+     *
      * @param string $project_id
+     *
      * @return Build[]
      */
     public function getBuilds($project_id)
@@ -961,9 +982,27 @@ class Connection
         return $users;
     }
 
-    public function createBuild()
+    /**
+     * @link https://confluence.jetbrains.com/display/YTD3/Add+New+Build+to+a+Bundle
+     *
+     * @param string    $bundle_name   Name of a bundle to add a new build.
+     * @param string    $build_name    Name of a new build.
+     * @param string    $description   Build's description.
+     * @param int       $color_index   Sequential number of a color scheme (background color/text color pair) for the build.
+     * @param \DateTime $assemble_date Assemble date for the new build. Default: current time.
+     *
+     * @return string API response, typically empty
+     */
+    public function createBuild($bundle_name, $build_name, $description, $color_index = null, \DateTime $assemble_date = null)
     {
-        throw new NotImplementedException("create_build()");
+        $params = array(
+            'description'  => $description,
+            'colorIndex'   => $color_index === null ? 0 : $color_index,
+            'assembleDate' => ($assemble_date === null ? time() : $assemble_date->getTimestamp()) * 1000,
+        );
+        $bundle_name = rawurlencode($bundle_name);
+        $build_name = rawurlencode($build_name);
+        return $this->put("/admin/customfield/buildBundle/{$bundle_name}/{$build_name}?".http_build_query($params));
     }
 
     public function createBuilds()
@@ -1152,7 +1191,7 @@ class Connection
      * @param array $queries List with queries as string
      * @param bool $rough Calculate approximate counts.
      * @param bool $sync Calculate counts synchronously. Setting this parameter true may influence YouTrack performance.
-     * @return array Integer array of counts for each query
+     * @return int[] Integer array of counts for each query
      */
     public function executeCountQueries(array $queries, $rough = false, $sync = true)
     {
@@ -1187,17 +1226,20 @@ class Connection
     }
 
     /**
+     * @link https://confluence.jetbrains.com/display/YTD3/Get+Issues+in+a+Project
+     *
      * @param string $project_id
-     * @param string $filter
-     * @param string $after
-     * @param string $max
-     * @return array
+     * @param string $filter A query to search for issues.
+     * @param int    $after  A number of issues to skip before getting a list of issues.
+     * @param int    $max    Maximum number of issues to get.
+     *
+     * @return Issue[]
      */
-    public function getIssues($project_id, $filter, $after, $max)
+    public function getIssues($project_id, $filter, $after = 0, $max = 10)
     {
         $params = array(
-            'after' => (string)$after,
-            'max' => (string)$max,
+            'after'  => (string)$after,
+            'max'    => (string)$max,
             'filter' => (string)$filter,
         );
         $this->cleanUrlParameters($params);
@@ -1358,21 +1400,21 @@ class Connection
     }
 
     /**
-     * @param $fieldType
-     * @param $name
+     * @param string $field_type   'ownedField|enum|build'
+     * @param string $bundle_name
      *
      * @return Bundle
      * @throws \Exception
      */
-    public function getBundle($fieldType, $name)
+    public function getBundle($field_type, $bundle_name)
     {
-        $fieldType = $this->getFieldType($fieldType);
+        $field_type = $this->getFieldType($field_type);
 
-        $className = 'YouTrack\\' . ucfirst($fieldType) . 'Bundle';
+        $className = 'YouTrack\\' . ucfirst($field_type) . 'Bundle';
 
         $bundlePath = null;
-        if (isset($this->bundle_paths[$fieldType])) {
-            $bundlePath = $this->bundle_paths[$fieldType];
+        if (isset($this->bundle_paths[$field_type])) {
+            $bundlePath = $this->bundle_paths[$field_type];
         }
 
         if (!$bundlePath) {
@@ -1380,7 +1422,7 @@ class Connection
         }
 
         return new $className(
-            $this->get(sprintf('/admin/customfield/%s/%s', $bundlePath, rawurlencode($name))),
+            $this->get(sprintf('/admin/customfield/%s/%s', $bundlePath, rawurlencode($bundle_name))),
             $this
         );
     }
@@ -1477,7 +1519,7 @@ class Connection
 
     /**
      * @param string $project_id
-     * @return array
+     * @return CustomField[]
      */
     public function getProjectCustomFields($project_id)
     {
@@ -1742,7 +1784,7 @@ class Connection
      *
      * @param $issueId
      *
-     * @return array
+     * @return Workitem[]
      */
     public function getWorkitems($issueId)
     {

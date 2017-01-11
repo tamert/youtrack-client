@@ -2,11 +2,11 @@
 namespace YouTrack;
 
 /**
- * Class EnumBundle
+ * Class BuildBundle
  *
- * @method EnumField[] getValues()
+ * @method Build[] getValues()
  */
-class EnumBundle extends Bundle
+class BuildBundle extends Bundle
 {
     /**
      * @param \SimpleXMLElement|null $xml
@@ -21,10 +21,10 @@ class EnumBundle extends Bundle
      * @param \SimpleXMLElement $xml
      * @param Connection|null $youtrack
      *
-     * @return OwnedField
+     * @return Build
      */
     protected function createElement(\SimpleXMLElement $xml, Connection $youtrack = null)
     {
-        return new EnumField($xml, $youtrack);
+        return new Build($xml, $youtrack);
     }
 }
