@@ -16,11 +16,11 @@ The source of this library is released under the BSD license (see LICENSE for de
 
 ## Requirements
 
-* PHP >= 5.4 (Tested with >= 5.4, Travis runs tests with 5.4, 5.5, 5.6 and 7.0)
+* PHP >= 5.4 (Tested with >= 5.4, Travis runs tests with 5.4, 5.5, 5.6, 7.0 and 7.1)
 * curl
 * simplexml
 * json
-* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 6.5)
+* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 7.0)
 
 ## Changelog
 

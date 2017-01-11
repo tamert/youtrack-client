@@ -11,15 +11,49 @@ namespace YouTrack;
  */
 class Connection
 {
+    /**
+     * @var null|resource cURL component
+     */
     private $http = null;
+
     private $url = '';
+
+    /**
+     * @var string Base URL of the API (for example. http://youtrack.company.com)
+     */
     private $base_url = '';
+
+    /**
+     * @var array Request headers
+     */
     private $headers = array();
+
+    /**
+     * @var array Request Cookies
+     */
     private $cookies = array();
-    private $debug_verbose = false; // Set to TRUE to enable verbose logging of curl messages.
+
+    /**
+     * Set to TRUE to enable verbose logging of curl messages.
+     * @var bool
+     */
+    private $debug_verbose = false;
+
+    /**
+     * @var string User agent
+     */
     private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
-    private $verify_ssl = false;
+
+    /**
+     * @var bool Enables/Disables SSL verification when sending requests using cURL
+     */
+    private $verify_ssl = true;
+
+    /**
+     * @var int Connection timeout
+     */
     private $connectTimeout; // seconds
+
     private $timeout; // seconds
 
     private $bundle_paths = array(
@@ -44,24 +78,27 @@ class Connection
     protected $responseLoggingPath = './';
 
     /**
-     * @param string $url
-     * @param string $username
-     * @param string $password
-     * @param int $connectTimeout seconds
+     * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
+     * @param string $url URL of the API
+     * @param string $username Username to login with
+     * @param string $password User's password
+     * @param int $connectTimeout Connection timeout in seconds
      * @param int $timeout seconds
+     * @param bool $verifySsl Flag to enable/disable SSL verification
      */
-    public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null)
+    public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
         $this->http = curl_init();
         $this->url = $url;
         $this->base_url = $url . '/rest';
         $this->setConnectTimeout($connectTimeout);
         $this->setTimeout($timeout);
+        $this->setVerifySsl($verifySsl);
         $this->login($username, $password);
     }
 
     /**
-     * Checks if the connection is via HTTPS
+     * Checks if the HTTPS protocol is used
      *
      * @return bool
      */
@@ -94,18 +131,33 @@ class Connection
     }
 
     /**
-     * @param string $username
-     * @param string $password
+     * Tries to log in with provided credentials (username, password). If login is successful, then cookies are saved
+     * in $cookies attribute, if not, exception is thrown.
+     *
+     * @param string $username Youtrack username
+     * @param string $password Youtrack password
      * @throws Exception
      */
     protected function login($username, $password)
     {
         curl_setopt($this->http, CURLOPT_POST, true);
-        curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1')); // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
-        curl_setopt($this->http, CURLOPT_URL, $this->base_url . '/user/login?login=' . rawurlencode($username) . '&password=' . rawurlencode($password));
+
+        // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
+        curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1'));
+
+        curl_setopt(
+            $this->http,
+            CURLOPT_URL,
+            $this->base_url . '/user/login?login=' . rawurlencode($username) . '&password=' . rawurlencode(
+                $password
+            )
+        );
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_HEADER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
+        if (!$this->verify_ssl) {
+            curl_setopt($this->http, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
         curl_setopt($this->http, CURLOPT_POSTFIELDS, "a");
@@ -125,8 +177,11 @@ class Connection
     }
 
     /**
-     * @param string $content
-     * @param array $response
+     * Handles a login response from youtrack. If login was successful, then cookies are saved in $cookies attribute,
+     * otherwise Exception is thrown.
+     *
+     * @param string $content Response content returned from Youtrack server
+     * @param array $response Response from function curl_getinfo
      * @throws Exception
      * @throws IncorrectLoginException
      */
@@ -147,7 +202,7 @@ class Connection
     }
 
     /**
-     * Execute a request with the given parameters and return the response.
+     * Executes a request with the given parameters and returns the response.
      *
      * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
      * @param string $method The http method (GET, PUT, POST).
@@ -231,6 +286,9 @@ class Connection
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->http, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
+        if (!$this->verify_ssl) {
+            curl_setopt($this->http, CURLOPT_SSL_VERIFYHOST, 0);
+        }
         curl_setopt($this->http, CURLOPT_VERBOSE, $this->debug_verbose);
         curl_setopt($this->http, CURLOPT_COOKIE, implode(';', $this->cookies));
         if (is_numeric($this->connectTimeout)) {
@@ -298,17 +356,25 @@ class Connection
      * @param string $url
      * @param string|array $body If this is an array, it will be used as CURLOPT_POSTFIELDS
      * @param int $ignore_status
-     * @return \SimpleXMLElement
+     * @return \SimpleXMLElement|string
      * @throws Exception
      * @throws \Exception
      */
     protected function requestXml($method, $url, $body = null, $ignore_status = 0)
     {
-        $r = $this->request($method, $url, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $body, $ignore_status);
+        $r = $this->request(
+            $method,
+            $url,
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $body,
+            $ignore_status
+        );
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
-            if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
+            if (
+                preg_match('/application\/xml/', $response['content_type'])
+                || preg_match('/text\/xml/', $response['content_type'])
+            ) {
                 try {
                     $result = $this->parseXML($content);
                 } catch (\RuntimeException $exc) {
@@ -339,7 +405,8 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * Gets all information about requested issue
+     * @param string $id Youtrack issue ID
      * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
      */
@@ -388,12 +455,15 @@ class Connection
         $params['project'] = (string)$project;
         $params['summary'] = (string)$summary;
 
-        array_walk($params, function (&$value) {
-            // php manual: If funcname needs to be working with the actual values of the array,
-            //  specify the first parameter of funcname as a reference. Then, any changes made to
-            //  those elements will be made in the original array itself.
-            $value = (string)$value;
-        });
+        array_walk(
+            $params,
+            function (&$value) {
+                // php manual: If funcname needs to be working with the actual values of the array,
+                //  specify the first parameter of funcname as a reference. Then, any changes made to
+                //  those elements will be made in the original array itself.
+                $value = (string)$value;
+            }
+        );
         $body = [];
         foreach ($params as $k => $v) {
             if (strlen($v) > 100) {
@@ -408,7 +478,10 @@ class Connection
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
-            if (preg_match('/application\/xml/', $response['content_type']) || preg_match('/text\/xml/', $response['content_type'])) {
+            if (
+                preg_match('/application\/xml/', $response['content_type'])
+                || preg_match('/text\/xml/', $response['content_type'])
+            ) {
                 try {
                     $result = $this->parseXML($content);
                 } catch (\RuntimeException $exc) {
@@ -438,7 +511,10 @@ class Connection
      */
     public function updateIssue($id, $summary, $description)
     {
-        $r = $this->request('POST', '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description));
+        $r = $this->request(
+            'POST',
+            '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description)
+        );
         return $r['content'];
     }
 
@@ -457,7 +533,8 @@ class Connection
     }
 
     /**
-     * @param string $id
+     * Deletes an issue with specified ID
+     * @param string $id Youtrack issue ID
      * @return mixed
      * @throws Exception
      * @throws \Exception
@@ -492,6 +569,7 @@ class Connection
     }
 
     /**
+     * Returns all comments related with provided issueId
      * @param string $issueId
      * @return Comment[]
      * @throws Exception
@@ -508,7 +586,8 @@ class Connection
     }
 
     /**
-     * @param $id
+     * Returns all attachments for specified issue ID
+     * @param $id string Issue ID
      * @return Attachment[]
      */
     public function getAttachments($id)
@@ -561,6 +640,7 @@ class Connection
     }
 
     /**
+     * Creates an attachment for specified issue ID
      * @param string $issueId
      * @param string $filename
      * @param string $name
@@ -571,8 +651,14 @@ class Connection
      * @return array
      * @throws \Exception
      */
-    public function createAttachment($issueId, $filename, $name = '', $authorLogin = '', \DateTime $created = null, $group = '')
-    {
+    public function createAttachment(
+        $issueId,
+        $filename,
+        $name = '',
+        $authorLogin = '',
+        \DateTime $created = null,
+        $group = ''
+    ) {
         if (!file_exists($filename)) {
             throw new \Exception("Can't open file $filename!");
         }
@@ -616,6 +702,7 @@ class Connection
     }
 
     /**
+     * Returns attachment parameters
      * @param string $name
      * @param string $authorLogin
      * @param \DateTime $created
@@ -695,6 +782,7 @@ class Connection
     }
 
     /**
+     * Returns an user object
      * @param string $login
      * @return User
      */
@@ -794,6 +882,7 @@ class Connection
     }
 
     /**
+     * Returns project for given project ID
      * @param string $project_id
      * @return Project
      */
@@ -1057,8 +1146,7 @@ class Connection
         $project_description,
         $project_lead_login,
         $starting_number = 1
-    )
-    {
+    ) {
         $params = array(
             'projectName' => (string)$project_name,
             'description' => (string)$project_description,
@@ -1109,9 +1197,8 @@ class Connection
             'defaultAssignee' => (string)$default_assignee_login,
         );
         $this->put(
-            '/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name) . '?' . http_build_query(
-                $params
-            )
+            '/admin/project/' . rawurlencode($project_id) . '/subsystem/' . rawurlencode($name) .
+            '?' . http_build_query($params)
         );
         return 'Created';
     }
@@ -1173,8 +1260,7 @@ class Connection
         $is_archived,
         $release_date = null,
         $description = ''
-    )
-    {
+    ) {
         $params = array(
             'description' => (string)$description,
             'isReleased' => (string)$is_released,
@@ -1269,6 +1355,11 @@ class Connection
         $this->cleanUrlParameters($params);
         $xml = $this->get('/project/issues/' . urldecode($project_id) . '?' . http_build_query($params));
         $issues = array();
+
+        if (!$xml instanceof \SimpleXMLElement) {
+            return $issues;
+        }
+
         foreach ($xml->children() as $issue) {
             /** @var \SimpleXMLElement $issue */
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
@@ -1337,8 +1428,14 @@ class Connection
      * @throws Exception
      * @throws \Exception
      */
-    public function executeCommand($issue_id, $command, $comment = null, $group = null, $disableNotifications = false, $runAs = null)
-    {
+    public function executeCommand(
+        $issue_id,
+        $command,
+        $comment = null,
+        $group = null,
+        $disableNotifications = false,
+        $runAs = null
+    ) {
         $params = array(
             'command' => (string)$command,
             'disableNotifications' => (boolean)$disableNotifications,
@@ -1395,7 +1492,7 @@ class Connection
     }
 
     /**
-     * @param CustomFieldPrototype $field
+     * @param CustomField $field
      * @return string
      */
     public function createCustomField(CustomField $field)
@@ -1515,7 +1612,11 @@ class Connection
      */
     public function updateValueInEnumBundle($name, $value, $newValue)
     {
-        return $this->request('POST', '/admin/customfield/bundle/' . rawurlencode($name) . '/' . rawurlencode($value) . '?newValue=' . rawurlencode($newValue));
+        return $this->request(
+            'POST',
+            '/admin/customfield/bundle/' . rawurlencode($name) . '/' . rawurlencode($value) .
+            '?newValue=' . rawurlencode($newValue)
+        );
     }
 
     /**
@@ -1585,9 +1686,8 @@ class Connection
             $_params = array_merge($_params, $params);
         }
         return $this->put(
-            '/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name) . '?' . http_build_query(
-                $_params
-            )
+            '/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name) .
+            '?' . http_build_query($_params)
         );
     }
 
@@ -1841,8 +1941,8 @@ class Connection
         $xml = $this->requestXml('GET', '/issue/' . urlencode($issueId) . '/history');
         foreach ($xml->children() as $node) {
             $item = array();
-            foreach($node as $fieldNode) {
-                if((string)$fieldNode['name'] === '') {
+            foreach ($node as $fieldNode) {
+                if ((string)$fieldNode['name'] === '') {
                     continue;
                 }
                 $item[(string)$fieldNode['name']] = (string)$fieldNode->value;
