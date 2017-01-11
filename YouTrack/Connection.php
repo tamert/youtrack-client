@@ -432,13 +432,27 @@ class Connection
      * @param string $id
      * @param string $summary
      * @param string $description
-     * @return mixed
+     * @return string API response content
      * @throws Exception
      * @throws \Exception
      */
     public function updateIssue($id, $summary, $description)
     {
         $r = $this->request('POST', '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description));
+        return $r['content'];
+    }
+
+    /**
+     * @link https://confluence.jetbrains.com/display/YTD65/Update+an+Issue
+     * @param string $id
+     * @param string $summary
+     * @return string API response content
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function updateIssueSummary($id, $summary)
+    {
+        $r = $this->request('POST', '/issue/' . urlencode($id) . '?summary=' . urlencode($summary));
         return $r['content'];
     }
 
