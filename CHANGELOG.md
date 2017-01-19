@@ -1,6 +1,10 @@
 # Changelog
 
 
+### 2017-01-19 - v1.5.3
+
+* Merged from [production-minds](https://github.com/production-minds/youtrack-client)
+
 ### 2017-01-19 - v1.5.2
 
 * Added method getSprintById
