@@ -1,5 +1,8 @@
 # Changelog
 
+### 2017-__-__ - v_._._ (To be released)
+
+* Added readme section for standalone setup with composer
 
 ### 2017-01-19 - v1.5.3
 
