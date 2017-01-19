@@ -1,6 +1,11 @@
 <?php
 namespace YouTrack;
 
+/**
+ * Class OwnedFieldBundle
+ *
+ * @method OwnedField[] getValues()
+ */
 class OwnedFieldBundle extends Bundle
 {
     /**

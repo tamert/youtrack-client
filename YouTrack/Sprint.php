@@ -18,6 +18,7 @@ class Sprint extends BaseObject
         parent::__construct($xml, $youtrack);
         if ($xml) {
             foreach ($xml->children() as $child) {
+                /** @var \SimpleXMLElement $child */
                 $this->__set($child->getName(), (string)$child);
             }
         }

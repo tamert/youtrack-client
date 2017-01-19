@@ -6,14 +6,20 @@ namespace YouTrack;
  *
  * @property string url
  * @method string getUrl
+ * @property string id
+ * @method string getId
+ * @method string setId(string $value)
  * @property string name
  * @method string getName
  * @method string setName(string $value)
  * @property string group
  * @method string getGroup
  * @method string setGroup(string $value)
+ * @property string authorLogin
+ * @method string getAuthorLogin
+ * @method string setAuthorLogin(string $value)
  * @property string created
- * @method string getCreated
+ * @method \DateTime getCreated
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+Attachments+of+an+Issue
  */

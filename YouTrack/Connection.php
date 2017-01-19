@@ -58,9 +58,9 @@ class Connection
 
     private $bundle_paths = array(
         'ownedField' => 'ownedFieldBundle',
-        'enum' => 'bundle',
-        /*
+        'enum'       => 'bundle',
         'build'      => 'buildBundle',
+        /*
         'state'      => 'stateBundle',
         'version'    => 'versionBundle',
         'user'       => 'userBundle'
@@ -329,6 +329,27 @@ class Connection
     }
 
     /**
+     * @param string $content
+     *
+     * @return \SimpleXMLElement
+     */
+    private function parseXML($content)
+    {
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_string($content);
+        if ($xml instanceof \SimpleXMLElement) {
+            return $xml;
+        }
+        /** @var \LibXMLError[] $errors */
+        $errors = libxml_get_errors();
+        $message = "Failed to parse YouTrack XML:";
+        foreach ($errors as $error) {
+            $message .= "\n{$error->code} {$error->message}";
+        }
+        throw new \RuntimeException($message);
+    }
+
+    /**
      * Makes a request and parses the response as XML
      *
      * @param string $method
@@ -354,7 +375,11 @@ class Connection
                 preg_match('/application\/xml/', $response['content_type'])
                 || preg_match('/text\/xml/', $response['content_type'])
             ) {
-                $result = simplexml_load_string($content);
+                try {
+                    $result = $this->parseXML($content);
+                } catch (\RuntimeException $exc) {
+                    throw new \RuntimeException("Malformed data received from $method $url", 0, $exc);
+                }
                 return $result;
             }
         }
@@ -457,7 +482,11 @@ class Connection
                 preg_match('/application\/xml/', $response['content_type'])
                 || preg_match('/text\/xml/', $response['content_type'])
             ) {
-                $result = simplexml_load_string($content);
+                try {
+                    $result = $this->parseXML($content);
+                } catch (\RuntimeException $exc) {
+                    throw new \RuntimeException("Malformed data received from POST /issue", 0, $exc);
+                }
                 $issue = $result;
             }
         }
@@ -476,7 +505,7 @@ class Connection
      * @param string $id
      * @param string $summary
      * @param string $description
-     * @return mixed
+     * @return string API response content
      * @throws Exception
      * @throws \Exception
      */
@@ -486,6 +515,20 @@ class Connection
             'POST',
             '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description)
         );
+        return $r['content'];
+    }
+
+    /**
+     * @link https://confluence.jetbrains.com/display/YTD65/Update+an+Issue
+     * @param string $id
+     * @param string $summary
+     * @return string API response content
+     * @throws Exception
+     * @throws \Exception
+     */
+    public function updateIssueSummary($id, $summary)
+    {
+        $r = $this->request('POST', '/issue/' . urlencode($id) . '?summary=' . urlencode($summary));
         return $r['content'];
     }
 
@@ -518,6 +561,7 @@ class Connection
         $projects = array();
 
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             $project = new Project(new \SimpleXMLElement($node->asXML()), $this);
             $projects[] = $project;
         }
@@ -729,6 +773,7 @@ class Connection
         $links = array();
         $xml = $this->requestXml('GET', '/issue/' . rawurlencode($issueId) . '/link');
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             if (($node->attributes()->source != $issueId) || !$outward_only) {
                 $links[] = new Link($node, $this);
             }
@@ -855,6 +900,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/assignee/group');
         $groups = array();
         foreach ($xml->children() as $group) {
+            /** @var \SimpleXMLElement $group */
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
         }
         return $groups;
@@ -878,6 +924,7 @@ class Connection
         $xml = $this->get('/admin/user/' . rawurlencode($login) . '/group');
         $groups = array();
         foreach ($xml->children() as $group) {
+            /** @var \SimpleXMLElement $group */
             $groups[] = new Group(new \SimpleXMLElement($group->asXML()), $this);
         }
         return $groups;
@@ -924,6 +971,7 @@ class Connection
         $xml = $this->get('/admin/user/' . rawurlencode($username) . '/role');
         $roles = array();
         foreach ($xml->children() as $role) {
+            /** @var \SimpleXMLElement $role */
             $roles[] = new Role(new \SimpleXMLElement($role->asXML()), $this);
         }
         return $roles;
@@ -954,6 +1002,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/subsystem');
         $subsystems = array();
         foreach ($xml->children() as $subsystem) {
+            /** @var \SimpleXMLElement $subsystem */
             $subsystems[] = new Subsystem(new \SimpleXMLElement($subsystem->asXML()), $this);
         }
         return $subsystems;
@@ -968,6 +1017,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/version?showReleased=true');
         $versions = array();
         foreach ($xml->children() as $version) {
+            /** @var \SimpleXMLElement $version */
             $versions[] = new Version(new \SimpleXMLElement($version->asXML()), $this);
         }
         return $versions;
@@ -987,7 +1037,29 @@ class Connection
     }
 
     /**
+     * @link https://confluence.jetbrains.com/display/YTD3/Get+All+Build+Bundles
+     *
+     * To get a specific build bundle: getBundle('build', $bundleName)
+     *
+     * @see getBundle
+     * @return BuildBundle[]
+     */
+    public function getBuildBundles()
+    {
+        $xml = $this->get('/admin/customfield/buildBundle');
+        $bundles = array();
+        foreach ($xml->children() as $bundle) {
+            /** @var \SimpleXMLElement $bundle */
+            $bundles[] = new BuildBundle(new \SimpleXMLElement($bundle->asXML()), $this);
+        }
+        return $bundles;
+    }
+
+    /**
+     * @link https://confluence.jetbrains.com/display/YTD2/GET+Builds
+     *
      * @param string $project_id
+     *
      * @return Build[]
      */
     public function getBuilds($project_id)
@@ -995,6 +1067,7 @@ class Connection
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/build');
         $builds = array();
         foreach ($xml->children() as $build) {
+            /** @var \SimpleXMLElement $build */
             $builds[] = new Build(new \SimpleXMLElement($build->asXML()), $this);
         }
         return $builds;
@@ -1015,15 +1088,34 @@ class Connection
         $xml = $this->get('/admin/user/?' . http_build_query($params));
         if (!empty($xml) && is_object($xml)) {
             foreach ($xml->children() as $user) {
+                /** @var \SimpleXMLElement $user */
                 $users[] = new User(new \SimpleXMLElement($user->asXML()), $this);
             }
         }
         return $users;
     }
 
-    public function createBuild()
+    /**
+     * @link https://confluence.jetbrains.com/display/YTD3/Add+New+Build+to+a+Bundle
+     *
+     * @param string    $bundle_name   Name of a bundle to add a new build.
+     * @param string    $build_name    Name of a new build.
+     * @param string    $description   Build's description.
+     * @param int       $color_index   Sequential number of a color scheme (background color/text color pair) for the build.
+     * @param \DateTime $assemble_date Assemble date for the new build. Default: current time.
+     *
+     * @return string API response, typically empty
+     */
+    public function createBuild($bundle_name, $build_name, $description, $color_index = null, \DateTime $assemble_date = null)
     {
-        throw new NotImplementedException("create_build()");
+        $params = array(
+            'description'  => $description,
+            'colorIndex'   => $color_index === null ? 0 : $color_index,
+            'assembleDate' => ($assemble_date === null ? time() : $assemble_date->getTimestamp()) * 1000,
+        );
+        $bundle_name = rawurlencode($bundle_name);
+        $build_name = rawurlencode($build_name);
+        return $this->put("/admin/customfield/buildBundle/{$bundle_name}/{$build_name}?".http_build_query($params));
     }
 
     public function createBuilds()
@@ -1209,7 +1301,7 @@ class Connection
      * @param array $queries List with queries as string
      * @param bool $rough Calculate approximate counts.
      * @param bool $sync Calculate counts synchronously. Setting this parameter true may influence YouTrack performance.
-     * @return array Integer array of counts for each query
+     * @return int[] Integer array of counts for each query
      */
     public function executeCountQueries(array $queries, $rough = false, $sync = true)
     {
@@ -1244,17 +1336,20 @@ class Connection
     }
 
     /**
+     * @link https://confluence.jetbrains.com/display/YTD3/Get+Issues+in+a+Project
+     *
      * @param string $project_id
-     * @param string $filter
-     * @param string $after
-     * @param string $max
+     * @param string $filter A query to search for issues.
+     * @param int    $after  A number of issues to skip before getting a list of issues.
+     * @param int    $max    Maximum number of issues to get.
+     *
      * @return Issue[]
      */
-    public function getIssues($project_id, $filter, $after, $max)
+    public function getIssues($project_id, $filter, $after = 0, $max = 10)
     {
         $params = array(
-            'after' => (string)$after,
-            'max' => (string)$max,
+            'after'  => (string)$after,
+            'max'    => (string)$max,
             'filter' => (string)$filter,
         );
         $this->cleanUrlParameters($params);
@@ -1266,6 +1361,7 @@ class Connection
         }
 
         foreach ($xml->children() as $issue) {
+            /** @var \SimpleXMLElement $issue */
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
         }
         return $issues;
@@ -1311,6 +1407,7 @@ class Connection
         $xml = $this->get('/issue' . '?' . $params_string);
         $issues = array();
         foreach ($xml->children() as $issue) {
+            /** @var \SimpleXMLElement $issue */
             $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
         }
         return $issues;
@@ -1378,6 +1475,7 @@ class Connection
         $xml = $this->get('/admin/customfield/field');
         $fields = array();
         foreach ($xml->children() as $field) {
+            /** @var \SimpleXMLElement $field */
             $fields[] = new CustomFieldPrototype(new \SimpleXMLElement($field->asXML()), $this);
         }
         return $fields;
@@ -1426,21 +1524,21 @@ class Connection
     }
 
     /**
-     * @param $fieldType
-     * @param $name
+     * @param string $field_type   'ownedField|enum|build'
+     * @param string $bundle_name
      *
      * @return Bundle
      * @throws \Exception
      */
-    public function getBundle($fieldType, $name)
+    public function getBundle($field_type, $bundle_name)
     {
-        $fieldType = $this->getFieldType($fieldType);
+        $field_type = $this->getFieldType($field_type);
 
-        $className = 'YouTrack\\' . ucfirst($fieldType) . 'Bundle';
+        $className = 'YouTrack\\' . ucfirst($field_type) . 'Bundle';
 
         $bundlePath = null;
-        if (isset($this->bundle_paths[$fieldType])) {
-            $bundlePath = $this->bundle_paths[$fieldType];
+        if (isset($this->bundle_paths[$field_type])) {
+            $bundlePath = $this->bundle_paths[$field_type];
         }
 
         if (!$bundlePath) {
@@ -1448,7 +1546,7 @@ class Connection
         }
 
         return new $className(
-            $this->get(sprintf('/admin/customfield/%s/%s', $bundlePath, rawurlencode($name))),
+            $this->get(sprintf('/admin/customfield/%s/%s', $bundlePath, rawurlencode($bundle_name))),
             $this
         );
     }
@@ -1549,13 +1647,14 @@ class Connection
 
     /**
      * @param string $project_id
-     * @return CustomField []
+     * @return CustomField[]
      */
     public function getProjectCustomFields($project_id)
     {
         $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/customfield');
         $fields = array();
         foreach ($xml->children() as $cfield) {
+            /** @var \SimpleXMLElement $cfield */
             $fields[] = new CustomField(new \SimpleXMLElement($cfield->asXML()), $this);
         }
         return $fields;
@@ -1600,6 +1699,7 @@ class Connection
         $xml = $this->get('/admin/issueLinkType');
         $lts = array();
         foreach ($xml->children() as $node) {
+            /** @var \SimpleXMLElement $node */
             $lts[] = new IssueLinkType(new \SimpleXMLElement($node->asXML()), $this);
         }
         return $lts;
@@ -1758,6 +1858,7 @@ class Connection
         $xml = $this->requestXml('GET', '/admin/agile');
         $boards = array();
         foreach ($xml->children() as $board) {
+            /** @var \SimpleXMLElement $board */
             $boards[] = new AgileSetting(new \SimpleXMLElement($board->asXML()), $this);
         }
         return $boards;
@@ -1827,7 +1928,7 @@ class Connection
      *
      * @param $issueId
      *
-     * @return array
+     * @return Workitem[]
      */
     public function getWorkitems($issueId)
     {

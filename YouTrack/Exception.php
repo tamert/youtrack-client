@@ -16,7 +16,7 @@ class Exception extends \Exception
      *
      * @param string $url The url that triggered the error.
      * @param array $response The output of <code>curl_getinfo($resource)</code>.
-     * @param array $content The content returned from the url.
+     * @param string $content The content returned from the url.
      */
     public function __construct($url, $response, $content)
     {

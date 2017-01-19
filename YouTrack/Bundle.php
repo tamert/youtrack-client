@@ -48,6 +48,14 @@ abstract class Bundle extends BaseObject
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * @return BundleElement[]
      */
     public function getValues()
