@@ -77,6 +77,44 @@ From now on you can use YouTrack-Client-PHP-Library from any file in you ZF2-App
         }
     }
 
+## Standalone setup with composer
+
+Run the following commands to install composer and youtrack-client.
+
+    mkdir my-youtrack-project
+    cd my-youtrack-project
+
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php -r "if (hash_file('SHA384', 'composer-setup.php') === '55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+    
+    php composer.phar require nepda/youtrack-client
+(Please checkout the [latest composer setup on their page](https://getcomposer.org/download/))
+
+Create a `./my-youtrack-project/client.php` file with content:
+
+    <?php
+    define('YOUTRACK_URL', 'https://*your-url*.myjetbrains.com/youtrack');
+    define('YOUTRACK_USERNAME', '***');
+    define('YOUTRACK_PASSWORD', '***');
+    require_once 'vendor/autoload.php';
+    try {
+        $youtrack = new YouTrack\Connection(
+            YOUTRACK_URL,
+            YOUTRACK_USERNAME . 'invalid',
+            YOUTRACK_PASSWORD
+        );
+        echo 'Login correct.' . PHP_EOL;
+        
+        $issue = $youtrack->getIssue('TEST-123');
+        // Now you can work with the issue or other $youtrack methods
+    } catch (\YouTrack\IncorrectLoginException $e) {
+        echo 'Incorrect login or password.' . PHP_EOL;
+    }
+
+With this simple setup you're ready to go.
+
 ## Tests
 
 The testsuite depends on PHPUnit. You can install it with `composer.phar`:
