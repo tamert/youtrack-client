@@ -1764,6 +1764,20 @@ class Connection
     }
 
     /**
+     * Get sprint by id
+     *
+     * @param string $boardId Identifier of the agile board, for which you want to get the sprint.
+     * @param string $sprintId Identifier of the sprint you want to get.
+     * @see https://www.jetbrains.com/help/youtrack/standalone/7.0/Get-Sprint-by-ID.html
+     * @return Sprint
+     */
+    public function getSprintById($boardId, $sprintId)
+    {
+        $xml = $this->requestXml('GET', '/admin/agile/' . $boardId . '/sprint/' . $sprintId);
+        return new Sprint($xml, $this);
+    }
+
+    /**
      * Update existing agile configuration.
      *
      * @link https://confluence.jetbrains.com/display/YTD65/Update+Agile+Configuration

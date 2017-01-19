@@ -6,6 +6,7 @@ namespace YouTrack;
  *
  * @property string name
  * @method string getName
+ * @method string getVersion
  * @method string setName(string $value)
  *
  * @link https://confluence.jetbrains.com/display/YTD65/Get+List+of+Agile+Boards

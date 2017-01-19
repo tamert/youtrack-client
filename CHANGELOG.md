@@ -1,6 +1,10 @@
 # Changelog
 
 
+### 2017-01-19 - v1.5.2
+
+* Added method getSprintById
+
 ### 2016-10-03 - v1.5.1
 
 * Fixed #28, added `$verifySsl` parameter to constructor.

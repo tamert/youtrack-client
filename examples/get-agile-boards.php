@@ -26,8 +26,9 @@ if ($boards) {
 
         $sprints = $board->getSprints();
         $sprintNames = [];
-        foreach ($sprints as $sprint) {
-            $sprintNames[] = $sprint->getId();
+        foreach ($sprints as $sprintSkeleton) {
+            $sprint = $youtrack->getSprintById($board->getId(), $sprintSkeleton->getId());
+            $sprintNames[] = $sprint->getVersion();
         }
         echo count($sprints) . ' Sprint(s): ' . implode(', ', $sprintNames) . PHP_EOL . PHP_EOL;
     }
