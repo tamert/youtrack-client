@@ -58,12 +58,12 @@ class Connection
 
     private $bundle_paths = array(
         'ownedField' => 'ownedFieldBundle',
-        'enum'       => 'bundle',
-        'build'      => 'buildBundle',
+        'enum' => 'bundle',
+        'build' => 'buildBundle',
         /*
-        'state'      => 'stateBundle',
-        'version'    => 'versionBundle',
-        'user'       => 'userBundle'
+        'state' => 'stateBundle',
+        'version' => 'versionBundle',
+        'user' => 'userBundle'
         */
     );
 
@@ -1096,26 +1096,31 @@ class Connection
     }
 
     /**
-     * @link https://confluence.jetbrains.com/display/YTD3/Add+New+Build+to+a+Bundle
+     * @link https://www.jetbrains.com/help/youtrack/standalone/7.0/Add-New-Build-to-a-Bundle.html
      *
-     * @param string    $bundle_name   Name of a bundle to add a new build.
-     * @param string    $build_name    Name of a new build.
-     * @param string    $description   Build's description.
-     * @param int       $color_index   Sequential number of a color scheme (background color/text color pair) for the build.
+     * @param string $bundle_name Name of a bundle to add a new build.
+     * @param string $build_name Name of a new build.
+     * @param string $description Build's description.
+     * @param int $color_index Sequential number of a color scheme (background color/text color pair) for the build.
      * @param \DateTime $assemble_date Assemble date for the new build. Default: current time.
      *
      * @return string API response, typically empty
      */
-    public function createBuild($bundle_name, $build_name, $description, $color_index = null, \DateTime $assemble_date = null)
-    {
+    public function createBuild(
+        $bundle_name,
+        $build_name,
+        $description,
+        $color_index = null,
+        \DateTime $assemble_date = null
+    ) {
         $params = array(
-            'description'  => $description,
-            'colorIndex'   => $color_index === null ? 0 : $color_index,
+            'description' => $description,
+            'colorIndex' => $color_index === null ? 0 : $color_index,
             'assembleDate' => ($assemble_date === null ? time() : $assemble_date->getTimestamp()) * 1000,
         );
         $bundle_name = rawurlencode($bundle_name);
         $build_name = rawurlencode($build_name);
-        return $this->put("/admin/customfield/buildBundle/{$bundle_name}/{$build_name}?".http_build_query($params));
+        return $this->put("/admin/customfield/buildBundle/{$bundle_name}/{$build_name}?" . http_build_query($params));
     }
 
     public function createBuilds()
@@ -1340,16 +1345,16 @@ class Connection
      *
      * @param string $project_id
      * @param string $filter A query to search for issues.
-     * @param int    $after  A number of issues to skip before getting a list of issues.
-     * @param int    $max    Maximum number of issues to get.
+     * @param int $after A number of issues to skip before getting a list of issues.
+     * @param int $max Maximum number of issues to get.
      *
      * @return Issue[]
      */
     public function getIssues($project_id, $filter, $after = 0, $max = 10)
     {
         $params = array(
-            'after'  => (string)$after,
-            'max'    => (string)$max,
+            'after' => (string)$after,
+            'max' => (string)$max,
             'filter' => (string)$filter,
         );
         $this->cleanUrlParameters($params);
@@ -1524,7 +1529,7 @@ class Connection
     }
 
     /**
-     * @param string $field_type   'ownedField|enum|build'
+     * @param string $field_type 'ownedField|enum|build'
      * @param string $bundle_name
      *
      * @return Bundle
