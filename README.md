@@ -1,7 +1,7 @@
 YouTrack Client PHP Library
 ===========================
 
-[![Build Status](https://travis-ci.org/nepda/youtrack.png?branch=master)](https://travis-ci.org/nepda/youtrack)
+[![Build Status](https://travis-ci.org/nepda/youtrack-client.png?branch=master)](https://travis-ci.org/nepda/youtrack-client)
 [![Packagist](https://img.shields.io/packagist/v/nepda/youtrack-client.svg)](https://packagist.org/packages/nepda/youtrack-client)
 
 The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a
@@ -141,4 +141,4 @@ The unit tests are incomplete but you can run them using `phpunit` like this:
 * [@wdamien](https://github.com/wdamien)
 * [@angerslave](https://github.com/Angerslave)
 
-(and more: https://github.com/nepda/youtrack/network/members)
+(and more: https://github.com/nepda/youtrack-client/network/members)
