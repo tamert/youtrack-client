@@ -28,14 +28,6 @@ class Attachment extends BaseObject
     public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
     {
         parent::__construct($xml, $youtrack);
-
-        if ($xml) {
-            foreach ($xml->attributes() as $key => $value) {
-                $method = 'set' . ucfirst($key);
-
-                $this->$method((string)$value);
-            }
-        }
         $this->updateDateAttributes(
             array(
                 'created',

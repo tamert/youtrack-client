@@ -33,6 +33,7 @@ class BaseObjectTest extends \PHPUnit_Framework_TestCase
         date_default_timezone_set('Europe/Berlin');
         $item = new BaseObject();
 
+        // http://www.epochconverter.com/timezones?q=1484558909&tz=Europe%2FBerlin
         $timestamp = '1484558909107';
         $expectedDate = '2017-01-16 10:28:29';
         $date = $item->convertTimestampToDateTime($timestamp);

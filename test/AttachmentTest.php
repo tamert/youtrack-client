@@ -75,13 +75,15 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('All Users', $attachment->getGroup());
     }
 
-    public function testCreatedIsSetAfterXmlLoadWithTimezoneAmerica()
+    public function testCreatedIsSetAfterXmlLoadWithTimezoneNewYork()
     {
         date_default_timezone_set('America/New_York');
         $attachment = $this->createAttachment();
-        //26.09.13 16:05:32
+        // 1380204332676
+        // 26.09.13 10:05:32
+        // http://www.epochconverter.com/timezones?q=1380204332&tz=America%2FNew_York
         $this->assertInstanceOf('\\DateTime', $attachment->getCreated());
-        $this->assertEquals('2013-09-26 14:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2013-09-26 10:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
     }
 
     public function testCreatedIsSetAfterXmlLoadWithTimezoneGermany()
@@ -90,7 +92,7 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $attachment = $this->createAttachment();
         //26.09.13 16:05:32
         $this->assertInstanceOf('\\DateTime', $attachment->getCreated());
-        $this->assertEquals('2013-09-26 14:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2013-09-26 16:05:32', $attachment->getCreated()->format('Y-m-d H:i:s'));
     }
 
     public function testCreateAttachmentFromAttachment()
