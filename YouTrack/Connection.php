@@ -7,7 +7,7 @@ namespace YouTrack;
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 29.03.11 16:13
  *
- * @see http://confluence.jetbrains.com/display/YTD5/YouTrack+REST+API+Reference
+ * @see https://www.jetbrains.com/help/youtrack/standalone/2017.1/YouTrack-REST-API-Reference.html
  */
 class Connection
 {
@@ -19,7 +19,7 @@ class Connection
     private $url = '';
 
     /**
-     * @var string Base URL of the API (for example. http://youtrack.company.com)
+     * @var string Base URL of the API (for example. https://youtrack.example.com)
      */
     private $base_url = '';
 
@@ -142,7 +142,7 @@ class Connection
     {
         curl_setopt($this->http, CURLOPT_POST, true);
 
-        // Workaround for login problems when running behind lighttpd proxy @see http://redmine.lighttpd.net/issues/1717
+        // Workaround for login problems when running behind lighttpd proxy @see https://redmine.lighttpd.net/issues/1717
         curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1'));
 
         curl_setopt(
@@ -501,7 +501,7 @@ class Connection
      * Please note that this POST method allows updating issue summary and/or description, only. To update issue
      * fields, please use method to Apply Command to an Issue.
      *
-     * @link https://confluence.jetbrains.com/display/YTD65/Update+an+Issue
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Update-an-Issue.html
      * @param string $id
      * @param string $summary
      * @param string $description
@@ -519,7 +519,7 @@ class Connection
     }
 
     /**
-     * @link https://confluence.jetbrains.com/display/YTD65/Update+an+Issue
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Update-an-Issue.html
      * @param string $id
      * @param string $summary
      * @return string API response content
@@ -548,7 +548,7 @@ class Connection
     /**
      * Get a list of all accessible projects from the server.
      *
-     * @see http://confluence.jetbrains.com/display/YTD5/Get+Accessible+Projects
+     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Accessible-Projects.html
      *
      * @param bool $verbose If full representation of projects is returned. If this parameter is false,
      *                      only short names and id's are returned.
@@ -734,7 +734,7 @@ class Connection
     }
 
     /**
-     * @link https://confluence.jetbrains.com/display/YTD65/Import+Attachment+to+an+Issue
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Import-Attachment-to-an-Issue.html
      *
      * @param string $issueId The issue id
      * @param string $authorLogin Attachment submitter login
@@ -1037,7 +1037,7 @@ class Connection
     }
 
     /**
-     * @link https://confluence.jetbrains.com/display/YTD3/Get+All+Build+Bundles
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-All-Build-Bundles.html
      *
      * To get a specific build bundle: getBundle('build', $bundleName)
      *
@@ -1056,7 +1056,7 @@ class Connection
     }
 
     /**
-     * @link https://confluence.jetbrains.com/display/YTD2/GET+Builds
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Builds.html
      *
      * @param string $project_id
      *
@@ -1096,7 +1096,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/7.0/Add-New-Build-to-a-Bundle.html
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Add-New-Build-to-a-Bundle.html
      *
      * @param string $bundle_name Name of a bundle to add a new build.
      * @param string $build_name Name of a new build.
@@ -1302,7 +1302,7 @@ class Connection
      *   )
      * </code>
      *
-     * @link http://confluence.jetbrains.com/display/YTD5/Get+Number+of+Issues+for+Several+Queries
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Number-of-Issues-for-Several-Queries.html
      * @param array $queries List with queries as string
      * @param bool $rough Calculate approximate counts.
      * @param bool $sync Calculate counts synchronously. Setting this parameter true may influence YouTrack performance.
@@ -1341,7 +1341,8 @@ class Connection
     }
 
     /**
-     * @link https://confluence.jetbrains.com/display/YTD3/Get+Issues+in+a+Project
+     * @link          https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Issues-in-a-Project.html
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Issues-in-a-Project.html
      *
      * @param string $project_id
      * @param string $filter A query to search for issues.
@@ -1375,7 +1376,7 @@ class Connection
     /**
      * Get issues by filter only. Can be used to fetch issues without specifying project
      *
-     * @link https://confluence.jetbrains.com/display/YTD6/Get+the+List+of+Issues
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-the-List-of-Issues.html
      * @param string $filter A query to search for issues. You can also specify several queries.
      *  Results for these search filters will be returned in subsequent blocks, a list of issues
      *  per each filter.
@@ -1421,7 +1422,7 @@ class Connection
     /**
      *  Apply Command to an Issue
      *
-     * @link http://confluence.jetbrains.com/display/YTD5/Apply+Command+to+an+Issue
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Apply-Command-to-an-Issue.html
      * @param string $issue_id A command will be applied to an issue with this issueID.
      * @param string $command A command to apply
      * @param string|null $comment A comment to add to an issue.
@@ -1855,7 +1856,7 @@ class Connection
     /**
      * Get list of all available agile board configurations.
      *
-     * @link https://confluence.jetbrains.com/display/YTD65/Get+List+of+Agile+Boards
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-List-of-Agile-Boards.html
      * @return AgileSetting[]
      */
     public function getAgileBoards()
@@ -1874,7 +1875,7 @@ class Connection
      *
      * @param string $boardId Identifier of the agile board, for which you want to get the sprint.
      * @param string $sprintId Identifier of the sprint you want to get.
-     * @see https://www.jetbrains.com/help/youtrack/standalone/7.0/Get-Sprint-by-ID.html
+     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Sprint-by-ID.html
      * @return Sprint
      */
     public function getSprintById($boardId, $sprintId)
@@ -1886,7 +1887,7 @@ class Connection
     /**
      * Update existing agile configuration.
      *
-     * @link https://confluence.jetbrains.com/display/YTD65/Update+Agile+Configuration
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Update-Agile-Configuration.html
      * @param string $agileId Id of agile configuration that should be updated
      * @param string $xml
      * @return \SimpleXMLElement
@@ -1899,7 +1900,7 @@ class Connection
     /**
      * Import workitems for a given issue
      *
-     * @link https://confluence.jetbrains.com/display/YTD65/Import+Workitems
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Import-Workitems.html
      *
      * @param $issueId
      * @param $workItems
@@ -1929,7 +1930,7 @@ class Connection
     /**
      * Get all workitems for a given issue
      *
-     * @link https://confluence.jetbrains.com/display/YTD65/Get+Available+Work+Items+of+Issue
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Available-Work-Items-of-Issue.html
      *
      * @param $issueId
      *
@@ -1948,7 +1949,7 @@ class Connection
     /**
      * Get issue history by issue id
      *
-     * @link https://confluence.jetbrains.com/display/YTD65/Get+Issue+History
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Issue-History.html
      *
      * @param string $issueId
      *

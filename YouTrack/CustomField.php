@@ -20,7 +20,7 @@ namespace YouTrack;
  * @method string getParam
  * @method string setParam(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/GET+Project+Custom+Field
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Project-Custom-Field.html
  */
 class CustomField extends BaseObject
 {

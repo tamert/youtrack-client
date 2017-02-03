@@ -68,7 +68,7 @@ namespace YouTrack;
  * @method int getEstimation()
  * @method setEstimation(int $numberInProject)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/Get+an+Issue
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-an-Issue.html
  */
 class Issue extends BaseObject
 {

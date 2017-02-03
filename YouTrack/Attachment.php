@@ -21,7 +21,7 @@ namespace YouTrack;
  * @property string created
  * @method \DateTime getCreated
  *
- * @link https://confluence.jetbrains.com/display/YTD65/Get+Attachments+of+an+Issue
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Attachments-of-an-Issue.html
  */
 class Attachment extends BaseObject
 {
@@ -36,8 +36,12 @@ class Attachment extends BaseObject
                 $this->$method((string)$value);
             }
         }
+        $this->updateDateAttributes(
+            array(
+                'created',
+            )
+        );
     }
-
 
     /**
      * Fetches the file content from this attachment
@@ -53,35 +57,6 @@ class Attachment extends BaseObject
         } else {
             return false;
         }
-    }
-
-    /**
-     * Sets the created
-     *
-     * @param \DateTime $created
-     * @return Attachment
-     * @see getCreated
-     * @see $created
-     */
-    public function setCreated($created)
-    {
-        if (!$created instanceof \DateTime) {
-            $tmp = false;
-            try {
-                // The API returns the timestamp in milliseconds
-                // @see http://confluence.jetbrains.com/display/YTD4/Timestamps+in+REST+API
-                $ts = substr($created, 0, -3); // do not divide by 1000 (small integer php settings cause wrong ints)
-                $tmp = new \DateTime('@' . $ts);
-            } catch (\Exception $e) {
-
-                // we could throw it... but.
-            }
-            if ($tmp) {
-                $created = $tmp;
-            }
-        }
-        $this->attributes['created'] = $created;
-        return $this;
     }
 
     /**

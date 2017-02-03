@@ -14,7 +14,7 @@ namespace YouTrack;
  * @method string getPermissionsUrl
  * @method string setPermissionsUrl(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/GET+Role
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Role.html
  */
 class Role extends BaseObject
 {

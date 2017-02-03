@@ -1,8 +1,12 @@
 # Changelog
 
-### 2017-__-__ - v_._._ (To be released)
+### 2017-02-03 - v1.5.4
 
 * Added readme section for standalone setup with composer
+* Added datetime convert method (will be used for all date attributes in the future). Currently only used for 
+  `\YouTrack\Build::$assembleDate`
+* Update to PHPUnit 5.* (deprecated `getMock` method replaced)
+* Updated the URLs to official documentation pages (Version: YouTrack 2017.1)
 
 ### 2017-01-19 - v1.5.3
 

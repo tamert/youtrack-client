@@ -17,7 +17,8 @@ namespace YouTrack;
  * @method string getDirected
  * @method string setDirected(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/GET+Issue+Link+Type
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Issue-Link-Type.html
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Issue-Link-Type.html
  */
 class IssueLinkType extends BaseObject
 {

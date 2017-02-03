@@ -28,7 +28,7 @@ namespace YouTrack;
  * @method User getAuthor
  * @method void setAuthor(int $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/Get+Available+Work+Items+of+Issue
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Available-Work-Items-of-Issue.html
  */
 class Workitem extends BaseObject
 {

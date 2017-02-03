@@ -19,7 +19,7 @@ namespace YouTrack;
  * @method string getDescription
  * @method string setDescription(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/GET+Project
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Project.html
  */
 class Project extends BaseObject
 {

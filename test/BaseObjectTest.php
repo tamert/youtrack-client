@@ -9,7 +9,7 @@ require_once("requirements.php");
  * @author Jens Jahnke <jan0sch@gmx.net>
  * Created at: 08.04.11 13:55
  */
-class ObjectTest extends \PHPUnit_Framework_TestCase
+class BaseObjectTest extends \PHPUnit_Framework_TestCase
 {
 
     private $filename = "test/testdata/issue.xml";
@@ -25,6 +25,21 @@ class ObjectTest extends \PHPUnit_Framework_TestCase
     {
         $item = new BaseObject();
         $this->assertNull($item->__get('foo'));
+    }
+
+    public function testConvertTimestampToEuropeBerlin()
+    {
+        $backupTZ = date_default_timezone_get();
+        date_default_timezone_set('Europe/Berlin');
+        $item = new BaseObject();
+
+        $timestamp = '1484558909107';
+        $expectedDate = '2017-01-16 10:28:29';
+        $date = $item->convertTimestampToDateTime($timestamp);
+
+        $this->assertSame($expectedDate, $date->format('Y-m-d H:i:s'));
+
+        date_default_timezone_set($backupTZ);
     }
 
     public function testGet02()

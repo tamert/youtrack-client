@@ -106,4 +106,57 @@ class BaseObject
             }
         }
     }
+
+    /**
+     * Converts all timestamps into \DateTime objects with the local timezone
+     *
+     * @param string[] $attributeNames
+     */
+    public function updateDateAttributes(array $attributeNames)
+    {
+        foreach ($attributeNames as $name) {
+            if (isset($this->attributes[$name])) {
+                $this->attributes[$name] = $this->convertTimestampToDateTime($this->attributes[$name]);
+            }
+            if (isset($this->{$name})) {
+                $this->{$name} = $this->convertTimestampToDateTime($this->{$name});
+            }
+        }
+    }
+
+    /**
+     * Converts a given timestamp (string) into a local \DateTime object
+     *
+     * Like the parameter documentation of `created` or `updated` the given timestamp represents
+     * "the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this date".
+     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-the-List-of-Issues.html
+     * This means the given timestamp is a UNIX timestamp
+     *
+     *
+     * @param int|string|\DateTime $rawTimestamp Timestamp in milliseconds
+     * @return \DateTime
+     */
+    public function convertTimestampToDateTime($rawTimestamp)
+    {
+        if ($rawTimestamp instanceof \DateTime) {
+            return $rawTimestamp;
+        }
+        if (!is_numeric($rawTimestamp)) {
+            throw new \InvalidArgumentException('The given timestamp is not numeric.');
+        }
+
+        $millis = (string)$rawTimestamp;
+
+        // @see http://confluence.jetbrains.com/display/YTD4/Timestamps+in+REST+API
+        // do not divide by 1000 (small integer php settings cause wrong ints)
+        $ts = substr($millis, 0, -3);
+        $date = new \DateTime('@' . $ts, new \DateTimeZone('UTC'));
+
+        $defaultTimeZone = date_default_timezone_get();
+        if (!empty($defaultTimeZone)) {
+            $date->setTimezone(new \DateTimeZone($defaultTimeZone));
+        }
+
+        return $date;
+    }
 }

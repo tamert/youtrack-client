@@ -9,6 +9,9 @@ $youtrack = new YouTrack\Connection(
 );
 
 $issueId = 'Sandbox-64';
+if (!empty($argv[1])) {
+    $issueId = $argv[1];
+}
 
 // make sure, this exists!
 $issue = $youtrack->getIssue($issueId);

@@ -14,7 +14,7 @@ $issues = [
     'Sandbox-281',
 ];
 
-// see the description here: https://confluence.jetbrains.com/display/YTD65/Get+Issue+History
+// see the description here: https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Issue-History.html
 // how the result should look like.
 
 foreach ($issues as $issueId) {

@@ -9,7 +9,7 @@ namespace YouTrack;
  * @method string getVersion
  * @method string setName(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/Get+List+of+Agile+Boards
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-List-of-Agile-Boards.html
  */
 class Sprint extends BaseObject
 {

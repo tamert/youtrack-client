@@ -29,7 +29,7 @@ namespace YouTrack;
  * @method int getUpdated
  * @method int setUpdated(int $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/Get+Comments+of+an+Issue
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Comments-of-an-Issue.html
  */
 class Comment extends BaseObject
 {

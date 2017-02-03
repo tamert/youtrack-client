@@ -23,7 +23,7 @@ namespace YouTrack;
  * @method string getDefaultParam
  * @method string setDefaultParam(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/GET+Prototype
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Prototype.html
  */
 class CustomFieldPrototype extends BaseObject
 {

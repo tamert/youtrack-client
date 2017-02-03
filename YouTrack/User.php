@@ -26,7 +26,7 @@ namespace YouTrack;
  * @method string getRoleUrl
  * @method string setRoleUrl(string $value)
  *
- * @link https://confluence.jetbrains.com/display/YTD65/GET+User
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-User.html
  */
 class User extends BaseObject
 {

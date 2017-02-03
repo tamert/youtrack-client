@@ -102,7 +102,9 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         /**
          * @var \YouTrack\Connection $youtrack
          */
-        $youtrack = $this->getMock('\\YouTrack\\TestConnection', array('request'));
+        $youtrackBuilder = $this->getMockBuilder('\\YouTrack\\TestConnection');
+        $youtrackBuilder->setMethods(array('request'));
+        $youtrack = $youtrackBuilder->getMock();
 
         $youtrack->expects($this->once())
             ->method('request')
@@ -137,7 +139,9 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $expectedUrl = '/issue/' . rawurlencode($issueId) . '/attachment?' . http_build_query($params);
         $expectedResult = 'myResponseValue';
 
-        $youtrack = $this->getMock('\\YouTrack\\TestConnection', array('request'));
+        $youtrackBuilder = $this->getMockBuilder('\\YouTrack\\TestConnection');
+        $youtrackBuilder->setMethods(array('request'));
+        $youtrack = $youtrackBuilder->getMock();
 
         $youtrack->expects($this->once())
             ->method('request')
@@ -152,9 +156,11 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateAttachmentThrowsExceptionOnNonExistingFile()
     {
-        $youtrack = $this->getMock('\\YouTrack\\TestConnection', array('request'));
+        $youtrackBuilder = $this->getMockBuilder('\\YouTrack\\TestConnection');
+        $youtrackBuilder->setMethods(array('request'));
+        $youtrack = $youtrackBuilder->getMock();
 
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
 
         /** @var \YouTrack\Connection $youtrack */
         $youtrack->createAttachment('TEST-123', '/non/existing/file.txt');
