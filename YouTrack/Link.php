@@ -24,8 +24,4 @@ namespace YouTrack;
  */
 class Link extends BaseObject
 {
-    public function __construct(\SimpleXMLElement $xml = NULL, Connection $youtrack = NULL)
-    {
-        parent::__construct($xml, $youtrack);
-    }
 }

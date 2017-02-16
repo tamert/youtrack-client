@@ -8,12 +8,12 @@ $youtrack = new YouTrack\Connection(
     YOUTRACK_PASSWORD
 );
 
-// make sure, this exists!
-
-$issues = [
-    'Sandbox-36'
-];
-
+$issues = [];
+if (!empty($argv[1])) {
+    $issues = explode(',', $argv[1]);
+} else {
+    $issues[] = 'Sandbox-64';
+}
 
 foreach ($issues as $issueId) {
 
