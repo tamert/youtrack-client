@@ -1,9 +1,11 @@
 <?php
 namespace YouTrack;
 
+/**
+ * Class VersionField
+ */
 class VersionField extends BundleElement
 {
-
     /**
      * @param \SimpleXMLElement|null $xml
      * @param Connection|null $youtrack

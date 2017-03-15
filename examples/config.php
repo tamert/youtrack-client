@@ -14,8 +14,8 @@ ini_set('display_errors', 1);
  *  define('YOUTRACK_PASSWORD', 'secret**');
  *  }
  */
-if (file_exists('.auth.php')) {
-    include_once '.auth.php';
+if (file_exists(__DIR__ . '/.auth.php')) {
+    include_once __DIR__ . '/.auth.php';
 }
 
 if (!defined('YOUTRACK_URL')
@@ -28,22 +28,21 @@ if (!defined('YOUTRACK_URL')
 
 define('YOUTRACK_AUTOLOADING', false);
 
-include_once './../vendor/autoload.php';
+include_once __DIR__ . '/../vendor/autoload.php';
 
 if (YOUTRACK_AUTOLOADING) {
 // We need autoloading for this library. If you have already PSR-0 autoloading in you project
 // please remove the following lines
-spl_autoload_register(function ($className)
-    {
+    spl_autoload_register(function ($className) {
         if (class_exists($className)) {
             return;
         }
         $className = ltrim($className, '\\');
-        $fileName  = '';
+        $fileName = '';
         if ($lastNsPos = strrpos($className, '\\')) {
             $namespace = substr($className, 0, $lastNsPos);
             $className = substr($className, $lastNsPos + 1);
-            $fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+            $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
         }
         $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
