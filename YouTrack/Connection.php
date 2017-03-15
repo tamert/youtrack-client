@@ -60,9 +60,9 @@ class Connection
         'ownedField' => 'ownedFieldBundle',
         'enum' => 'bundle',
         'build' => 'buildBundle',
+        'version' => 'versionBundle',
         /*
         'state' => 'stateBundle',
-        'version' => 'versionBundle',
         'user' => 'userBundle'
         */
     );
@@ -1645,8 +1645,10 @@ class Connection
      */
     public function getProjectCustomField($project_id, $name)
     {
+        $xml = $this->get('/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name));
+
         return new CustomField(
-            $this->get('/admin/project/' . rawurlencode($project_id) . '/customfield/' . rawurlencode($name)),
+            $xml,
             $this
         );
     }
