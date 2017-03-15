@@ -1,5 +1,11 @@
 # Changelog
 
+### 2017-03-15 - v1.6.0
+
+* Merged "Added Version bundle support #35" - [sciamannikoo](https://github.com/sciamannikoo)
+* Implemented `\Iterator` interface for `BaseObject`, so you can iterate through all attributes in all YouTrack objects
+  * E.g. in `examples/get-version-bundle.php` (example for both: version bundle and iteration)
+
 ### 2017-02-03 - v1.5.4
 
 * Added readme section for standalone setup with composer

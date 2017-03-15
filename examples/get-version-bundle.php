@@ -11,10 +11,10 @@ $youtrack = new YouTrack\Connection(
 $projectId = 'Sandbox';
 $fieldName = 'Milestone';
 
-$result = $youtrack->getProjectCustomField($projectId, $fieldName);
+$customField = $youtrack->getProjectCustomField($projectId, $fieldName);
 
 echo $projectId . '/' . $fieldName . ':' . PHP_EOL;
-foreach ($result as $k => $v) {
+foreach ($customField as $k => $v) {
     echo '    ' . $k . ': "' . $v . '"' . PHP_EOL;
 }
 echo PHP_EOL;
