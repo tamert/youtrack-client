@@ -1,5 +1,9 @@
 # Changelog
 
+### 2017-03-27 - v1.6.1
+
+* Improved error reporting if returned XML was invalid/couln't be parsed
+
 ### 2017-03-15 - v1.6.0
 
 * Merged "Added Version bundle support #35" - [sciamannikoo](https://github.com/sciamannikoo)
