@@ -35,6 +35,7 @@ class Connection
 
     /**
      * Set to TRUE to enable verbose logging of curl messages.
+     *
      * @var bool
      */
     private $debug_verbose = false;
@@ -79,6 +80,7 @@ class Connection
 
     /**
      * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
+     *
      * @param string $url URL of the API
      * @param string $username Username to login with
      * @param string $password User's password
@@ -346,6 +348,7 @@ class Connection
         foreach ($errors as $error) {
             $message .= "\n{$error->code} {$error->message}";
         }
+        $message .= "\n\nFull response was:\n" . $content;
         throw new \RuntimeException($message);
     }
 
@@ -406,6 +409,7 @@ class Connection
 
     /**
      * Gets all information about requested issue
+     *
      * @param string $id Youtrack issue ID
      * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
@@ -534,6 +538,7 @@ class Connection
 
     /**
      * Deletes an issue with specified ID
+     *
      * @param string $id Youtrack issue ID
      * @return mixed
      * @throws Exception
@@ -570,6 +575,7 @@ class Connection
 
     /**
      * Returns all comments related with provided issueId
+     *
      * @param string $issueId
      * @return Comment[]
      * @throws Exception
@@ -587,6 +593,7 @@ class Connection
 
     /**
      * Returns all attachments for specified issue ID
+     *
      * @param $id string Issue ID
      * @return Attachment[]
      */
@@ -641,6 +648,7 @@ class Connection
 
     /**
      * Creates an attachment for specified issue ID
+     *
      * @param string $issueId
      * @param string $filename
      * @param string $name
@@ -703,6 +711,7 @@ class Connection
 
     /**
      * Returns attachment parameters
+     *
      * @param string $name
      * @param string $authorLogin
      * @param \DateTime $created
@@ -783,6 +792,7 @@ class Connection
 
     /**
      * Returns an user object
+     *
      * @param string $login
      * @return User
      */
@@ -883,6 +893,7 @@ class Connection
 
     /**
      * Returns project for given project ID
+     *
      * @param string $project_id
      * @return Project
      */
