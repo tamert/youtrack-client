@@ -10,9 +10,11 @@ $youtrack = new YouTrack\Connection(
 
 $comments = $youtrack->getComments('Sandbox-171');
 
+echo 'List of comment IDs:' . PHP_EOL;
 foreach ($comments as $comment) {
-    echo $comment->getId() . PHP_EOL;
+    echo ' - ' . $comment->getId() . PHP_EOL;
 }
+echo PHP_EOL;
 
 $updated = $youtrack->updateComment('Sandbox-171', '64-6383', 'Hello there, updated');
 if ($updated) {

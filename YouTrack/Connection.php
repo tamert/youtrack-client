@@ -1,4 +1,5 @@
 <?php
+
 namespace YouTrack;
 
 /**
@@ -43,7 +44,7 @@ class Connection
     /**
      * @var string User agent
      */
-    private $user_agent = 'Mozilla/5.0'; // Use this as user agent string.
+    private $user_agent = 'youtrack-php-client/1.x'; // Use this as user agent string.
 
     /**
      * @var bool Enables/Disables SSL verification when sending requests using cURL
@@ -206,37 +207,34 @@ class Connection
     /**
      * Executes a request with the given parameters and returns the response.
      *
-     * @throws \Exception|Exception|NotFoundException|NotAuthorizedException An exception is thrown if an error occurs.
+     * @param int $ignoreHttpReturnStatusCode Ignore the given http status code.
+     * @param string $bodyContentType
      * @param string $method The http method (GET, PUT, POST).
      * @param string $url The request url.
      * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an
-     *     array, it will be used as CURLOPT_POSTFIELDS
-     * @param int $ignore_http_return_status Ignore the given http status code.
-     * @return array An array holding the response content in 'content' and the response status in 'response'.
+     *                           array, it will be used as CURLOPT_POSTFIELDS
+     * @return array An exception is thrown if an error occurs.
+     * @throws \Exception An exception is thrown if an error occurs.
+     * @throws Exception An exception is thrown if an error occurs.
+     * @throws NotAuthorizedException An exception is thrown if an error occurs.
+     * @throws NotFoundException An exception is thrown if an error occurs.
      */
-    protected function request($method, $url, $body = null, $ignore_http_return_status = 0)
-    {
-        if (substr($url, 0, strlen('http://')) != 'http://'
-            && substr($url, 0, strlen('https://')) != 'https://'
+    protected function request(
+        $method,
+        $url,
+        $body = null,
+        $ignoreHttpReturnStatusCode = 0,
+        $bodyContentType = 'application/xml'
+    ) {
+        if (
+            substr($url, 0, strlen('http://')) != 'http://' &&
+            substr($url, 0, strlen('https://')) != 'https://'
         ) {
             $url = $this->base_url . $url;
         }
         $this->http = curl_init($url);
         $headers = $this->headers;
-        if ($method == 'PUT' || $method == 'POST') {
 
-            if (!(is_string($body) && file_exists($body))) {
-                if (is_string($body) || is_array($body)) {
-                    if (is_array($body)) {
-                        curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
-                    } else {
-                        $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-                        $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . strlen($body);
-                        curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
-                    }
-                }
-            }
-        }
         switch ($method) {
             case 'GET':
                 curl_setopt($this->http, CURLOPT_HTTPGET, true);
@@ -246,39 +244,6 @@ class Connection
                 break;
             case 'POST':
                 curl_setopt($this->http, CURLOPT_POST, true);
-                if (!empty($body)) {
-
-                    $filename = null;
-                    if (is_array($body) && isset($body['filename']) && isset($body['file'])) {
-                        $filename = $body['filename'];
-                        $body = $body['file'];
-                    }
-
-                    if (is_string($body) && file_exists($body)) {
-
-                        if (version_compare(PHP_VERSION, '5.5', '>=')
-                            && class_exists('\\CURLFile')
-                        ) {
-                            $file = new \CURLFile($body);
-                            $mimeType = $this->getMimeTypeByFileExtension($body);
-                            if (null !== $mimeType) {
-                                $file->setMimeType($mimeType);
-                            }
-                            if (isset($filename)) {
-                                $file->setPostFilename($filename);
-                            }
-                        } else {
-                            $file = '@' . $body;
-                            if (isset($filename)) {
-                                $file .= '; filename=' . $filename;
-                            }
-                        }
-                        $body = array(
-                            'file' => $file,
-                        );
-                    }
-                    curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
-                }
                 break;
             case 'DELETE':
                 curl_setopt($this->http, CURLOPT_CUSTOMREQUEST, 'DELETE');
@@ -286,6 +251,71 @@ class Connection
             default:
                 throw new \Exception("Unknown HTTP method $method for YouTrack!");
         }
+
+        $handleBody = false;
+        if (in_array($method, array('PUT', 'POST')) && !empty($body)) {
+            $handleBody = true;
+        }
+
+        if ($handleBody) {
+
+            $filename = null;
+            if (is_array($body) && isset($body['filename']) && isset($body['file'])) {
+                $filename = $body['filename'];
+                $body = $body['file'];
+            }
+
+            if (is_string($body)) {
+
+                $isFile = false;
+                if (file_exists($body)) {
+                    $isFile = true;
+                    if (
+                        version_compare(PHP_VERSION, '5.5', '>=') &&
+                        class_exists('\\CURLFile')
+                    ) {
+                        $file = new \CURLFile($body);
+                        $mimeType = $this->getMimeTypeByFileExtension($body);
+                        if (null !== $mimeType) {
+                            $file->setMimeType($mimeType);
+                        }
+                        if (isset($filename)) {
+                            $file->setPostFilename($filename);
+                        }
+                    } else {
+                        $file = '@' . $body;
+                        if (isset($filename)) {
+                            $file .= '; filename=' . $filename;
+                        }
+                    }
+
+                    $body = array(
+                        'file' => $file,
+                    );
+                }
+
+                if (!$isFile) {
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: ' . $bodyContentType . '; charset=UTF-8';
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . strlen($body);
+                }
+                curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+
+            } elseif (is_array($body)) {
+
+                if (preg_match('/json/i', $bodyContentType)) {
+                    $body = json_encode($body);
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: ' . $bodyContentType . '; charset=UTF-8';
+                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . strlen($body);
+                }
+                curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+            } else {
+                curl_close($this->http);
+                throw new \InvalidArgumentException(
+                    'Cannot handle body of type ' . gettype($body) . '. Expected string or array.'
+                );
+            }
+        }
+
         curl_setopt($this->http, CURLOPT_HTTPHEADER, $headers[CURLOPT_HTTPHEADER]);
         curl_setopt($this->http, CURLOPT_USERAGENT, $this->user_agent);
         curl_setopt($this->http, CURLOPT_RETURNTRANSFER, true);
@@ -308,7 +338,7 @@ class Connection
         if (
             (int)$response['http_code'] != 200 &&
             (int)$response['http_code'] != 201 &&
-            (int)$response['http_code'] != $ignore_http_return_status
+            (int)$response['http_code'] != $ignoreHttpReturnStatusCode
         ) {
             if ((int)$response['http_code'] === 403) {
                 throw new NotAuthorizedException($url, $response, $content);
@@ -613,11 +643,17 @@ class Connection
     public function updateComment($issueId, $commentId, $updatedText)
     {
         $url = sprintf(
-            '/rest/issue/%s/comment/%s',
+            '/issue/%s/comment/%s',
             rawurlencode($issueId),
             rawurlencode($commentId)
         );
-        $result = $this->request('POST', $url, array('text' => $updatedText));
+        $result = $this->request(
+            'PUT',
+            $url,
+            array('text' => $updatedText),
+            0,
+            'application/json'
+        );
         $response = $result['response'];
         if ($response['http_code'] != 200) {
             return false;
