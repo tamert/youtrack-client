@@ -225,13 +225,15 @@ class Connection
         $headers = $this->headers;
         if ($method == 'PUT' || $method == 'POST') {
 
-            if (is_string($body) && !file_exists($body)) {
-                if (is_array($body)) {
-                    curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
-                } else {
-                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
-                    $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . strlen($body);
-                    curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+            if (!(is_string($body) && file_exists($body))) {
+                if (is_string($body) || is_array($body)) {
+                    if (is_array($body)) {
+                        curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+                    } else {
+                        $headers[CURLOPT_HTTPHEADER][] = 'Content-Type: application/xml; charset=UTF-8';
+                        $headers[CURLOPT_HTTPHEADER][] = 'Content-Length: ' . strlen($body);
+                        curl_setopt($this->http, CURLOPT_POSTFIELDS, $body);
+                    }
                 }
             }
         }
@@ -589,6 +591,39 @@ class Connection
             $comments[] = new Comment($node, $this);
         }
         return $comments;
+    }
+
+    /**
+     * @param string $issueId
+     * @param string $text
+     * @return bool
+     */
+    public function createComment($issueId, $text)
+    {
+        return $this->executeCommand($issueId, '', $text);
+    }
+
+    /**
+     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.1/Update-a-Comment.html
+     * @param string $issueId
+     * @param string $commentId
+     * @param string $updatedText
+     * @return bool
+     */
+    public function updateComment($issueId, $commentId, $updatedText)
+    {
+        $url = sprintf(
+            '/rest/issue/%s/comment/%s',
+            rawurlencode($issueId),
+            rawurlencode($commentId)
+        );
+        $result = $this->request('POST', $url, array('text' => $updatedText));
+        $response = $result['response'];
+        if ($response['http_code'] != 200) {
+            return false;
+        }
+        return true;
+
     }
 
     /**
