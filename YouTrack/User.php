@@ -26,7 +26,7 @@ namespace YouTrack;
  * @method string getRoleUrl
  * @method string setRoleUrl(string $value)
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-User.html
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/GET-User.html
  */
 class User extends BaseObject
 {

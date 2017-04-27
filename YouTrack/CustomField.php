@@ -20,7 +20,7 @@ namespace YouTrack;
  * @method string getParam
  * @method string setParam(string $value)
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/GET-Project-Custom-Field.html
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/GET-Project-Custom-Field.html
  */
 class CustomField extends BaseObject
 {

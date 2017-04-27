@@ -1,5 +1,10 @@
 # Changelog
 
+### 2017-04-27 - v1.6.2
+
+* Fixed #36 - Creating and updating comments (added methods `createComment` & `updateComment`)
+* Updated URLs to YouTrack docs for version 2017.2
+
 ### 2017-03-27 - v1.6.1
 
 * Improved error reporting if returned XML was invalid/couln't be parsed

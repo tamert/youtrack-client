@@ -20,7 +20,7 @@ namespace YouTrack;
  * @method string getSource
  * @method string setSource(string $value)
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.1/Get-Links-of-an-Issue.html
+ * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Links-of-an-Issue.html
  */
 class Link extends BaseObject
 {

@@ -5,7 +5,7 @@ YouTrack Client PHP Library
 [![Packagist](https://img.shields.io/packagist/v/nepda/youtrack-client.svg)](https://packagist.org/packages/nepda/youtrack-client)
 
 The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a
-[REST-API](https://www.jetbrains.com/help/youtrack/standalone/2017.1/YouTrack-REST-API-Reference.html).
+[REST-API](https://www.jetbrains.com/help/youtrack/standalone/2017.2/YouTrack-REST-API-Reference.html).
 Because a lot of web applications are written in [PHP](http://php.net) I decided to write a client library for it.
 To make it easier for developers to write connectors to YouTrack.
 
@@ -20,7 +20,7 @@ The source of this library is released under the BSD license (see LICENSE for de
 * curl
 * simplexml
 * json
-* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 7.0)
+* YouTrack 3.0+ with REST-API enabled (currently, the production system runs with YouTrack 2017.2)
 
 ## Changelog
 
