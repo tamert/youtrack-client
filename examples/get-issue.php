@@ -18,6 +18,7 @@ $issue = $youtrack->getIssue($issueId);
 
 if ($issue) {
     var_dump($issue);
+    var_dump($issue->getTags());
 } else {
     echo sprintf('Issue "%s" does not exist!%s', $issueId, PHP_EOL);
 }

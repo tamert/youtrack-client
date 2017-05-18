@@ -1,5 +1,6 @@
 <?php
 
+$root = true;
 include_once 'config.php';
 
 $youtrack = new YouTrack\Connection(
@@ -35,6 +36,7 @@ foreach ($issues as $issueId) {
     foreach ($linkByType as $type => $linkIssueIds) {
 
         echo PHP_EOL . '==' . ucfirst(trim($type)) . '==' . PHP_EOL;
+        rsort($linkIssueIds, SORT_NATURAL);
         foreach ($linkIssueIds as $linkIssueId) {
             $linkIssue = $youtrack->getIssue($linkIssueId);
             if ($linkIssue->getResolved()) {
@@ -42,8 +44,8 @@ foreach ($issues as $issueId) {
             } else {
                 $sign = '☐';
             }
-            echo '*' . $sign . ' ' . $linkIssue->getId() . ' ' .
-                $linkIssue->getSummary() . ' (' . $linkIssue->getState() . ')' . PHP_EOL;
+            echo '*' . $sign . ' ' . $linkIssue->getId() . ' ' . $linkIssue->getSummary() . ' (' .
+                $linkIssue->getState() . ')' . PHP_EOL;
         }
     }
 }

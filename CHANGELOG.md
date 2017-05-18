@@ -1,5 +1,9 @@
 # Changelog
 
+### 2017-05-18 - v1.6.3
+
+* Fixed #37 - Added simple tags array to issues (`foreach ($issue->getTags() as $tag) { echo $tag; }`)
+
 ### 2017-04-27 - v1.6.2
 
 * Fixed #36 - Creating and updating comments (added methods `createComment` & `updateComment`)
