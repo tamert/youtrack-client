@@ -109,6 +109,13 @@ class Issue extends BaseObject
             if (isset($this->attributes['Estimation'])) {
                 $this->__set('estimation', (int)$this->attributes['Estimation']);
             }
+            if (isset($xml->tag)) {
+                $tags = [];
+                foreach ($xml->tag as $tag) {
+                    $tags[] = (string)$tag;
+                }
+                $this->__set('tags', $tags);
+            }
         }
     }
 
