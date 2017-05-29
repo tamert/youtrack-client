@@ -28,6 +28,23 @@ Please look into CHANGELOG for a list of the past releases.
 
 ## Usage
 
+### With permanent token
+
+Please look into
+[the YouTrack documentation](https://www.jetbrains.com/help/youtrack/standalone/2017.2/Log-in-to-YouTrack.html) on how
+to create such a permanent token.
+
+    <?php
+    require_once("YouTrack/Connection.php");
+    $youtrack = new \YouTrack\Connection("http://example.com", "perm:*****", null);
+    $issue = $youtrack->getIssue("TEST-1");
+    ...
+
+The `$password` parameter has to be `null` for permanent token login. This feature is dirty and will be fixed in version
+2.*.
+
+### With deprecated username/password login
+
     <?php
     require_once("YouTrack/Connection.php");
     $youtrack = new \YouTrack\Connection("http://example.com", "login", "password");

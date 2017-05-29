@@ -1,5 +1,10 @@
 # Changelog
 
+### 2017-05-29 - v1.7.0
+
+* Fixed #31 - Added support for permanent token authentication - Thanks [@the-JJ](https://github.com/the-JJ)
+* Marked the old username/password login as deprecated (will be removed in 2.x)
+
 ### 2017-05-18 - v1.6.3
 
 * Fixed #37 - Added simple tags array to issues (`foreach ($issue->getTags() as $tag) { echo $tag; }`)

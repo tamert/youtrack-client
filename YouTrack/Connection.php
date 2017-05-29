@@ -6,6 +6,7 @@ namespace YouTrack;
  * A class for connecting to a YouTrack instance.
  *
  * @author Jens Jahnke <jan0sch@gmx.net>
+ * @author Nepomuk Fraedrich <info@nepda.eu>
  * Created at: 29.03.11 16:13
  *
  * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/YouTrack-REST-API-Reference.html
@@ -82,12 +83,15 @@ class Connection
     /**
      * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
      *
-     * @param string $url URL of the API
-     * @param string $username Username to login with
-     * @param string $password User's password
+     * If the `$password` is `null`, token based-authentication is used. The `$username` parameter is used as token.
+     *
+     * @param bool $verifySsl Flag to enable/disable SSL verification
      * @param int $connectTimeout Connection timeout in seconds
      * @param int $timeout seconds
-     * @param bool $verifySsl Flag to enable/disable SSL verification
+     * @param string $url URL of the API
+     * @param string $username Username to login with or the permanent token
+     * @param string|null $password User's password. If null, the `$username` is used as permanent token
+     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Log-in-to-YouTrack.html
      */
     public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
@@ -97,7 +101,11 @@ class Connection
         $this->setConnectTimeout($connectTimeout);
         $this->setTimeout($timeout);
         $this->setVerifySsl($verifySsl);
-        $this->login($username, $password);
+        if (is_null($password)) {
+            $this->tokenLogin($username);
+        } else {
+            $this->login($username, $password);
+        }
     }
 
     /**
@@ -134,11 +142,24 @@ class Connection
     }
 
     /**
+     * @param string $token
+     */
+    protected function tokenLogin($token)
+    {
+        $this->headers[CURLOPT_HTTPHEADER] = [
+            'Cache-Control: no-cache',
+            sprintf('Authorization: Bearer %s', $token)
+        ];
+    }
+
+    /**
      * Tries to log in with provided credentials (username, password). If login is successful, then cookies are saved
      * in $cookies attribute, if not, exception is thrown.
      *
-     * @param string $username Youtrack username
+     * @deprecated Use the tokenLogin method
+     * @see tokenLogin
      * @param string $password Youtrack password
+     * @param string $username Youtrack username
      * @throws Exception
      */
     protected function login($username, $password)

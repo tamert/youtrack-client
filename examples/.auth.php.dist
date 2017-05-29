@@ -1,0 +1,18 @@
+<?php
+
+define('YOUTRACK_URL', 'https://***.myjetbrains.com/youtrack');
+
+if (!isset($root)) {
+    $root = false;
+}
+$root = (bool)$root;
+
+if ($root) {
+    define('YOUTRACK_TOKEN', '**your root token**');
+    define('YOUTRACK_USERNAME', YOUTRACK_TOKEN);
+    define('YOUTRACK_PASSWORD', null);
+} else {
+    define('YOUTRACK_TOKEN', '**your normal token**');
+    define('YOUTRACK_USERNAME', YOUTRACK_TOKEN);
+    define('YOUTRACK_PASSWORD', null);
+}
