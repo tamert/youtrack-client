@@ -158,8 +158,8 @@ class Connection
      *
      * @deprecated Use the tokenLogin method
      * @see tokenLogin
-     * @param string $password Youtrack password
-     * @param string $username Youtrack username
+     * @param string $password YouTrack password
+     * @param string $username YouTrack username
      * @throws Exception
      */
     protected function login($username, $password)
@@ -201,10 +201,10 @@ class Connection
     }
 
     /**
-     * Handles a login response from youtrack. If login was successful, then cookies are saved in $cookies attribute,
+     * Handles a login response from YouTrack. If login was successful, then cookies are saved in $cookies attribute,
      * otherwise Exception is thrown.
      *
-     * @param string $content Response content returned from Youtrack server
+     * @param string $content Response content returned from YouTrack server
      * @param array $response Response from function curl_getinfo
      * @throws Exception
      * @throws IncorrectLoginException
@@ -463,7 +463,8 @@ class Connection
     /**
      * Gets all information about requested issue
      *
-     * @param string $id Youtrack issue ID
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-an-Issue.html
+     * @param string $id YouTrack issue ID, e.g.: "SDBX-1234"
      * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
      */
@@ -501,9 +502,10 @@ class Connection
      * );
      * </code>
      *
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Create-New-Issue.html
      * @param string $project the obligatory project name
      * @param string $summary the obligatory issue summary
-     * @param array $params optional additional parameters for the new issue (look into your personal youtrack
+     * @param array $params optional additional parameters for the new issue (look into your personal YouTrack
      *     instance!)
      * @return Issue
      */
@@ -592,7 +594,7 @@ class Connection
     /**
      * Deletes an issue with specified ID
      *
-     * @param string $id Youtrack issue ID
+     * @param string $id YouTrack issue ID
      * @return mixed
      * @throws Exception
      * @throws \Exception
@@ -1913,9 +1915,9 @@ class Connection
     }
 
     /**
-     * useful when you have configured different states for different projects
+     * Useful when you have configured different states for different projects
      * in this cases you will create bundles with name with global scope,
-     * i.e. name can not be repeated on youtrack installation.
+     * i.e. name can not be repeated on YouTrack installation.
      *
      * @param string $name
      * @return string hash key: state string value: hash('description' => string, 'isResolved' => boolean)
