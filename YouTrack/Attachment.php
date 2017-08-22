@@ -1,4 +1,5 @@
 <?php
+
 namespace YouTrack;
 
 /**
@@ -68,13 +69,14 @@ class Attachment extends BaseObject
         //
         // So we fix this, by checking, if the connection is via HTTPS and if so
         // the protocol will be changed from http to https
-        if (is_string($url) && $this->youtrack) {
-            if (substr($url, 0, strlen('https')) != 'https') {
-                if ($this->youtrack->isHttps()) {
-
-                    $url = 'https' . substr($url, strlen('https') - 1);
-                }
-            }
+        if (
+            $this->youtrack &&
+            $this->youtrack->isHttps() &&
+            is_string($url) &&
+            0 === strpos($url, 'http') &&
+            0 !== strpos($url, 'https')
+        ) {
+            $url = 'https' . substr($url, strlen('https') - 1);
         }
         $this->attributes['url'] = $url;
         return $this;

@@ -752,6 +752,7 @@ class Connection
      *
      * @return array
      * @throws \Exception
+     * @deprecated Use `createAttachmentFromAttachment` instead
      */
     public function createAttachment(
         $issueId,
@@ -849,6 +850,7 @@ class Connection
      * @throws NotAuthorizedException
      * @throws NotFoundException
      * @throws \Exception
+     * @deprecated Please use the new method `createAttachmentFromAttachment`
      */
     public function importAttachment($issueId, $authorLogin, $filename, $file, $created)
     {

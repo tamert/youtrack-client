@@ -13,7 +13,7 @@ $issueId = 'Sandbox-57';
 
 $attachment = new YouTrack\Attachment();
 
-$attachment->setUrl(dirname(__FILE__) . '/attachment.txt');
+$attachment->setUrl(__DIR__ . '/attachment.txt');
 $attachment->setName('mylog');
 
 $result = $youtrack->createAttachmentFromAttachment($issueId, $attachment);
