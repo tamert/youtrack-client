@@ -117,7 +117,7 @@ class Connection
     {
         if (!empty($this->url)) {
             $url = strtolower($this->url);
-            if (substr($url, 0, strlen('https')) == 'https') {
+            if (substr($url, 0, strlen('https')) === 'https') {
                 return true;
             }
         }
@@ -523,17 +523,7 @@ class Connection
                 $value = (string)$value;
             }
         );
-        $body = [];
-        foreach ($params as $k => $v) {
-            if (strlen($v) > 100) {
-                $body[$k] = $v;
-                unset($params[$k]);
-            }
-        }
-        if (empty($body)) {
-            $body = null;
-        }
-        $r = $this->request('POST', '/issue?' . http_build_query($params), $body);
+        $r = $this->request('POST', '/issue', $params);
         $response = $r['response'];
         $content = $r['content'];
         if (!empty($response['content_type'])) {
@@ -565,14 +555,16 @@ class Connection
      * @param string $summary
      * @param string $description
      * @return string API response content
-     * @throws Exception
-     * @throws \Exception
      */
     public function updateIssue($id, $summary, $description)
     {
+        $params = [];
+        $params['summary'] = (string)$summary;
+        $params['description'] = (string)$description;
         $r = $this->request(
             'POST',
-            '/issue/' . urlencode($id) . '?summary=' . urlencode($summary) . '&description=' . urlencode($description)
+            '/issue/' . urlencode($id),
+            $params
         );
         return $r['content'];
     }
