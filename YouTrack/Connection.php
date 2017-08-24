@@ -935,7 +935,13 @@ class Connection
         throw new NotImplementedException("import_issues_xml(project_id, assignee_group, xml)");
     }
 
-    public function importLinks($links)
+    /**
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Import-Links.html
+     *
+     * @param array $links
+     * @return \SimpleXMLElement|string
+     */
+    public function importLinks(array $links)
     {
         if (count($links) <= 0) {
             return;
