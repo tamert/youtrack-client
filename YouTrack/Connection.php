@@ -234,6 +234,7 @@ class Connection
      * @param string $url The request url.
      * @param string|array $body Data that should be send or the filename of the file if PUT is used. If this is an
      *                           array, it will be used as CURLOPT_POSTFIELDS
+     * @param string[] $additionalHeaders Additional request headers to send
      * @return array An exception is thrown if an error occurs.
      * @throws \Exception An exception is thrown if an error occurs.
      * @throws Exception An exception is thrown if an error occurs.
@@ -245,7 +246,8 @@ class Connection
         $url,
         $body = null,
         $ignoreHttpReturnStatusCode = 0,
-        $bodyContentType = 'application/xml'
+        $bodyContentType = 'application/xml',
+        $additionalHeaders = []
     ) {
         if (
             substr($url, 0, strlen('http://')) != 'http://' &&
@@ -255,6 +257,8 @@ class Connection
         }
         $this->http = curl_init($url);
         $headers = $this->headers;
+
+        $headers[CURLOPT_HTTPHEADER] = array_merge($headers[CURLOPT_HTTPHEADER], $additionalHeaders);
 
         switch ($method) {
             case 'GET':
@@ -422,7 +426,9 @@ class Connection
             $method,
             $url,
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $body,
-            $ignore_status
+            $ignore_status,
+            'application/xml',
+            ['Accept: application/xml']
         );
         $response = $r['response'];
         $content = $r['content'];
