@@ -1,5 +1,13 @@
 # Changelog
 
+### 2018-01-17 - v1.7.3
+
+* Fixed #43, Merged #44 - Thanks [@the-JJ](https://github.com/the-JJ)
+ 
+### 2017-08-23 - v1.7.2
+ 
+### 2017-08-22 - v1.7.1
+
 ### 2017-05-29 - v1.7.0
 
 * Fixed #31 - Added support for permanent token authentication - Thanks [@the-JJ](https://github.com/the-JJ)
