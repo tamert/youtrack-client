@@ -22,7 +22,7 @@ try {
 }
 
 if ($roles) {
-    printf('Results:'. PHP_EOL);
+    printf('Results:' . PHP_EOL);
     foreach ($roles as $role) {
         $refs = $role->getProjectRefs();
         $projectRefs = '';
