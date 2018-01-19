@@ -20,7 +20,7 @@ try {
 }
 
 if ($users) {
-    printf('Results:'. PHP_EOL);
+    printf('Results:' . PHP_EOL);
     foreach ($users as $user) {
         echo sprintf(' - %s', $user->getLogin()) . PHP_EOL;
     }

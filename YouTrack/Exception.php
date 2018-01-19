@@ -52,7 +52,7 @@ class Exception extends \Exception
             }
             if (substr(trim($content), 0, 1) != '<') {
                 if (substr($content, 0, 4) == 'HTTP') {
-                    $content = substr($content, strpos($content, "\r\n\r\n")+4);
+                    $content = substr($content, strpos($content, "\r\n\r\n") + 4);
                 }
             }
             return $content;

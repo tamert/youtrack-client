@@ -15,7 +15,7 @@ class NotImplementedException extends \Exception
     {
         $code = 0;
         $previous = NULL;
-        $message = 'This function is not yet implemented: "'. $function_name .'"!';
+        $message = 'This function is not yet implemented: "' . $function_name . '"!';
         parent::__construct($message, $code, $previous);
     }
 }

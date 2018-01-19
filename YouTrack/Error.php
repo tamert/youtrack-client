@@ -35,7 +35,7 @@ class Error extends BaseObject
     protected function updateAttributes(\SimpleXMLElement $xml)
     {
         foreach ($xml->xpath('/error') as $node) {
-            $this->attributes['error'] = (string) $node;
+            $this->attributes['error'] = (string)$node;
         }
     }
 }

@@ -33,7 +33,7 @@ include_once __DIR__ . '/../vendor/autoload.php';
 if (YOUTRACK_AUTOLOADING) {
 // We need autoloading for this library. If you have already PSR-0 autoloading in you project
 // please remove the following lines
-    spl_autoload_register(function ($className) {
+    spl_autoload_register(function($className) {
         if (class_exists($className)) {
             return;
         }
