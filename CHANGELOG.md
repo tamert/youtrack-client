@@ -1,5 +1,15 @@
 # Changelog
 
+### 2018-01-23 - v1.7.5
+
+* Fixed #46 Fetch info for current user #47 - Thanks [@the-JJ](https://github.com/the-JJ)
+* Changed doc block URL's to generic version https://www.jetbrains.com/help/youtrack/incloud/ 
+    without specific version in URL
+
+### 2018-01-17 - v1.7.4
+
+* Just formatting stuff
+
 ### 2018-01-17 - v1.7.3
 
 * Fixed #43, Merged #44 - Thanks [@the-JJ](https://github.com/the-JJ)

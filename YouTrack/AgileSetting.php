@@ -8,7 +8,7 @@ namespace YouTrack;
  * @method string getName
  * @method string setName(string $value)
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-List-of-Agile-Boards.html
+ * @link https://www.jetbrains.com/help/youtrack/incloud/Get-List-of-Agile-Boards.html
  */
 class AgileSetting extends BaseObject
 {

@@ -5,7 +5,7 @@ YouTrack Client PHP Library
 [![Packagist](https://img.shields.io/packagist/v/nepda/youtrack-client.svg)](https://packagist.org/packages/nepda/youtrack-client)
 
 The bugtracker [YouTrack](http://www.jetbrains.com/youtrack/) provides a
-[REST-API](https://www.jetbrains.com/help/youtrack/standalone/2017.2/YouTrack-REST-API-Reference.html).
+[REST-API](https://www.jetbrains.com/help/youtrack/incloud/YouTrack-REST-API-Reference.html).
 Because a lot of web applications are written in [PHP](http://php.net) I decided to write a client library for it.
 To make it easier for developers to write connectors to YouTrack.
 
@@ -31,7 +31,7 @@ Please look into CHANGELOG for a list of the past releases.
 ### With permanent token
 
 Please look into
-[the YouTrack documentation](https://www.jetbrains.com/help/youtrack/standalone/2017.2/Log-in-to-YouTrack.html) on how
+[the YouTrack documentation](https://www.jetbrains.com/help/youtrack/incloud/Log-in-to-YouTrack.html) on how
 to create such a permanent token.
 
     <?php

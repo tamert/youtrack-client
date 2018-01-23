@@ -129,7 +129,7 @@ class BaseObject implements \Iterator
      *
      * Like the parameter documentation of `created` or `updated` the given timestamp represents
      * "the number of milliseconds since January 1, 1970, 00:00:00 GMT represented by this date".
-     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-the-List-of-Issues.html
+     * @see https://www.jetbrains.com/help/youtrack/incloud/Get-the-List-of-Issues.html
      * This means the given timestamp is a UNIX timestamp
      *
      *

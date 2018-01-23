@@ -14,7 +14,7 @@ namespace YouTrack;
  * @method string getPermissionsUrl
  * @method string setPermissionsUrl(string $value)
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/GET-Role.html
+ * @link https://www.jetbrains.com/help/youtrack/incloud/GET-Role.html
  */
 class Role extends BaseObject
 {

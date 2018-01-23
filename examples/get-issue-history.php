@@ -14,7 +14,7 @@ $issues = [
     'Sandbox-281',
 ];
 
-// see the description here: https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Issue-History.html
+// see the description here: https://www.jetbrains.com/help/youtrack/incloud/Get-Issue-History.html
 // how the result should look like.
 
 foreach ($issues as $issueId) {

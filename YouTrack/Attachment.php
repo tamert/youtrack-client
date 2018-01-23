@@ -22,7 +22,7 @@ namespace YouTrack;
  * @property string created
  * @method \DateTime getCreated
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Attachments-of-an-Issue.html
+ * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Attachments-of-an-Issue.html
  */
 class Attachment extends BaseObject
 {

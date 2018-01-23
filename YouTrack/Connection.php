@@ -9,7 +9,7 @@ namespace YouTrack;
  * @author Nepomuk Fraedrich <info@nepda.eu>
  * Created at: 29.03.11 16:13
  *
- * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/YouTrack-REST-API-Reference.html
+ * @see https://www.jetbrains.com/help/youtrack/incloud/YouTrack-REST-API-Reference.html
  */
 class Connection
 {
@@ -91,7 +91,7 @@ class Connection
      * @param string $url URL of the API
      * @param string $username Username to login with or the permanent token
      * @param string|null $password User's password. If null, the `$username` is used as permanent token
-     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Log-in-to-YouTrack.html
+     * @see https://www.jetbrains.com/help/youtrack/incloud/Log-in-to-YouTrack.html
      */
     public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
@@ -469,7 +469,7 @@ class Connection
     /**
      * Gets all information about requested issue
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-an-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-an-Issue.html
      * @param string $id YouTrack issue ID, e.g.: "SDBX-1234"
      * @param array $params key/values, e.g. 'wikifyDescription' => 'true'
      * @return Issue
@@ -508,7 +508,7 @@ class Connection
      * );
      * </code>
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Create-New-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Create-New-Issue.html
      * @param string $project the obligatory project name
      * @param string $summary the obligatory issue summary
      * @param array $params optional additional parameters for the new issue (look into your personal YouTrack
@@ -556,7 +556,7 @@ class Connection
      * Please note that this POST method allows updating issue summary and/or description, only. To update issue
      * fields, please use method to Apply Command to an Issue.
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Update-an-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Update-an-Issue.html
      * @param string $id
      * @param string $summary
      * @param string $description
@@ -576,7 +576,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Update-an-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Update-an-Issue.html
      * @param string $id
      * @param string $summary
      * @return string API response content
@@ -609,7 +609,7 @@ class Connection
      * @param bool $verbose If full representation of projects is returned. If this parameter is false,
      *                      only short names and id's are returned.
      * @return Project[]
-     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Accessible-Projects.html
+     * @see https://www.jetbrains.com/help/youtrack/incloud/Get-Accessible-Projects.html
      */
     public function getAccessibleProjects($verbose = false)
     {
@@ -647,7 +647,7 @@ class Connection
      * @param string $issueId
      * @param string $text
      * @return bool
-     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Apply-Command-to-an-Issue.html
+     * @see https://www.jetbrains.com/help/youtrack/incloud/Apply-Command-to-an-Issue.html
      */
     public function createComment($issueId, $text)
     {
@@ -659,7 +659,7 @@ class Connection
      * @param string $issueId
      * @param string $updatedText
      * @return bool
-     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Update-a-Comment.html
+     * @see https://www.jetbrains.com/help/youtrack/incloud/Update-a-Comment.html
      */
     public function updateComment($issueId, $commentId, $updatedText)
     {
@@ -836,7 +836,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Import-Attachment-to-an-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Import-Attachment-to-an-Issue.html
      *
      * @param string $issueId The issue id
      * @param string $authorLogin Attachment submitter login
@@ -942,7 +942,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Import-Links.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Import-Links.html
      *
      * @param array $links
      * @return \SimpleXMLElement|string
@@ -1148,7 +1148,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-All-Build-Bundles.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-All-Build-Bundles.html
      *
      * To get a specific build bundle: getBundle('build', $bundleName)
      *
@@ -1167,7 +1167,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/GET-Builds.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/GET-Builds.html
      *
      * @param string $project_id
      *
@@ -1207,7 +1207,7 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Add-New-Build-to-a-Bundle.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Add-New-Build-to-a-Bundle.html
      *
      * @param string $bundle_name Name of a bundle to add a new build.
      * @param string $build_name Name of a new build.
@@ -1413,7 +1413,7 @@ class Connection
      *   )
      * </code>
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Number-of-Issues-for-Several-Queries.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Number-of-Issues-for-Several-Queries.html
      * @param array $queries List with queries as string
      * @param bool $rough Calculate approximate counts.
      * @param bool $sync Calculate counts synchronously. Setting this parameter true may influence YouTrack performance.
@@ -1452,8 +1452,7 @@ class Connection
     }
 
     /**
-     * @link          https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Issues-in-a-Project.html
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Issues-in-a-Project.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Issues-in-a-Project.html
      *
      * @param string $project_id
      * @param string $filter A query to search for issues.
@@ -1487,7 +1486,7 @@ class Connection
     /**
      * Get issues by filter only. Can be used to fetch issues without specifying project
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-the-List-of-Issues.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-the-List-of-Issues.html
      * @param string $filter A query to search for issues. You can also specify several queries.
      *  Results for these search filters will be returned in subsequent blocks, a list of issues
      *  per each filter.
@@ -1533,7 +1532,7 @@ class Connection
     /**
      *  Apply Command to an Issue
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Apply-Command-to-an-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Apply-Command-to-an-Issue.html
      * @param string $issue_id A command will be applied to an issue with this issueID.
      * @param string $command A command to apply
      * @param string|null $comment A comment to add to an issue.
@@ -1969,7 +1968,7 @@ class Connection
     /**
      * Get list of all available agile board configurations.
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-List-of-Agile-Boards.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-List-of-Agile-Boards.html
      * @return AgileSetting[]
      */
     public function getAgileBoards()
@@ -1988,7 +1987,7 @@ class Connection
      *
      * @param string $boardId Identifier of the agile board, for which you want to get the sprint.
      * @param string $sprintId Identifier of the sprint you want to get.
-     * @see https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Sprint-by-ID.html
+     * @see https://www.jetbrains.com/help/youtrack/incloud/Get-Sprint-by-ID.html
      * @return Sprint
      */
     public function getSprintById($boardId, $sprintId)
@@ -2000,7 +1999,7 @@ class Connection
     /**
      * Update existing agile configuration.
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Update-Agile-Configuration.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Update-Agile-Configuration.html
      * @param string $agileId Id of agile configuration that should be updated
      * @param string $xml
      * @return \SimpleXMLElement
@@ -2013,7 +2012,7 @@ class Connection
     /**
      * Import workitems for a given issue
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Import-Workitems.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Import-Workitems.html
      *
      * @param $issueId
      * @param $workItems
@@ -2043,7 +2042,7 @@ class Connection
     /**
      * Get all workitems for a given issue
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Available-Work-Items-of-Issue.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Available-Work-Items-of-Issue.html
      *
      * @param $issueId
      *
@@ -2062,7 +2061,7 @@ class Connection
     /**
      * Get issue history by issue id
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Issue-History.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Issue-History.html
      *
      * @param string $issueId
      *

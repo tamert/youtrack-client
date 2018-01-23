@@ -28,7 +28,7 @@ namespace YouTrack;
  * @method User getAuthor
  * @method void setAuthor(int $value)
  *
- * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Get-Available-Work-Items-of-Issue.html
+ * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Available-Work-Items-of-Issue.html
  */
 class Workitem extends BaseObject
 {
