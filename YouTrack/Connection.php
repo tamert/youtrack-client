@@ -522,7 +522,7 @@ class Connection
 
         array_walk(
             $params,
-            function (&$value) {
+            function(&$value) {
                 // php manual: If funcname needs to be working with the actual values of the array,
                 //  specify the first parameter of funcname as a reference. Then, any changes made to
                 //  those elements will be made in the original array itself.
@@ -1440,7 +1440,7 @@ class Connection
             $result = [];
             array_walk(
                 $counts,
-                function (&$v, $k) use (&$result, &$queries) {
+                function(&$v, $k) use (&$result, &$queries) {
                     $v = (int)$v;
                     $result[$k] = $v;
                     $result[$queries[$k]] = $v;
@@ -2084,5 +2084,10 @@ class Connection
         }
         ksort($items);
         return $items;
+    }
+
+    public function getCurrentUser()
+    {
+        return new CurrentUser($this->get('/user/current'), $this);
     }
 }
