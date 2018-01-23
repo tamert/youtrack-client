@@ -2085,4 +2085,9 @@ class Connection
         ksort($items);
         return $items;
     }
+
+    public function getCurrentUser()
+    {
+        return new CurrentUser($this->get('/user/current'), $this);
+    }
 }
