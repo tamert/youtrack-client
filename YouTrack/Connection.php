@@ -2011,6 +2011,21 @@ class Connection
     }
 
     /**
+     * Gets Time Tracking status (enabled / disabled) for a project
+     *
+     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/GET-Time-Tracking-Settings-for-a-Project.html
+     * @param string $project
+     * @return boolean
+     */
+    public function isTimetrackingEnabled($project)
+    {
+        $xml = $this->requestXml('GET', '/admin/project/' . rawurldecode($project) . '/timetracking');
+
+        $enabled = $xml->attributes()->enabled;
+        return (string)$enabled[0] === "true";
+    }
+
+    /**
      * Import workitems for a given issue
      *
      * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/Import-Workitems.html
