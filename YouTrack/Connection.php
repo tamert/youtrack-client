@@ -2010,9 +2010,9 @@ class Connection
     }
 
     /**
-     * Gets Time Tracking status (enabled / disabled) for a project
+     * Gets time tracking status (enabled / disabled) for a project
      *
-     * @link https://www.jetbrains.com/help/youtrack/standalone/2017.2/GET-Time-Tracking-Settings-for-a-Project.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/GET-Time-Tracking-Settings-for-a-Project.html
      * @param string $project
      * @return boolean
      */
@@ -2021,7 +2021,7 @@ class Connection
         $xml = $this->requestXml('GET', '/admin/project/' . rawurldecode($project) . '/timetracking');
 
         $enabled = $xml->attributes()->enabled;
-        return (string)$enabled[0] === "true";
+        return (string)$enabled[0] === 'true';
     }
 
     /**

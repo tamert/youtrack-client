@@ -1,5 +1,9 @@
 # Changelog
 
+### 2018-02-23 - v1.7.6
+
+* Fixed #48 Check if time tracking is enabled for project - Thanks [@the-JJ](https://github.com/the-JJ)
+
 ### 2018-01-23 - v1.7.5
 
 * Fixed #46 Fetch info for current user #47 - Thanks [@the-JJ](https://github.com/the-JJ)
