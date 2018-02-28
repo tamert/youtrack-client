@@ -1185,16 +1185,31 @@ class Connection
     }
 
     /**
+     * @link https://www.jetbrains.com/help/youtrack/standalone/GET-Users.html
+     *
      * @param string $q
+     * @param string $group
+     * @param string $role
+     * @param string $project
+     * @param string $permission
+     * @param bool $onlineOnly
+     * @param int $start
+     * 
      * @return User[]
      */
-    public function getUsers($q = '')
+    public function getUsers($q = '', $group = '', $role = '', $project = '', $permission = '', $onlineOnly = false, $start = 0)
     {
-        $users = array();
+        $users = [];
         $q = trim((string)$q);
-        $params = array(
+        $params = [
             'q' => $q,
-        );
+            'group' => $group,
+            'role' => $role,
+            'project' => $project,
+            'permission' => $permission,
+            'onlineOnly' => $onlineOnly,
+            'start' => $start,
+        ];
         $this->cleanUrlParameters($params);
         $xml = $this->get('/admin/user/?' . http_build_query($params));
         if (!empty($xml) && is_object($xml)) {
