@@ -1,6 +1,6 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
+require_once 'requirements.php';
 
 /**
  * Unit test for the YouTrack Version class.

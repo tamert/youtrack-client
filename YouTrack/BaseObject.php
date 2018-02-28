@@ -24,6 +24,10 @@ class BaseObject implements \Iterator
         }
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     protected function guessAttributeName($name)
     {
         $name = (string)$name;
@@ -73,6 +77,11 @@ class BaseObject implements \Iterator
     {
         $name = $this->guessAttributeName($name);
         $this->attributes["$name"] = $value;
+    }
+
+    public function __isset($name)
+    {
+        return isset($this->attributes[$this->guessAttributeName($name)]);
     }
 
     protected function update($xml)

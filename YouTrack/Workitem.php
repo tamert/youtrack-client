@@ -38,7 +38,7 @@ class Workitem extends BaseObject
         parent::__construct($xml, $youtrack);
 
         if (isset($xml->date)) {
-            $this->attributes['date'] = intval((string)$xml->date / 1000);
+            $this->attributes['date'] = (int)((string)$xml->date / 1000);
         }
 
         if (isset($xml->author)) {

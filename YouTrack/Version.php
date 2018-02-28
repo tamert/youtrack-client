@@ -59,11 +59,7 @@ class Version extends BaseObject
      */
     public function isReleased()
     {
-        if ($this->__get('isReleased') === "true") {
-            return true;
-        }
-
-        return false;
+        return $this->__get('isReleased') === 'true';
     }
 
     /**
@@ -71,10 +67,6 @@ class Version extends BaseObject
      */
     public function isArchived()
     {
-        if ($this->__get('isArchived') === "true") {
-            return true;
-        }
-
-        return false;
+        return $this->__get('isArchived') === 'true';
     }
 }

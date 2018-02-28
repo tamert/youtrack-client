@@ -167,7 +167,7 @@ class Connection
         curl_setopt($this->http, CURLOPT_POST, true);
 
         // Workaround for login problems when running behind lighttpd proxy @see https://redmine.lighttpd.net/issues/1717
-        curl_setopt($this->http, CURLOPT_HTTPHEADER, array('Content-Length: 1'));
+        curl_setopt($this->http, CURLOPT_HTTPHEADER, ['Content-Length: 1']);
 
         curl_setopt(
             $this->http,
@@ -196,7 +196,7 @@ class Connection
 
         $this->handleLoginResponse($content, $response);
 
-        $this->headers[CURLOPT_HTTPHEADER] = array('Cache-Control: no-cache');
+        $this->headers[CURLOPT_HTTPHEADER] = ['Cache-Control: no-cache'];
         curl_close($this->http);
     }
 
@@ -217,7 +217,7 @@ class Connection
             }
             throw new Exception('/user/login', $response, $content);
         }
-        $cookies = array();
+        $cookies = [];
         preg_match_all('/^Set-Cookie: (.*?)=(.*?)$/sm', $content, $cookies, PREG_SET_ORDER);
         foreach ($cookies as $cookie) {
             $parts = parse_url($cookie[0]);
@@ -278,7 +278,7 @@ class Connection
         }
 
         $handleBody = false;
-        if (in_array($method, array('PUT', 'POST')) && !empty($body)) {
+        if (in_array($method, ['PUT', 'POST'], true) && !empty($body)) {
             $handleBody = true;
         }
 
@@ -493,7 +493,7 @@ class Connection
      *
      * may be this is an general $params value:
      * <code>
-     *  $params = array(
+     *  $params = [
      * 'project' => $project,
      * 'assignee' => $assignee,
      * 'summary' => $summary,
@@ -505,7 +505,7 @@ class Connection
      * 'affectsVersion' => $affectsVersion,
      * 'fixedVersion' => $fixedVersion,
      * 'fixedInBuild' => $fixedInBuild,
-     * );
+     * ];
      * </code>
      *
      * @link https://www.jetbrains.com/help/youtrack/incloud/Create-New-Issue.html
@@ -1185,23 +1185,23 @@ class Connection
     }
 
     /**
-     * @link https://www.jetbrains.com/help/youtrack/standalone/GET-Users.html
+     * @link https://www.jetbrains.com/help/youtrack/incloud/GET-Users.html
      *
-     * @param string $q
-     * @param string $group
-     * @param string $role
-     * @param string $project
-     * @param string $permission
-     * @param bool $onlineOnly
-     * @param int $start
+     * @param string $q Search query (part of user login, name or email)
+     * @param string $group Filter by group (groupID)
+     * @param string $role Filter by role
+     * @param string $project Filter by project (projectID)
+     * @param string $permission Filter by permission
+     * @param bool $onlineOnly Get only users which are currently online
+     * @param int $start Paginator mode (takes 10 records)
      * 
      * @return User[]
      */
     public function getUsers($q = '', $group = '', $role = '', $project = '', $permission = '', $onlineOnly = false, $start = 0)
     {
-        $users = [];
+        $users = array();
         $q = trim((string)$q);
-        $params = [
+        $params = array(
             'q' => $q,
             'group' => $group,
             'role' => $role,
@@ -1209,7 +1209,7 @@ class Connection
             'permission' => $permission,
             'onlineOnly' => $onlineOnly,
             'start' => $start,
-        ];
+        );
         $this->cleanUrlParameters($params);
         $xml = $this->get('/admin/user/?' . http_build_query($params));
         if (!empty($xml) && is_object($xml)) {
