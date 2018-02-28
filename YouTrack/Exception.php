@@ -33,7 +33,7 @@ class Exception extends \Exception
                 $error = new Error($xml);
             }
             $this->setYouTrackError($error);
-            $message .= ": " . $error->__get("error");
+            $message .= ': ' . $error->__get('error');
         }
         parent::__construct($message, $code, $previous);
     }

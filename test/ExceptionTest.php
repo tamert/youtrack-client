@@ -1,6 +1,6 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
+require_once 'requirements.php';
 
 use YouTrack\Exception as YouTrackException;
 
@@ -14,46 +14,46 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstruct01()
     {
-        $url = "http://example.com";
-        $response = array(
+        $url = 'http://example.com';
+        $response = [
             'http_code' => 200,
-        );
-        $content = "";
+        ];
+        $content = '';
         $e = new Exception($url, $response, $content);
         $this->assertEquals("Error for 'http://example.com': 200", $e->getMessage());
     }
 
     public function testConstruct02()
     {
-        $url = "http://example.com";
-        $response = array(
+        $url = 'http://example.com';
+        $response = [
             'http_code' => 404,
-        );
-        $content = "";
+        ];
+        $content = '';
         $e = new Exception($url, $response, $content);
         $this->assertEquals("Error for 'http://example.com': 404", $e->getMessage());
     }
 
     public function testConstruct03()
     {
-        $url = "http://example.com";
-        $response = array(
+        $url = 'http://example.com';
+        $response = [
             'http_code' => 500,
             'content_type' => 'text/html; charset=utf8',
-        );
-        $content = "";
+        ];
+        $content = '';
         $e = new Exception($url, $response, $content);
         $this->assertEquals("Error for 'http://example.com': 500", $e->getMessage());
     }
 
     public function testConstruct04()
     {
-        $url = "http://example.com";
-        $response = array(
+        $url = 'http://example.com';
+        $response = [
             'http_code' => 403,
             'content_type' => 'text/plain',
-        );
-        $content = "<error>You have no rights to read user.</error>";
+        ];
+        $content = '<error>You have no rights to read user.</error>';
         $e = new YouTrackException($url, $response, $content);
         $this->assertEquals("Error for 'http://example.com': 403: You have no rights to read user.", $e->getMessage());
     }

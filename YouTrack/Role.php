@@ -21,7 +21,7 @@ class Role extends BaseObject
     /**
      * @var ProjectRef[]
      */
-    protected $projectRefs = array();
+    protected $projectRefs = [];
 
     /**
      * This extra constructor will build the project references for the role (if present)

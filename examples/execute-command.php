@@ -17,7 +17,7 @@ try {
     if ($result) {
         echo "Command '$command' executed on issue '$issueId'." . PHP_EOL;
     } else {
-        echo "The command was not executed" . PHP_EOL;
+        echo 'The command was not executed' . PHP_EOL;
     }
 } catch (\YouTrack\NotAuthorizedException $e) {
     echo $e->getMessage() . PHP_EOL;

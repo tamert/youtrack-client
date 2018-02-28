@@ -8,13 +8,13 @@ $youtrack = new YouTrack\Connection(
     YOUTRACK_PASSWORD
 );
 
-$users = array();
+$users = [];
 try {
     $users = $youtrack->getUsers();
 } catch (\YouTrack\NotAuthorizedException $e) {
     $message = 'Got NotAuthorizedException!';
     if ($error = $e->getYouTrackError()) {
-        $message = $error->__get("error");
+        $message = $error->__get('error');
     }
     echo sprintf($message) . PHP_EOL;
 }

@@ -1,7 +1,7 @@
 <?php
 namespace YouTrack;
 
-require_once("requirements.php");
+require_once 'requirements.php';
 
 /**
  * Unit test for the youtrack object class.
@@ -12,7 +12,7 @@ require_once("requirements.php");
 class BaseObjectTest extends \PHPUnit_Framework_TestCase
 {
 
-    private $filename = "test/testdata/issue.xml";
+    private $filename = 'test/testdata/issue.xml';
 
     public function testConstruct01()
     {

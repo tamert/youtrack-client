@@ -1,7 +1,7 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
-require_once("testconnection.php");
+require_once 'requirements.php';
+require_once 'testconnection.php';
 
 
 /**
@@ -105,7 +105,7 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
          * @var \YouTrack\Connection $youtrack
          */
         $youtrackBuilder = $this->getMockBuilder('\\YouTrack\\TestConnection');
-        $youtrackBuilder->setMethods(array('request'));
+        $youtrackBuilder->setMethods(['request']);
         $youtrack = $youtrackBuilder->getMock();
 
         $youtrack->expects($this->once())
@@ -121,14 +121,14 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
     {
         $createdDateTime = new \DateTime();
 
-        return array(
+        return [
             // name, authorLogin, created, group, expectedParams
-            array('', '', null, '', array()),
-            array('file.txt', '', null, '', array('name' => 'file.txt')),
-            array('', 'authorX', null, '', array('authorLogin' => 'authorX')),
-            array('', '', $createdDateTime, '', array('created' => $createdDateTime->getTimestamp() * 1000)),
-            array('', '', null, 'groupX', array('group' => 'groupX'))
-        );
+            ['', '', null, '', []],
+            ['file.txt', '', null, '', ['name' => 'file.txt']],
+            ['', 'authorX', null, '', ['authorLogin' => 'authorX']],
+            ['', '', $createdDateTime, '', ['created' => $createdDateTime->getTimestamp() * 1000]],
+            ['', '', null, 'groupX', ['group' => 'groupX']]
+        ];
     }
 
     /**
@@ -142,7 +142,7 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
         $expectedResult = 'myResponseValue';
 
         $youtrackBuilder = $this->getMockBuilder('\\YouTrack\\TestConnection');
-        $youtrackBuilder->setMethods(array('request'));
+        $youtrackBuilder->setMethods(['request']);
         $youtrack = $youtrackBuilder->getMock();
 
         $youtrack->expects($this->once())
@@ -159,7 +159,7 @@ class AttachmentsTest extends \PHPUnit_Framework_TestCase
     public function testCreateAttachmentThrowsExceptionOnNonExistingFile()
     {
         $youtrackBuilder = $this->getMockBuilder('\\YouTrack\\TestConnection');
-        $youtrackBuilder->setMethods(array('request'));
+        $youtrackBuilder->setMethods(['request']);
         $youtrack = $youtrackBuilder->getMock();
 
         $this->expectException('\Exception');

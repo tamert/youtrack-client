@@ -14,7 +14,7 @@ class BaseObject implements \Iterator
     /**
      * @var array
      */
-    protected $attributes = array();
+    protected $attributes = [];
 
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {

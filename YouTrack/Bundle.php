@@ -6,7 +6,7 @@ abstract class Bundle extends BaseObject
     /**
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * @var \SimpleXMLElement

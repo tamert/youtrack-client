@@ -1,7 +1,7 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
-require_once("testconnection.php");
+require_once 'requirements.php';
+require_once 'testconnection.php';
 
 /**
  * Unit test for the connection class.
@@ -25,9 +25,9 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $method = $refl->getMethod('handleLoginResponse');
         $method->setAccessible(true);
         $content = file_get_contents('test/testdata/incorrect-login.http');
-        $response = array(
+        $response = [
             'http_code' => 403
-        );
+        ];
         $this->setExpectedException('\YouTrack\IncorrectLoginException');
         $method->invoke($con, $content, $response);
     }

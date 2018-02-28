@@ -11,7 +11,7 @@ require_once 'requirements.php';
 class VersionTest extends \PHPUnit_Framework_TestCase
 {
 
-    private $filename = "test/testdata/version.xml";
+    private $filename = 'test/testdata/version.xml';
 
     public function testName()
     {

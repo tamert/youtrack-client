@@ -1,6 +1,6 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
+require_once 'requirements.php';
 
 /**
  * Unit test for fetching current user.
@@ -9,22 +9,22 @@ require_once("requirements.php");
  */
 class CurrentUserTest extends \PHPUnit_Framework_TestCase
 {
-    private $filename = "test/testdata/currentuser.xml";
+    private $filename = 'test/testdata/currentuser.xml';
 
     public function testConstruct()
     {
         $currentUser = $this->loadCurrentUser();
-        $this->assertEquals("JJ", $currentUser->login);
+        $this->assertEquals('JJ', $currentUser->login);
     }
 
     public function testFields()
     {
         $currentUser = $this->loadCurrentUser();
-        $this->assertEquals("JJ", $currentUser->login);
+        $this->assertEquals('JJ', $currentUser->login);
 
-        $this->assertEquals("TEST", $currentUser->lastCreatedProject);
-        $this->assertEquals("juraj.juricic@gmail.com", $currentUser->email);
-        $this->assertEquals("Juraj Juricic", $currentUser->fullName);
+        $this->assertEquals('TEST', $currentUser->lastCreatedProject);
+        $this->assertEquals('juraj.juricic@gmail.com', $currentUser->email);
+        $this->assertEquals('Juraj Juricic', $currentUser->fullName);
     }
 
     /**

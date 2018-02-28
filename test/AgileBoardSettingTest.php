@@ -1,7 +1,7 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
-require_once("testconnection.php");
+require_once 'requirements.php';
+require_once 'testconnection.php';
 
 
 /**

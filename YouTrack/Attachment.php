@@ -30,9 +30,9 @@ class Attachment extends BaseObject
     {
         parent::__construct($xml, $youtrack);
         $this->updateDateAttributes(
-            array(
+            [
                 'created',
-            )
+            ]
         );
     }
 

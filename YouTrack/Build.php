@@ -17,9 +17,9 @@ class Build extends BundleElement
     {
         parent::__construct('build', $xml, $youtrack);
         $this->updateDateAttributes(
-            array(
+            [
                 'assembleDate',
-            )
+            ]
         );
     }
 

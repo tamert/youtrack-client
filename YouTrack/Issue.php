@@ -72,36 +72,36 @@ namespace YouTrack;
  */
 class Issue extends BaseObject
 {
-    private $links = array();
-    private $attachments = array();
-    private $comments = array();
-    private $history = array();
+    private $links = [];
+    private $attachments = [];
+    private $comments = [];
+    private $history = [];
 
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {
         parent::__construct($xml, $youtrack);
         if ($xml) {
             if (!empty($this->attributes['links'])) {
-                $links = array();
+                $links = [];
                 foreach ($xml->xpath('//field[@name="links"]') as $node) {
                     foreach ($node->children() as $link) {
                         /** @var \SimpleXMLElement $link */
-                        $links[(string)$link] = array(
+                        $links[(string)$link] = [
                             'type' => (string)$link->attributes()->type,
                             'role' => (string)$link->attributes()->role,
-                        );
+                        ];
                     }
                 }
                 $this->__set('links', $links);
             }
             if (!empty($this->attributes['attachments'])) {
-                $attachments = array();
+                $attachments = [];
                 foreach ($xml->xpath('//field[@name="attachments"]') as $node) {
                     foreach ($node->children() as $attachment) {
                         /** @var \SimpleXMLElement $attachment */
-                        $attachments[(string)$attachment] = array(
+                        $attachments[(string)$attachment] = [
                             'url' => (string)$attachment->attributes()->url,
-                        );
+                        ];
                     }
                 }
                 $this->__set('attachments', $attachments);

@@ -35,7 +35,7 @@ class Project extends BaseObject
 
         if (isset($xml->subsystems)) {
 
-            $this->attributes['subsystems'] = array();
+            $this->attributes['subsystems'] = [];
             foreach ($xml->subsystems->sub as $subsystemNode) {
                 $system = new Subsystem(null, $youtrack);
                 $system->__set('name', (string)$subsystemNode['value']);
@@ -44,7 +44,7 @@ class Project extends BaseObject
         }
 
         if (isset($xml->assigneesLogin)) {
-            $this->attributes['assigneesUsers'] = array();
+            $this->attributes['assigneesUsers'] = [];
             foreach ($xml->assigneesLogin->sub as $assigneesLogin) {
                 $user = new User(null, $youtrack);
                 $user->__set('login', (string)$assigneesLogin['value']);

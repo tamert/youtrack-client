@@ -1,6 +1,6 @@
 <?php
 namespace YouTrack;
-require_once("requirements.php");
+require_once 'requirements.php';
 
 /**
  * Unit test for the youtrack workitem class.
@@ -9,7 +9,7 @@ require_once("requirements.php");
  */
 class WorkitemTest extends \PHPUnit_Framework_TestCase
 {
-    private $filename = "test/testdata/workitem.xml";
+    private $filename = 'test/testdata/workitem.xml';
 
     public function testConstruct01()
     {
@@ -34,7 +34,7 @@ class WorkitemTest extends \PHPUnit_Framework_TestCase
      */
     private function loadWorkitems()
     {
-        $items = array();
+        $items = [];
         $xml = simplexml_load_file($this->filename);
         foreach ($xml->children() as $node) {
             $items[] = new Workitem($node, null);
