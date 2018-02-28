@@ -1,5 +1,11 @@
 # Changelog
 
+### 2018-02-28 - v1.7.7
+
+* Merged #50 - Version improvements - Thanks [@shane-smith](https://github.com/shane-smith)/[@ethicalwd](https://github.com/ethicalwd)
+* Merged #51 - Implement all parameters for GET users endpoint - Thanks [@darthCoffeeCup](https://github.com/darthCoffeeCup)
+* Use short array syntax everywhere now
+
 ### 2018-02-23 - v1.7.6
 
 * Fixed #48 Check if time tracking is enabled for project - Thanks [@the-JJ](https://github.com/the-JJ)
