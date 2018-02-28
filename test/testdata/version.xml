@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<version>
+    <field name="name">
+        <value>1.2.3</value>
+    </field>
+    <field name="description">
+        <value>A short description</value>
+    </field>
+    <field name="isReleased">
+        <value>true</value>
+    </field>
+    <field name="isArchived">
+        <value>false</value>
+    </field>
+    <field name="releaseDate">
+        <value>1519905600000</value>
+    </field>
+</version>

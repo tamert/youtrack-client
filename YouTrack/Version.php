@@ -25,4 +25,56 @@ class Version extends BaseObject
             $this->__set('releaseDate', null);
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return (string)$this->__get('name');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return (string)$this->__get('description');
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getReleaseDate()
+    {
+        if ($this->__get('releaseDate') === null) {
+            return null;
+        }
+
+        return (int)$this->__get('releaseDate');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReleased()
+    {
+        if ($this->__get('isReleased') === "true") {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived()
+    {
+        if ($this->__get('isArchived') === "true") {
+            return true;
+        }
+
+        return false;
+    }
 }
