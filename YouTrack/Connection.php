@@ -2095,6 +2095,26 @@ class Connection
     }
 
     /**
+     * Delete a given workitem
+     *
+     * @link https://www.jetbrains.com/help/youtrack/standalone/Delete-Existing-Work-Item.html
+     *
+     * @param $issueId
+     * @param $workitemId
+     * @return bool
+     *
+     * @throws Exception
+     * @throws NotAuthorizedException
+     * @throws NotFoundException
+     */
+    public function deleteWorkitem($issueId, $workitemId)
+    {
+        $result = $this->request('DELETE', '/issue/' . urlencode($issueId) . '/timetracking/workitem/' . urlencode($workitemId));
+
+        return $result['response']['http_code'] == 200;
+    }
+
+    /**
      * Get issue history by issue id
      *
      * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Issue-History.html
