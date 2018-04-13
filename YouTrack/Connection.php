@@ -522,7 +522,7 @@ class Connection
 
         array_walk(
             $params,
-            function(&$value) {
+            function (&$value) {
                 // php manual: If funcname needs to be working with the actual values of the array,
                 //  specify the first parameter of funcname as a reference. Then, any changes made to
                 //  those elements will be made in the original array itself.
@@ -1200,7 +1200,7 @@ class Connection
      * @param string $permission Filter by permission
      * @param bool $onlineOnly Get only users which are currently online
      * @param int $start Paginator mode (takes 10 records)
-     * 
+     *
      * @return User[]
      */
     public function getUsers($q = '', $group = '', $role = '', $project = '', $permission = '', $onlineOnly = false, $start = 0)
@@ -1461,7 +1461,7 @@ class Connection
             $result = [];
             array_walk(
                 $counts,
-                function(&$v, $k) use (&$result, &$queries) {
+                function (&$v, $k) use (&$result, &$queries) {
                     $v = (int)$v;
                     $result[$k] = $v;
                     $result[$queries[$k]] = $v;
@@ -1893,11 +1893,12 @@ class Connection
      * This is usefull if you use self-signed ssl certificates.
      *
      * @param bool $verify_ssl
-     * @return void
+     * @return $this
      */
     public function setVerifySsl($verify_ssl)
     {
         $this->verify_ssl = $verify_ssl;
+        return $this;
     }
 
     /**
@@ -2050,8 +2051,8 @@ class Connection
      *
      * @link https://www.jetbrains.com/help/youtrack/incloud/Import-Workitems.html
      *
-     * @param $issueId
-     * @param $workItems
+     * @param string $issueId
+     * @param array $workItems
      * @return \SimpleXMLElement
      */
     public function importWorkitems($issueId, $workItems)
@@ -2080,7 +2081,7 @@ class Connection
      *
      * @link https://www.jetbrains.com/help/youtrack/incloud/Get-Available-Work-Items-of-Issue.html
      *
-     * @param $issueId
+     * @param string $issueId
      *
      * @return Workitem[]
      */
@@ -2099,8 +2100,8 @@ class Connection
      *
      * @link https://www.jetbrains.com/help/youtrack/standalone/Delete-Existing-Work-Item.html
      *
-     * @param $issueId
-     * @param $workitemId
+     * @param string $issueId
+     * @param string $workitemId Unique ID of the existing workitem to delete.
      * @return bool
      *
      * @throws Exception
@@ -2110,8 +2111,7 @@ class Connection
     public function deleteWorkitem($issueId, $workitemId)
     {
         $result = $this->request('DELETE', '/issue/' . urlencode($issueId) . '/timetracking/workitem/' . urlencode($workitemId));
-
-        return $result['response']['http_code'] == 200;
+        return $result['response']['http_code'] === 200;
     }
 
     /**

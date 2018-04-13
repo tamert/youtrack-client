@@ -1,5 +1,9 @@
 # Changelog
 
+### 2018-04-13 - v1.7.8
+
+* Merged #52 - Add: delete workitem method  - Thanks [@hkarasek](https://github.com/hkarasek)
+
 ### 2018-02-28 - v1.7.7
 
 * Merged #50 - Version improvements - Thanks [@shane-smith](https://github.com/shane-smith)/[@ethicalwd](https://github.com/ethicalwd)
