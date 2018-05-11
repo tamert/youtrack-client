@@ -98,6 +98,7 @@ class Connection
         $this->http = curl_init();
         $this->url = $url;
         $this->base_url = $url . '/rest';
+        $this->headers[CURLOPT_HTTPHEADER] = [];
         $this->setConnectTimeout($connectTimeout);
         $this->setTimeout($timeout);
         $this->setVerifySsl($verifySsl);

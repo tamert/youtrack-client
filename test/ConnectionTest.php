@@ -1,4 +1,5 @@
 <?php
+
 namespace YouTrack;
 require_once 'requirements.php';
 require_once 'testconnection.php';
@@ -38,5 +39,22 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('ownedField', $con->getFieldType('ownedField[1]'));
         $this->assertEquals('ownedField', $con->getFieldType('ownedField'));
+    }
+
+    public function testGetIssuesByFilterWithWhitespaces()
+    {
+        $builder = $this->getMockBuilder('\YouTrack\Connection');
+        $builder->setMethods(['get']);
+        $builder->disableOriginalConstructor();
+
+        /** @var \YouTrack\Connection|\PHPUnit_Framework_MockObject_MockObject $mock */
+        $mock = $builder->getMock();
+
+        $mock->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('/issue?filter=Estimation%20target%3A%20today'))
+            ->will($this->returnValue(new \SimpleXMLElement(file_get_contents(__DIR__ . '/testdata/issue.xml'))));
+
+        $mock->getIssuesByFilter('Estimation target: today');
     }
 }
