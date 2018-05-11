@@ -57,4 +57,21 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
 
         $mock->getIssuesByFilter('Estimation target: today');
     }
+
+    public function testGetIssuesByFilterWithWhitespacesMoreArgs()
+    {
+        $builder = $this->getMockBuilder('\YouTrack\Connection');
+        $builder->setMethods(['get']);
+        $builder->disableOriginalConstructor();
+
+        /** @var \YouTrack\Connection|\PHPUnit_Framework_MockObject_MockObject $mock */
+        $mock = $builder->getMock();
+
+        $mock->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('/issue?filter=Estimation%20target%3A%20today&after=something'))
+            ->will($this->returnValue(new \SimpleXMLElement(file_get_contents(__DIR__ . '/testdata/issue.xml'))));
+
+        $mock->getIssuesByFilter('Estimation target: today', 'something');
+    }
 }
