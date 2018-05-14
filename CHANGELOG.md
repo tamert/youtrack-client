@@ -1,5 +1,9 @@
 # Changelog
 
+### 2018-05-14 - v1.7.9
+
+* Fixed #53 - Improved URL parameter handling with proper and unified encoding - Thanks [@zrino](https://github.com/zrino)
+
 ### 2018-04-13 - v1.7.8
 
 * Merged #52 - Add: delete workitem method  - Thanks [@hkarasek](https://github.com/hkarasek)
