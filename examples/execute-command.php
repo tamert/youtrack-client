@@ -9,8 +9,8 @@ $youtrack = new YouTrack\Connection(
 );
 
 
-$issueId = 'Sandbox-25';
-$command = 'Assignee me';
+$issueId = 'Sandbox-7967';
+$command = 'Assignee Unassigned';
 
 try {
     $result = $youtrack->executeCommand($issueId, $command);
