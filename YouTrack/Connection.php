@@ -1588,6 +1588,7 @@ class Connection
         ];
         if (!empty($comment)) {
             $params['comment'] = (string)$comment;
+            $params['command'] = 'comment';
         }
         if (!empty($group)) {
             $params['group'] = (string)$group;
