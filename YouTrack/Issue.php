@@ -244,4 +244,16 @@ class Issue extends BaseObject
         }
         return $this->history;
     }
+
+    /**
+     *
+     */
+    public function getArray()
+    {
+        $this->getAttachments();
+        $this->getHistory();
+        $this->getComments();
+        $this->getLinks();
+        return [$this->links, $this->attachments, $this->comments, $this->history];
+    }
 }

@@ -1,8 +1,12 @@
 {
-    "name": "nepda/youtrack-client",
+    "name": "tamert/youtrack-client",
     "description": "A PHP YouTrack client library",
     "license": "BSD-4-Clause",
     "authors": [
+        {
+            "name": "Tamer Agaoglu",
+            "email": "farerock@gmail.com"
+        },
         {
             "name": "Nepomuk Fraedrich",
             "email": "info@nepda.eu"
