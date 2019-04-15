@@ -106,7 +106,7 @@ Run the following commands to install composer and youtrack-client.
     php composer-setup.php
     php -r "unlink('composer-setup.php');"
     
-    php composer.phar require nepda/youtrack-client
+    php composer.phar require tamert/youtrack-client
 (Please checkout the [latest composer setup on their page](https://getcomposer.org/download/))
 
 Create a `./my-youtrack-project/client.php` file with content:
@@ -157,5 +157,6 @@ The unit tests are incomplete but you can run them using `phpunit` like this:
 * [@openWebX](https://github.com/openWebX)
 * [@wdamien](https://github.com/wdamien)
 * [@angerslave](https://github.com/Angerslave)
+* [@tamert](https://github.com/tamert)
 
-(and more: https://github.com/nepda/youtrack-client/network/members)
+(and more: https://github.com/tamert/youtrack-client/network/members)
