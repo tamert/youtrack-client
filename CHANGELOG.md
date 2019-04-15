@@ -1,5 +1,9 @@
 # Changelog
 
+### 2018-05-14 - v1.8.0
+
+* Fixed #54 - Add toArray function and fix errors
+
 ### 2018-05-14 - v1.7.9
 
 * Fixed #53 - Improved URL parameter handling with proper and unified encoding - Thanks [@zrino](https://github.com/zrino)

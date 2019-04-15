@@ -7,6 +7,7 @@ namespace YouTrack;
  *
  * @author Jens Jahnke <jan0sch@gmx.net>
  * @author Nepomuk Fraedrich <info@nepda.eu>
+ * @author Tamer Agaoglu <farerock@gmail.com>
  * Created at: 29.03.11 16:13
  *
  * @see https://www.jetbrains.com/help/youtrack/incloud/YouTrack-REST-API-Reference.html
