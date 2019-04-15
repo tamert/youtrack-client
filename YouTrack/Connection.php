@@ -82,19 +82,16 @@ class Connection
     protected $responseLoggingPath = './';
 
     /**
-     * Connection constructor. Loads basic configuration and tries to login an user with provided credentials.
-     *
-     * If the `$password` is `null`, token based-authentication is used. The `$username` parameter is used as token.
-     *
-     * @param bool $verifySsl Flag to enable/disable SSL verification
-     * @param int $connectTimeout Connection timeout in seconds
-     * @param int $timeout seconds
-     * @param string $url URL of the API
-     * @param string $username Username to login with or the permanent token
-     * @param string|null $password User's password. If null, the `$username` is used as permanent token
-     * @see https://www.jetbrains.com/help/youtrack/incloud/Log-in-to-YouTrack.html
+     * Connection constructor.
+     * @param $url
+     * @param $username
+     * @param null $password
+     * @param null $connectTimeout
+     * @param null $timeout
+     * @param bool $verifySsl
+     * @throws Exception
      */
-    public function __construct($url, $username, $password, $connectTimeout = null, $timeout = null, $verifySsl = true)
+    public function __construct($url, $username, $password = null, $connectTimeout = null, $timeout = null, $verifySsl = true)
     {
         $this->http = curl_init();
         $this->url = $url;
@@ -644,12 +641,20 @@ class Connection
      * @throws Exception
      * @throws \Exception
      */
-    public function getComments($issueId)
+    public function getComments($issueId, $isArray = false)
     {
         $comments = [];
         $xml = $this->requestXml('GET', '/issue/' . $this->encodeUrlPart($issueId) . '/comment');
         foreach ($xml->children() as $node) {
-            $comments[] = new Comment($node, $this);
+            if($isArray)
+            {
+                $json = json_encode($node);
+                $array = json_decode($json,TRUE);
+                $comments[] = $array;
+            } else {
+                $comments[] = new Comment($node, $this);
+            }
+
         }
         return $comments;
     }
@@ -700,12 +705,18 @@ class Connection
      * @param $id string Issue ID
      * @return Attachment[]
      */
-    public function getAttachments($id)
+    public function getAttachments($id, $isArray = false)
     {
         $attachments = [];
         $xml = $this->requestXml('GET', '/issue/' . $this->encodeUrlPart($id) . '/attachment');
         foreach ($xml->children() as $node) {
-            $attachments[] = new Attachment($node, $this);
+            if($isArray) {
+                $json = json_encode($node);
+                $array = json_decode($json,TRUE);
+                $attachments[] = $array;
+            } else {
+                $attachments[] = new Attachment($node, $this);
+            }
         }
         return $attachments;
     }
@@ -881,14 +892,21 @@ class Connection
      * @return Link[]
      * @throws \Exception
      */
-    public function getLinks($issueId, $outward_only = false)
+    public function getLinks($issueId, $outward_only = false, $isArray = false)
     {
         $links = [];
         $xml = $this->requestXml('GET', '/issue/' . $this->encodeUrlPart($issueId) . '/link');
         foreach ($xml->children() as $node) {
             /** @var \SimpleXMLElement $node */
             if (($node->attributes()->source != $issueId) || !$outward_only) {
-                $links[] = new Link($node, $this);
+                if($isArray) {
+                    $json = json_encode($node);
+                    $array = json_decode($json,TRUE);
+                    $links[] = $array;
+                } else {
+                    $links[] = new Link($node, $this);
+                }
+
             }
         }
         return $links;
@@ -2008,11 +2026,13 @@ class Connection
      */
     public function getAgileBoards()
     {
-        $xml = $this->requestXml('GET', '/admin/agile');
+        $xml = $this->requestXml('GET', '/agile/102-1/sprint');
+        var_dump($xml);
+        exit();
         $boards = [];
         foreach ($xml->children() as $board) {
             /** @var \SimpleXMLElement $board */
-            $boards[] = new AgileSetting(new \SimpleXMLElement($board->asXML()), $this);
+            $boards[] = new \SimpleXMLElement($board->asXML());
         }
         return $boards;
     }
