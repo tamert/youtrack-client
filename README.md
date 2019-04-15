@@ -106,6 +106,7 @@ Run the following commands to install composer and youtrack-client.
     php -r "unlink('composer-setup.php');"
     
     php composer.phar require tamert/youtrack-client
+    
 (Please checkout the [latest composer setup on their page](https://getcomposer.org/download/))
 
 Create a `./my-youtrack-project/client.php` file with content:
