@@ -73,10 +73,17 @@ namespace YouTrack;
 class Issue extends BaseObject
 {
     private $links = [];
+    private $tags = [];
+    private $area = [];
     private $attachments = [];
     private $comments = [];
     private $history = [];
 
+    /**
+     * Issue constructor.
+     * @param \SimpleXMLElement|null $xml
+     * @param Connection|null $youtrack
+     */
     public function __construct(\SimpleXMLElement $xml = null, Connection $youtrack = null)
     {
         parent::__construct($xml, $youtrack);
@@ -113,12 +120,16 @@ class Issue extends BaseObject
                 $tags = [];
                 foreach ($xml->tag as $tag) {
                     $tags[] = (string)$tag;
+                    $this->tags[] = (string)$tag;
                 }
                 $this->__set('tags', $tags);
             }
         }
     }
 
+    /**
+     * @param \SimpleXMLElement $xml
+     */
     protected function updateChildrenAttributes(\SimpleXMLElement $xml)
     {
         foreach ($xml->children() as $nodeName => $node) {
@@ -140,6 +151,7 @@ class Issue extends BaseObject
                     $value = (string)$value;
                 }
                 $this->__set($key, $value);
+                $this->area[$key] = $value;
             }
         }
     }
@@ -178,13 +190,13 @@ class Issue extends BaseObject
     }
 
     /**
+     * @param bool $isArray
      * @return array|Comment[]
+     * @throws Exception
      */
-    public function getComments()
+    public function getComments($isArray = false)
     {
-        if (empty($this->comments)) {
-            $this->comments = $this->youtrack->getComments($this->__get('id'));
-        }
+        $this->comments = $this->youtrack->getComments($this->__get('id'), $isArray);
         return $this->comments;
     }
 
@@ -199,11 +211,9 @@ class Issue extends BaseObject
     /**
      * @return array|Attachment[]
      */
-    public function getAttachments()
+    public function getAttachments($isArray = false)
     {
-        if (empty($this->attachments)) {
-            $this->attachments = $this->youtrack->getAttachments($this->__get('id'));
-        }
+        $this->attachments = $this->youtrack->getAttachments($this->__get('id'), $isArray);
         return $this->attachments;
     }
 
@@ -216,13 +226,13 @@ class Issue extends BaseObject
     }
 
     /**
-     * @return Link[]
+     * @param bool $isArray
+     * @return array|Link[]
+     * @throws \Exception
      */
-    public function getLinks()
+    public function getLinks($isArray = false)
     {
-        if (empty($this->links)) {
-            $this->links = $this->youtrack->getLinks($this->__get('id'));
-        }
+        $this->links = $this->youtrack->getLinks($this->__get('id'), false, $isArray);
         return $this->links;
     }
 
@@ -246,14 +256,18 @@ class Issue extends BaseObject
     }
 
     /**
-     *
+     * @return array
+     * @throws \Exception
      */
     public function getArray()
     {
-        $this->getAttachments();
         $this->getHistory();
-        $this->getComments();
-        $this->getLinks();
-        return [$this->links, $this->attachments, $this->comments, $this->history];
+        return [
+            'area' => $this->area,
+            'tags' => $this->tags,
+            'links' => $this->getLinks(),
+            'attachments' => $this->getAttachments(),
+            'comments' => $this->getComments(true),
+            'history' => $this->history];
     }
 }
