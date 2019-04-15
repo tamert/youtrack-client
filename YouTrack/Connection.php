@@ -1588,12 +1588,15 @@ class Connection
         ];
         if (!empty($comment)) {
             $params['comment'] = (string)$comment;
+            $params['command'] = "comment";
         }
         if (!empty($group)) {
             $params['group'] = (string)$group;
+            $params['command'] = "group";
         }
         if (!empty($runAs)) {
             $params['runAs'] = (string)$runAs;
+            $params['command'] = "runAs";
         }
 
         $result = $this->request('POST', '/issue/' . $this->encodeUrlPart($issue_id) . '/execute', $params);
