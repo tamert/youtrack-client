@@ -1547,7 +1547,7 @@ class Connection
      * @param array $with List of fields that should be included in the result.
      * @return Issue[]
      */
-    public function getIssuesByFilter($filter, $after = null, $max = null, $with = null)
+    public function getIssuesByFilter($filter, $after = null, $max = null, $with = null, $isArray = false)
     {
         $params = [
             'filter' => (string)$filter,
@@ -1573,7 +1573,13 @@ class Connection
         $issues = [];
         foreach ($xml->children() as $issue) {
             /** @var \SimpleXMLElement $issue */
-            $issues[] = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+            $issue new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+            if($isArray) {
+                $issues[] = $issue->getArray();
+            } else {
+                $issues[] = $issue;
+            }
+            
         }
         return $issues;
     }
