@@ -1573,7 +1573,7 @@ class Connection
         $issues = [];
         foreach ($xml->children() as $issue) {
             /** @var \SimpleXMLElement $issue */
-            $issue new Issue(new \SimpleXMLElement($issue->asXML()), $this);
+            $issue = new Issue(new \SimpleXMLElement($issue->asXML()), $this);
             if($isArray) {
                 $issues[] = $issue->getArray();
             } else {
