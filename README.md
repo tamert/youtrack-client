@@ -1,5 +1,6 @@
 YouTrack Client PHP Library
 ===========================
+
 [![Build Status](https://travis-ci.org/tamert/youtrack-client.svg?branch=master)](https://travis-ci.org/tamert/youtrack-client)
 [![Packagist](https://img.shields.io/packagist/v/tamert/youtrack-client.svg)](https://packagist.org/packages/tamert/youtrack-client)
 
